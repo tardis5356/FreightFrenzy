@@ -124,38 +124,42 @@ public abstract class BaseClass_FF extends LinearOpMode {
     //initialization step to fit bot in 18 inches
     public void scrunchUpBot() {
 
-        drive(0,0,0);
-        double potTolerance = 0.05;
-        boolean angleDone = false;
-        boolean extendDone = false;
-        double armAngleBack = 3.3;
-        telemetry.addData("arm extension", mE.getCurrentPosition());
+        //specific order is best to ensure each moving part gets where it should without collision
+
+        //sets wrist position
         sV.setPosition(0);
-        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
-            mE.setPower(0);
-            extendDone = true;
-        }
 
-        else if (!lAB.isPressed()) {
-            mE.setPower(-1);
-        }
-
-        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
-            if (potentiometer.getVoltage() > armAngleBack) {
-
-                mU.setPower(-0.5);
-            } else if (potentiometer.getVoltage() < armAngleBack) {
-
-                mU.setPower(0.5);
-            }
-        } else {
-
-            mU.setPower(0);
-            angleDone = true;
-
-        }
-        telemetry.addData("arm done", angleDone);
-        }
+//        double potTolerance = 0.1;
+//        double armAngle = 1.3;//1.9;//target arm position
+//        boolean bigAngle = false;
+//        boolean extension = false;
+//        //sets arm extension position
+//        if (lAB.isPressed()) {
+//            mE.setPower(0);
+//            extension = true;
+//        } else {
+//            mE.setPower(-0.2);
+//        }
+//        //sets arm position
+//        if ((Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) && extension) {
+//            if (potentiometer.getVoltage() > armAngle) {
+//                mU.setPower(-0.2);
+//                telemetry.addData("negativeInit", potentiometer.getVoltage());
+//            } else if (potentiometer.getVoltage() < armAngle) {
+//                mU.setPower(0.2);
+//                telemetry.addData("positiveInit", potentiometer.getVoltage());
+//            }
+//        } else {
+//            telemetry.addData("initDone", potentiometer.getVoltage());
+//            mU.setPower(0);
+//            bigAngle = true;
+//        }
+//        //sets tiny (T-rex) arm
+//        if(bigAngle && extension) {
+//            sCU.setPosition(0.8);
+//            sCG.setPosition(0);
+//    }
+    }
 
 
 

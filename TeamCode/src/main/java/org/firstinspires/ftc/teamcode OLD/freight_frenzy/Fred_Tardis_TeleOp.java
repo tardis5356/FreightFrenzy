@@ -137,7 +137,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             drive(leftY1, leftX1, rightX1);
 
             //sets arm extension and arm upright motion
-            mE.setPower(-leftY2*0.65); //also works for mF on Toby bot
+            mE.setPower(-leftY2*0.75); //also works for mF on Toby bot
             mU.setPower(rightY2/2);
 
             //changes drive speed

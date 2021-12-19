@@ -36,21 +36,12 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                steps.add("ROTATE_TO_90");
                 steps.add("MOVE_TO_CAROUSEL");
                 steps.add("MOVE_TO_CAROUSEL_2");
-                steps.add("MOVE_TO_CAROUSEL_3");
                 steps.add("SPIN_SPINNER");
-                steps.add("DRIVE_TO_HUB_TIME");
                 //steps.add("WAIT");
                 steps.add("DRIVE_TO_HUB");
                  steps.add("MOVE_ARM");
                 steps.add("ROTATE_TO_0");
-                steps.add("DRIVE_FORWARD_TO_HUB");
                 steps.add("DROP_BLOCK");
-                steps.add("MOVE_BACKWARD");
-                steps.add("RESET_ARM");
-                steps.add("ROTATE_TO_90");
-                steps.add("DRIVE_BACK");
-                steps.add("PARK_IN_STORAGE_UNIT");
-
 //                steps.add("WAIT");
 //                steps.add("ROTATE_TO_90");
 //                //steps.add("WAIT");
@@ -107,9 +98,6 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
         boolean fourthCheck = false;
         boolean fifthCheck = false;
         boolean sixthCheck = false;
-        boolean eighthCheck = false;
-        boolean seventhCheck = false;
-        boolean ninthCheck = false;
         //double telescopePose = 0;
 
         //instance fields/global variables
@@ -132,6 +120,12 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
             }
         });
 
+//        scrunchUpBot();
+        //setting wrist and gripper to start position
+//            sW.setPosition(1);
+//            sG.setPosition(0.08);
+
+
         while (!opModeIsActive() && !isStopRequested()) {
             //adds vision recognition telemetry for debug and check
             elementPosition = TeamElementPositionTest.getPosition();
@@ -139,8 +133,6 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
             telemetry.addData("Hub level", hubLevel);
             telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
             telemetry.update();
-            //sets arm, extension, and wrist on initialization to get within 18 inches
-            scrunchUpBot();
 
             if (elementPosition == "LEFT") {
                 hubLevel = "BOTTOM";
@@ -211,125 +203,13 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                 }
 
                 switch (currentStep) {
-
-                    case("DRIVE_BACK"):
-                        if (!ninthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            ninthCheck = true;
-                        }
-                        double ninthTime = 1.7;
-
-                        if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.5,0,0);
-                        }
-                        if ((runtime.seconds() - myTime) > ninthTime) {
-                            drive(0,0,0);
-                            done = true;
-                            changeStep();
-                        }
-                        break;
-
-                    case("MOVE_BACKWARD"):
-                        targetDistanceX = 0;
-                        targetDistanceY = 10;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
-                        break;
-
-                    case("RESET_ARM"):
-                        drive(0,0,0);
-                        double potTolerance = 0.05;
-                        boolean angleDone = false;
-                        boolean extendDone = false;
-                        double armAngleBack = 3.3;
-                        telemetry.addData("target arm angle", armAngle);
-                        telemetry.addData("target arm extension", armReach);
-                        telemetry.addData("arm extension", mE.getCurrentPosition());
-                        telemetry.addData("telescope pose (offset)", telescopePose);
-                        sV.setPosition(0);
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
-                            telescopePose = mE.getCurrentPosition();
-                            mE.setPower(0);
-                            extendDone = true;
-                        }
-
-                        else if (!lAB.isPressed()) {
-                            mE.setPower(-1);
-                        }
-
-                        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
-                            if (potentiometer.getVoltage() > armAngleBack) {
-
-                                mU.setPower(-0.5);
-                            } else if (potentiometer.getVoltage() < armAngleBack) {
-
-                                mU.setPower(0.5);
-                            }
-                        } else {
-
-                            mU.setPower(0);
-                            angleDone = true;
-
-                        }
-                        telemetry.addData("arm done", angleDone);
-                        if(angleDone && extendDone){
-
-                            done = true;
-                            changeStep();
-                        }
-                        break;
-
-
-                    case("MOVE_TO_CAROUSEL_3"):
-                        if (!seventhCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            seventhCheck = true;
-                        }
-                        double seventhTime = 1;
-
-                        if ((runtime.seconds() - myTime) <= seventhTime ){
-                            drive(0,0.5,0);
-                        }
-                        if ((runtime.seconds() - myTime) > seventhTime) {
-                            drive(0,0,0);
-                            done = true;
-                            changeStep();
-                        }
-                        break;
-
-                    case("DRIVE_TO_HUB_TIME"):
-                        if (!eighthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            eighthCheck = true;
-                        }
-                        double eighthTime = 1.3;
-
-                        if ((runtime.seconds() - myTime) <= eighthTime ){
-                            drive(-0.5,0,0);
-                        }
-                        if ((runtime.seconds() - myTime) > eighthTime) {
-                            drive(0,0,0);
-                            done = true;
-                            changeStep();
-                        }
-                        break;
-
-                    case("DRIVE_FORWARD_TO_HUB"):
-                        targetDistanceX = 0;
-                        targetDistanceY = 18;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
-                        break;
-
-
                     case "DROP_BLOCK":
                         if (!sixthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
                             sixthCheck = true;
                         }
-                        double sixthTime = 2;
+                        double sixthTime = 1;
 
                         if ((runtime.seconds() - myTime) <= sixthTime ){
                             sI.setPower(0.5);
@@ -344,20 +224,16 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                     case "PARK_IN_STORAGE_UNIT":
                         targetDistanceX = 23;
                         targetDistanceY = 1;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
                         break;
 
                     case "MOVE_ARM":
-                        //43 extension ticks per cm
                         drive(0,0,0);
-                        potTolerance = 0.05;
-                        angleDone = false;
-                        extendDone = false;
+                        double potTolerance = 0.05;
+                        boolean angleDone = false;
+                        boolean extendDone = false;
                         telemetry.addData("hub level", hubLevel);
-                        telemetry.addData("target arm angle", armAngle);
-                        telemetry.addData("target arm extension", armReach);
-                        telemetry.addData("arm extension", mE.getCurrentPosition());
-                        telemetry.addData("telescope pose (offset)", telescopePose);
+                        telemetry.addData("arm angle", armAngle);
                         sV.setPosition(wristPosition);
                         if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
                             if (potentiometer.getVoltage() > armAngle) {
@@ -371,25 +247,22 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                             mU.setPower(0);
                             angleDone = true;
-
                         }
-                        telemetry.addData("arm done", angleDone);
 
                         double reachTolerance = 50;
                         if ((Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) && angleDone) {
                             if (mE.getCurrentPosition() > armReach) {
 
-                                mE.setPower(-0.65);
+                                mE.setPower(-0.5);
                             } else if (mE.getCurrentPosition() < armReach) {
 
-                                mE.setPower(0.65);
+                                mE.setPower(0.5);
                             }
                         } else {
 
                             mE.setPower(0);
                             extendDone = true;
                         }
-                        telemetry.addData("extend done", extendDone);
 
                         if(angleDone && extendDone){
 
@@ -402,14 +275,13 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                     case "DRIVE_TO_LIMIT":
                         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
-                            mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
-                            done = true;
                         }
 
                         else if (!limitTriggered) {
-                            mE.setPower(-0.65);
+                            mE.setPower(-1);
                         }
+                        done = true;
                         break;
 
 //                    case "MOVE_ARM_OUT_OF_WAY":
@@ -554,9 +426,9 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                     case ("DRIVE_TO_HUB"):
                         //moves to way point based on the location of the target zone
-                        targetDistanceX = 10;
-                        targetDistanceY = 44;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
+                        targetDistanceX = 16;
+                        targetDistanceY = 48;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
                         break;
 
                     case "ROTATE_TO_90":
@@ -727,29 +599,29 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
             case "BOTTOM":
 
                 armAngle = 3.0;
-                armReach = telescopePose + 400;
+                armReach = telescopePose + 485;
                 wristPosition = 0.8;
                 break;
 
             case "MIDDLE":
 
-                armAngle = 2.5;
-                armReach = telescopePose + 364;
+                armAngle = 2.4;
+                armReach = telescopePose + 450;
                 wristPosition = 0.77;
                 break;
 
             case "TOP":
 
                 armAngle = 1.65;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
+                wristPosition = 0.5;
+                armReach = telescopePose + 430;
                 break;
 
             default:
 
                 armAngle = 1.65;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
+                wristPosition = 0.5;
+                armReach = telescopePose + 430;
                 break;
 
         }

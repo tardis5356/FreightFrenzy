@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode.freight_frenzy;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+
+package org.firstinspires.ftc.teamcode.ultimate_goal;
+
+//import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,77 +13,70 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+//import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+//import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+//import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+//import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+//import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.ultimate_goal.Pose;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import com.qualcomm.robotcore.util.Range;
 
 
-public abstract class BaseClass_FF extends LinearOpMode {
+public abstract class BaseClass_TestBed extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 35/25.4; //using 35 mm wheel from rotacaster
-    final static double wheelDistance = 15.75;
+    final static double wheelDiameter = 2.375;
+    final static double wheelDistance = 16.25;
 
     OpenCvCamera webcam;
-    TeamElementPositionTest.SkystoneDeterminationPipeline pipeline;
+    CountRings.SkystoneDeterminationPipeline pipeline;
 
-    //all instance field variables
+
     DcMotor mBL;//Back left
     DcMotor mBR;
     DcMotor mFL;
     DcMotor mFR;//Front right
-    DcMotor mE;//arm motor extends
-    DcMotor mU;//arm motor tilt
-    Servo sV;//up-down wrist movement servo
-    CRServo sSR;
-    CRServo sSL;
-    Servo sWH;//left-right wrist movement servo
-    CRServo sI;
-    CRServo crsGW; //continuous rotation servo for Fred
-    Servo sC; //cup servo for Fred
-    DcMotor mA;
-    Servo sW;
-    Servo sCG;
-    Servo sG;
-    Servo sCU;
-    Servo sA;
-    CRServo sS;
-    DistanceSensor distance1;
-    DistanceSensor distance2;
-    CRServo crsIR;
-    CRServo crsIL;
-    TouchSensor lAB; //Bottom arm limit
-    ModernRoboticsI2cRangeSensor rangeSensorFront;
-    ModernRoboticsI2cRangeSensor rangeSensorRight;
-    ModernRoboticsI2cRangeSensor rangeSensorBack;
-    //ModernRoboticsI2cRangeSensor rangeSensorBackLeft;
-    ModernRoboticsI2cRangeSensor rangeSensorLeft;
-    AnalogInput potentiometer;
-    TouchSensor frontLimit; //front limit
-    TouchSensor backLimit; //back limit
-    BNO055IMU imuControl; //REV gyro - Control hub
-//    BNO055IMU imuExpansion;   // expansion hub gyro
-    Orientation angles;
+    DcMotor mA; //Arm
+    DcMotor mI; //Intake
+   // DcMotor mI; //Intake
+    //DcMotor mE; //Elevator
+   // DcMotor mS; //Shooter/spinner
+    //AnalogInput potentiometer;
+    Servo sW; //Wrist
+    Servo sG; //Gripper
+    //Servo sLower; //intake lower
+    //Servo sP; //pusher
+    //TouchSensor frontLimit; //front limit
+    //TouchSensor backLimit; //back limit
+    //BNO055IMU imuControl; //REV gyro - Control hub
+    //BNO055IMU imuExpansion;   // expansion hub gyro
+    //Orientation angles;
     ElapsedTime runtime;
     ElapsedTime runtimeTwo;
     ElapsedTime stoneIntakeTime;
+    //ColorSensor c1;
+    DistanceSensor distance1;
+    DistanceSensor distance2;
+    ModernRoboticsI2cRangeSensor rangeSensorLeft;
+    ModernRoboticsI2cRangeSensor rangeSensorRight;
     ElapsedTime stopTime;
-    Orientation lastAngle = new Orientation();
+    //Orientation lastAngle = new Orientation();
     Pose pose = new Pose(0, 0, 0);
-
     //Global sensor values
-    float gyroZ = 0;        // initializing at zero just to be sure
+    float gyroZ = 0;        // iniializing at zero just to be sure
     boolean isStartRecorded = false;
+    //moveToPose() global
     double thetaStart;
     double distanceToTargetStart;
     double thetaRobot;
-
     //Global variables
     int currOdY1;
     int currOdY2;
@@ -107,214 +102,19 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double currBDist;
     double currRDistRange;
     double currLDistRange;
-    DcMotor mI; //intake motor
-    double leftDistance;// = rangeSensorLeft.getDistance(DistanceUnit.CM);
-    double rightDistance; // = rangeSensorRight.getDistance(DistanceUnit.CM);
-    double frontDistance; // = rangeSensorFront.getDistance(DistanceUnit.CM);
-    double backDistance; // = rangeSensorBackRight.getDistance(DistanceUnit.CM);
-    double distanceX = 0;
-    double distanceY = 0;
 
-    //potentiometer readings in volts for important positions
-    double potInput = 3.3;
-    double potLevel = 2.3;
-    double potVertical = 1.1;
-    double potOutput = 0.6;
-
-    //initialization step to fit bot in 18 inches
-    public void scrunchUpBot() {
-
-        drive(0,0,0);
-        double potTolerance = 0.05;
-        boolean angleDone = false;
-        boolean extendDone = false;
-        double armAngleBack = 3.3;
-        telemetry.addData("arm extension", mE.getCurrentPosition());
-        sV.setPosition(0);
-        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
-            mE.setPower(0);
-            extendDone = true;
-        }
-
-        else if (!lAB.isPressed()) {
-            mE.setPower(-1);
-        }
-
-        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
-            if (potentiometer.getVoltage() > armAngleBack) {
-
-                mU.setPower(-0.5);
-            } else if (potentiometer.getVoltage() < armAngleBack) {
-
-                mU.setPower(0.5);
-            }
-        } else {
-
-            mU.setPower(0);
-            angleDone = true;
-
-        }
-        telemetry.addData("arm done", angleDone);
-        }
-
-
-
-
-    public void moveToDistFromWall(double targetDistanceX, double targetDistanceY, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
-        //uses distance sensor readings to drive to a set position in x and y, uses gyro to protect against drift
-
-        //targetDistanceX and targetDistanceY are distances that you want to achieve from each of 2 walls
-        //variables
-        double strafe = 0;
-        double forward = 0;
-        double rotate = 0;
-        double distanceToTargetX = 0;
-        double distanceToTargetY = 0;
-
-
-        //switches sensors that are being read depending on the sensors that are input
-        switch(sensorForX){
-
-            //You can only use the left and right distance sensors for the X axis
-            case "rightDistance":
-                distanceX = rightDistance;
-                distanceToTargetX = (targetDistanceX - distanceX);
-                break;
-
-            case "leftDistance":
-                distanceX = leftDistance;
-                distanceToTargetX = -(targetDistanceX - distanceX);
-                break;
-
-            default:
-                distanceX = 0;
-                distanceToTargetX = 0;
-                break;
-
-        }
-
-        switch(sensorForY){
-
-            case "frontDistance":
-                distanceY = frontDistance;
-                distanceToTargetY = (targetDistanceY - distanceY);
-                break;
-
-            case "backDistance":
-                distanceY = backDistance;
-                distanceToTargetY = -(targetDistanceY - distanceY);
-                break;
-
-            default:
-                distanceY = 0;
-                distanceToTargetY = 0;
-                break;
-
-        }
-
-        //finds distance to target based on x and y values
-        double distanceToTarget = (Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)));
-
-        //Starting values
-        if (!isStartRecorded) {
-            distanceToTargetStart = distanceToTarget;
-            thetaStart = gyroZ;
-            isStartRecorded = true;
-        }
-
-//        //Robot orientation vs distance to target (in degrees)
-//        if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
-//            thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
-//        } else {
-//            thetaRobot = targetTheta;
-//        }
+//    public double getElevAngle(double voltage) {
 //
-//        //Positive rotation = clockwise = decrease in theta
-//        double rotate = (1 / (1 + Math.pow(Math.E, -(0.06 * (gyroZ - thetaRobot))))) - 0.5;
-
-//        // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
+//        double elevAngle;
 //
-//        //Threshold values for motor power
-//        rotate = thresholdMotorPower(rotate, 0.1);
-
-        //Powers
-        // old value = 0.04
-        double aggressivenessStrafe = 0.03;
-        double aggressivenessForward = 0.02; //0.04
-        double aggressivenessRotate = 0.06;
-        double PmaxStrafe = 1;
-        double PmaxForward = 1;
-        double PmaxRotate = 1;
-
-
-//        if (gyroZ + tolTheta < targetTheta || gyroZ - tolTheta > targetTheta) {
-//            gyroAdjust2(targetTheta, tolTheta);
-//        } else {
-
-            strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTargetX))))) - 1);
-            forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTargetY))))) - 1);
-            rotate = PmaxRotate * ((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate * (targetTheta - gyroZ))))) - 1);
-
-
-            //Threshold values for motor power
-        forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.5);
-        rotate = thresholdMotorPower(rotate, 0.1);
-
-        //telemetry to help with testing
-        telemetry.addData("forward power", forward);
-        telemetry.addData("strafe power", strafe);
-        telemetry.addData("distance X (in)", distanceX);
-        telemetry.addData("distance Y (in)", distanceY);
-        //drive(forward, 0, strafe);
-        drive(forward, strafe, rotate);
-    }
-
-    //rotates based on degrees
-    public void gyroAdjust2(double degree, double tolerance) {
-        if (gyroZ + tolerance < degree) {
-            rotateCounterclockwise(0.5);
-        } else if (gyroZ - tolerance > degree) {
-            rotateClockwise(0.5);
-        }
-    }
-
-
-    //uses range sensors to square on wall
-    public void squareOnWallRange(double squareThreshold) {
-        currLDistRange = rangeSensorLeft.getDistance(DistanceUnit.CM);
-
-        currRDistRange = rangeSensorRight.getDistance(DistanceUnit.CM);
-        //if distance value is over 200, set it to 200 to eliminate crazy squaring
-        if(currRDistRange > 200) {
-            currRDistRange = 200;
-        }
-
-        if(currLDistRange > 200) {
-            currLDistRange = 200;
-        }
-        //if value is less than 2 cm, don't square
-        if(Math.abs(currLDistRange - currRDistRange) > squareThreshold) {
-            drive(0, 0, -(currLDistRange - currRDistRange) / 10); //+
-        }else{
-            drive(0,0,0);
-        }//else if (Math.abs(currLDistRange - currRDistRange) > 2){
-        //   drive(0, 0, -(currLDistRange-currRDistRange)/10); //-
-    }
-
-   //goes to angle depending on a potentiometer reading
-    public double getElevAngle(double voltage) {
-
-        double elevAngle;
-
-        //double targetPotVolt = 0.0103 * targetElevAngle + 1.074;
-        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
-        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
-        //elevAngle = (voltage - 1.074)/0.0103; OLD
-        //elevAngle = (voltage - 1.0879)/0.01057;
-        elevAngle = (voltage - 1.10809)/0.009864; // 5/16
-        return elevAngle;
-    }
+//        //double targetPotVolt = 0.0103 * targetElevAngle + 1.074;
+//        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
+//        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
+//        //elevAngle = (voltage - 1.074)/0.0103; OLD
+//        //elevAngle = (voltage - 1.0879)/0.01057;
+//        elevAngle = (voltage - 1.10809)/0.009864; // 5/16
+//        return elevAngle;
+//    }
 //    public void goToAngle(double inputElevAngle) {
 //        //angle units are in degrees
 //        targetElevAngle = Range.clip(inputElevAngle, -5, 35);
@@ -335,7 +135,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //    }
 
     public static double ticksToInches(int ticks) {
-        //converts ticks to inches
         double circum = Math.PI * wheelDiameter;
         return (circum / 8000) * ticks;
     }
@@ -348,198 +147,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         return new double[]{deltaTheta, arcLength};
     }
 
-
-    ////////////////////////////defines all components of the bot, one for each robot this year//////////////
-
-    //Fred - competition bot
-    //Ginger - testing bot
-    //testbed - most simplistic testing bot
-
     //Defines all components for init()
-    public void defineComponentsGinger() {
-
-        mBL = hardwareMap.dcMotor.get("mBL");//Back left
-        mBR = hardwareMap.dcMotor.get("mBR");
-        mFL = hardwareMap.dcMotor.get("mFL");
-        mFR = hardwareMap.dcMotor.get("mFR");//Front right
-        mE = hardwareMap.dcMotor.get("mE");//arm motor extends
-        mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
-        sSL = hardwareMap.crservo.get("sSL");
-        sSR = hardwareMap.crservo.get("sSR");
-        //sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
-        //sS = hardwareMap.crservo.get("sS");//servo spinner
-        //sWH = hardwareMap.servo.get("sWH");//left-right wrist movement servo
-        //sI = hardwareMap.crservo.get("sI");
-        crsIL = hardwareMap.crservo.get("crsIL"); //rubber band intake left servo
-        crsIR = hardwareMap.crservo.get("crsIR");//rubber band intake right servo
-        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
-        rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
-        rangeSensorBack = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_back");
-        //rangeSensorBackLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_bL");
-        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
-
-       // sSpinner = hardwareMap.crservo.get("sSpinner");
-//        mA = hardwareMap.dcMotor.get("mA");
-//        mI = hardwareMap.dcMotor.get("mI");
-//        mE = hardwareMap.dcMotor.get("mE");
-//        mS = hardwareMap.dcMotor.get("mS");
-//        sW = hardwareMap.servo.get("sW");
-//        sG = hardwareMap.servo.get("sG");
-//        sP = hardwareMap.servo.get("sP");
-//        sLower = hardwareMap.servo.get("sLower");
-//        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
-//        backLimit = hardwareMap.get(TouchSensor.class, "backLimit");
-//        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Calibration file
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imuControl = hardwareMap.get(BNO055IMU.class, "imuControl");
-        imuControl.initialize(parameters);
-
-
-        //c1 = hardwareMap.get(ColorSensor.class, "c1");
-
-        mBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        //Set motors of robot backwards
-        mBR.setDirection(DcMotor.Direction.REVERSE);
-        //mFR.setDirection(DcMotor.Direction.REVERSE);
-        mFL.setDirection(DcMotor.Direction.REVERSE);
-//        mS.setDirection(DcMotor.Direction.REVERSE);
-//        mI.setDirection(DcMotor.Direction.REVERSE);
-//        mE.setDirection(DcMotor.Direction.REVERSE);
-
-
-        //mFL.setDirection(DcMotor.Direction.REVERSE);
-        //mBL.setDirection(DcMotor.Direction.REVERSE);
-
-        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        mA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        mE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        runtime = new ElapsedTime();
-        runtimeTwo = new ElapsedTime();
-        stoneIntakeTime = new ElapsedTime();
-        stopTime = new ElapsedTime();
-
-        //0s out encoders
-        encoderXStart = mFR.getCurrentPosition();
-        encoderYLeftStart = mFL.getCurrentPosition();
-        encoderYRightStart = mBL.getCurrentPosition();
-
-    }
-
-    //Defines all components for init()
-    public void defineComponentsFred() {
-
-        mBL = hardwareMap.dcMotor.get("mBL");//Back left
-        mBR = hardwareMap.dcMotor.get("mBR");
-        mFL = hardwareMap.dcMotor.get("mFL");
-        mFR = hardwareMap.dcMotor.get("mFR");//Front right
-        mE = hardwareMap.dcMotor.get("mE");//arm motor extends
-        mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
-        sSR = hardwareMap.crservo.get("sSR");//servo spinner right
-        sSL = hardwareMap.crservo.get("sSL");//servo spinner left
-        sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
-        //sWH = hardwareMap.servo.get("sH");//left-right wrist movement servo
-        sI = hardwareMap.crservo.get("sI");//intake servo
-        sCG = hardwareMap.servo.get("sCG");//capstone gripper
-        sCU = hardwareMap.servo.get("sCU");//capstone rotate servo
-        //limit for telescope arm
-//        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
-        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
-        rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
-        rangeSensorBack = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_back");
-        //rangeSensorBackLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_bL");
-        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
-        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
-        lAB = hardwareMap.get(TouchSensor.class, "lAB");
-
-        // mI = hardwareMap.dcMotor.get("mI"); //intake motor for David
-       // sC = hardwareMap.servo.get("sC"); //rotates cup for David
-       // crsGW = hardwareMap.crservo.get("crsGW"); //guiding wheel for David
-        //rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
-        //rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
-        // sSpinner = hardwareMap.crservo.get("sSpinner");
-//        mA = hardwareMap.dcMotor.get("mA");
-//        mI = hardwareMap.dcMotor.get("mI");
-//        mE = hardwareMap.dcMotor.get("mE");
-//        mS = hardwareMap.dcMotor.get("mS");
-//        sW = hardwareMap.servo.get("sW");
-//        sG = hardwareMap.servo.get("sG");
-//        sP = hardwareMap.servo.get("sP");
-//        sLower = hardwareMap.servo.get("sLower");
-//        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
-//        backLimit = hardwareMap.get(TouchSensor.class, "backLimit");
-        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Calibration file
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imuControl = hardwareMap.get(BNO055IMU.class, "imuControl");
-        imuControl.initialize(parameters);
-
-
-        //c1 = hardwareMap.get(ColorSensor.class, "c1");
-
-        mBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        //Set motors of robot backwards
-        mBR.setDirection(DcMotor.Direction.REVERSE);
-        mFR.setDirection(DcMotor.Direction.REVERSE);
-//        mS.setDirection(DcMotor.Direction.REVERSE);
-//        mI.setDirection(DcMotor.Direction.REVERSE);
-//        mE.setDirection(DcMotor.Direction.REVERSE);
-
-
-        //mFL.setDirection(DcMotor.Direction.REVERSE);
-        //mBL.setDirection(DcMotor.Direction.REVERSE);
-
-        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        mA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        mE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        runtime = new ElapsedTime();
-        runtimeTwo = new ElapsedTime();
-        stoneIntakeTime = new ElapsedTime();
-        stopTime = new ElapsedTime();
-
-        //0s out encoders
-        encoderXStart = mFR.getCurrentPosition();
-        encoderYLeftStart = mFL.getCurrentPosition();
-        encoderYRightStart = mBL.getCurrentPosition();
-
-    }
-
-    //Defines all components for init()
-    public void defineComponentsTestBed() {
+    public void defineComponents() {
 
         mBL = hardwareMap.dcMotor.get("mBL");//Back left
         mBR = hardwareMap.dcMotor.get("mBR");
@@ -599,9 +208,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //mA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //mI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // mE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+       // mE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         runtime = new ElapsedTime();
         runtimeTwo = new ElapsedTime();
@@ -615,11 +224,39 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     }
 
-    public double scaleShift(double oldVal, double oldMin, double oldMax, double newMax, double newMin, double multiplier) {
-        return (((((oldVal - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) * multiplier + newMin));
+    public void squareOnWallRange() {
+        currLDistRange = rangeSensorLeft.getDistance(DistanceUnit.CM);
+
+        currRDistRange = rangeSensorRight.getDistance(DistanceUnit.CM);
+        //if distance value is over 200, set it to 200 to eliminate crazy squaring
+        if(currRDistRange > 200) {
+            currRDistRange = 200;
+        }
+
+        if(currLDistRange > 200) {
+            currLDistRange = 200;
+        }
+        //if value is less than 2 cm, don't square
+        if(Math.abs(currLDistRange - currRDistRange) > 0.5) {
+            drive(0, 0, -(currLDistRange - currRDistRange) / 10); //+
+        }else{
+            drive(0,0,0);
+        }//else if (Math.abs(currLDistRange - currRDistRange) > 2){
+         //   drive(0, 0, -(currLDistRange-currRDistRange)/10); //-
+        }
+
+
+    public void squareOnWall() {
+        currFDist = distance1.getDistance(DistanceUnit.CM);
+        currBDist = distance2.getDistance(DistanceUnit.CM);
+
+        if(currFDist > currBDist){
+            drive(0, 0, (currFDist-currBDist)/10); //+
+        }else{
+            drive(0, 0, -(currBDist-currFDist)/10); //-
+        }
     }
 
-//////////////////////////////////////////////////////odometry functions///////////////////////////////////////////////
     public Pose getPose() {
         return this.pose;
     }
@@ -725,7 +362,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Positive rotation = clockwise = decrease in theta
         double rotate = (1 / (1 + Math.pow(Math.E, -(0.06 * (gyroZ - thetaRobot))))) - 0.5;
 
-       // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
+        // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
 
         //Threshold values for motor power
         rotate = thresholdMotorPower(rotate, 0.1);
@@ -810,8 +447,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-    ///////////////////////////////////tolerance functions//////////////////////////////////////
-
     public boolean isInTolerance(double targetX, double targetY, double targetTheta, double toleranceDistance, double toleranceTheta) {
         if (Math.abs(pose.x - targetX) < toleranceDistance && Math.abs(pose.y - targetY) < toleranceDistance && Math.abs(gyroZ - targetTheta) < toleranceTheta) {
             return true;
@@ -820,19 +455,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-    public boolean isInToleranceDistance (double targetDistanceX, double targetDistanceY, double targetTheta, double toleranceDistance, double toleranceTheta) {
-        if (Math.abs(distanceX - targetDistanceX) < toleranceDistance && Math.abs(distanceY - targetDistanceY) < toleranceDistance && Math.abs(gyroZ - targetTheta) < toleranceTheta) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //////////////////////////////////////////////////drive functions///////////////////////////////////////////////////
-
 
     public double thresholdMotorPower(double power, double threshold) {
-        //thresholds motor power
         if (power > 1) {
             return 1;
         } else if (power < -1) {
@@ -848,6 +472,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     //Moves drive train in all possible directions
     public void drive(double forward, double strafe, double rotate) {
+
+
         mFL.setPower(forward + strafe + rotate);
         mFR.setPower(forward - strafe - rotate);
         mBL.setPower(forward - strafe + rotate);
@@ -871,12 +497,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         driveLeft(-power);
     }
 
-    /////////////////////////////////////////////////////////sensor and odometry/////////////////////////////////////////
+   /* public void gyroUpdate() {
 
-    public void gyroUpdate() {
-        //updates gyro
-
-        Orientation angles = imuControl.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = imuExpansion.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         float originalAngle = angles.firstAngle - lastAngle.firstAngle;
 //        double angle1 = originalAngle;
 //        double angle2 = angle1;
@@ -895,7 +518,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         gyroZ += originalAngle;
         //gyroZ += (originalAngle + angle2 + angle3 + angle4 + angle5)/5;
 
-    }
+    }*/
 
     //Inverse sigmoid function for use in drivetrain directional movement
     public double inverseSigmoid(float input) {
@@ -913,7 +536,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 
     public void odometerUpdate() {
-        //updates odometry
 
         float gyroEuclid = gyroZ % 360;
 
@@ -962,8 +584,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         prevEnYLeft = currEnYLeft;
         prevDeg = gyroZ; */
     }
-
-    /////////////////////////////////////////////////////////rotation///////////////////////////////////////////////////
 
     public void rotateClockwise(double power) {
         drive(0, 0, power);
