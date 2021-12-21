@@ -726,14 +726,17 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
             case "BOTTOM":
 
-                armAngle = 3.0;
+                armAngle = 3.15;
+                //3.0
                 armReach = telescopePose + 400;
-                wristPosition = 0.8;
+                wristPosition = 0.9;
+                //0.8
                 break;
 
             case "MIDDLE":
 
-                armAngle = 2.5;
+//                armAngle = 2.5;
+                armAngle = 2.55;
                 armReach = telescopePose + 364;
                 wristPosition = 0.77;
                 break;
