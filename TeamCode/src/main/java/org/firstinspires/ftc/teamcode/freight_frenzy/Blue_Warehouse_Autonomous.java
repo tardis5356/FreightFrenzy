@@ -202,7 +202,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                     case("DRIVE_TO_WALL"):
                         targetDistanceX = 0;
-                        targetDistanceY = 1;
+                        targetDistanceY = 5;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "", "frontDistance", 90, 5));
                         break;
 
@@ -349,10 +349,10 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
                             if (potentiometer.getVoltage() > armAngle) {
 
-                                mU.setPower(-0.5);
+                                mU.setPower(-0.4);
                             } else if (potentiometer.getVoltage() < armAngle) {
 
-                                mU.setPower(0.5);
+                                mU.setPower(0.4);
                             }
                         } else {
 
@@ -497,7 +497,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             check = true;
                         }
-                        double time = 0.5;
+                        double time = 0.7;
 
                         if ((runtime.seconds() - myTime) <= time) {
                             drive(-0.5, 0, 0);
@@ -562,7 +562,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
             case "BOTTOM":
 
-                armAngle = 3.15;
+                armAngle = 3.2;
                 //3.0
                 armReach = telescopePose + 400;
                 wristPosition = 0.9;
@@ -572,21 +572,22 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = 2.4;
+                armAngle = 2.5;
                 armReach = telescopePose + 364;
                 wristPosition = 0.77;
                 break;
 
             case "TOP":
 
-                armAngle = 1.65;
+                //1.65
+                armAngle = 1.55;
                 wristPosition = 0.3;
                 armReach = telescopePose + 700;
                 break;
 
             default:
 
-                armAngle = 1.65;
+                armAngle = 1.55;
                 wristPosition = 0.3;
                 armReach = telescopePose + 700;
                 break;

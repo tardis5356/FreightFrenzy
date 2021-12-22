@@ -362,10 +362,10 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
                             if (potentiometer.getVoltage() > armAngle) {
 
-                                mU.setPower(-0.5);
+                                mU.setPower(-0.4);
                             } else if (potentiometer.getVoltage() < armAngle) {
 
-                                mU.setPower(0.5);
+                                mU.setPower(0.4);
                             }
                         } else {
 
@@ -454,7 +454,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
                     case "MOVE_TINY_ARM":
-                        sCU.setPosition(1);
+//                        sCU.setPosition(1);
                         done = true;
 //                        if (!sixthCheck) {
 //                            //if this step has not been run before, sets myTime to the runtime
@@ -726,7 +726,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
             case "BOTTOM":
 
-                armAngle = 3.15;
+                armAngle = 3.2;
                 //3.0
                 armReach = telescopePose + 400;
                 wristPosition = 0.9;
@@ -736,21 +736,22 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = 2.55;
+                armAngle = 2.5;
                 armReach = telescopePose + 364;
                 wristPosition = 0.77;
                 break;
 
             case "TOP":
 
-                armAngle = 1.65;
+                //1.65
+                armAngle = 1.55;
                 wristPosition = 0.3;
                 armReach = telescopePose + 700;
                 break;
 
             default:
 
-                armAngle = 1.65;
+                armAngle = 1.55;
                 wristPosition = 0.3;
                 armReach = telescopePose + 700;
                 break;

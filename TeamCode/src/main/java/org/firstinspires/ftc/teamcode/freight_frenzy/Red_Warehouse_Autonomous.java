@@ -20,37 +20,34 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
     double targetZoneY = 0;
     double lastTheta = 0;
     double myTime = 0;
-    String hubLevel = "BOTTOM";
+    String hubLevel = "TOP";
     double armAngle = 0;
     double armReach = 0;
+    double wristPosition = 0;
     double telescopePose = 0;
     //initializes target zone variables, sets default target zone
 
     public void CreateSteps() {
 
-//            steps.add("COLLECT_TEAM_ELEMENT");
-//        steps.add("FIND_ELEMENT_POSITION");
-//        //steps.add("FIND_ELEMENT_POSITION");
-//                steps.add("DRIVE_FROM_WALL");
-//                steps.add("MOVE_TINY_ARM");
-//                steps.add("MOVE_FROM_WALL");
-//               steps.add("ROTATE_TO_90");
-//                steps.add("MOVE_TO_CAROUSEL");
-//                steps.add("MOVE_TO_CAROUSEL_2");
-//                steps.add("SPIN_SPINNER");
-////                steps.add("WAIT");
-//                steps.add("DRIVE_TO_HUB");
-//                steps.add("ROTATE_TO_0");
-//                steps.add("MOVE_ARM");
-//                steps.add("WAIT");
-//                steps.add("ROTATE_TO_90");
-//                //steps.add("WAIT");
-        steps.add("DRIVE_FORWARD");
-        steps.add("DRIVE_TO_WAREHOUSE");
-        steps.add("DRIVE_INTO_WALL");
-//                //steps.add("WAIT");
-//        //        steps.add("POINT_AT_CARGO");
-//        //        steps.add("WAIT");
+        steps.add("DRIVE_TO_LIMIT");
+        steps.add("FIND_ELEMENT_POSITION");
+        steps.add("DRIVE_FROM_WALL");
+        steps.add("MOVE_FROM_WALL_W");
+        steps.add("DRIVE_TO_HUB_TIME_W");
+        //steps.add("WAIT");
+        steps.add("DRIVE_TO_HUB");
+        steps.add("MOVE_ARM");
+        steps.add("ROTATE_TO_0");
+        steps.add("DRIVE_FORWARD_TO_HUB");
+        steps.add("DROP_BLOCK");
+        steps.add("MOVE_BACKWARD");
+        steps.add("RESET_ARM");
+        steps.add("ROTATE_TO_90");
+        steps.add("DRIVE_FORWARD_W");
+        steps.add("STRAFE_TO_ELEMENT");
+        steps.add("DRIVE_INTO_WAREHOUSE");
+        steps.add("DRIVE_TO_WALL");
+
         steps.add("STOP");
 
 
@@ -97,7 +94,10 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
         boolean fourthCheck = false;
         boolean fifthCheck = false;
         boolean sixthCheck = false;
+        boolean eighthCheck = false;
         boolean seventhCheck = false;
+        boolean ninthCheck = false;
+        boolean tenthCheck = false;
         //double telescopePose = 0;
 
         //instance fields/global variables
@@ -119,11 +119,6 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                  */
             }
         });
-        scrunchUpBot();
-        //setting wrist and gripper to start position
-//            sW.setPosition(1);
-//            sG.setPosition(0.08);
-
 
         while (!opModeIsActive() && !isStopRequested()) {
             //adds vision recognition telemetry for debug and check
@@ -132,6 +127,17 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
             telemetry.addData("Hub level", hubLevel);
             telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
             telemetry.update();
+            //sets arm, extension, and wrist on initialization to get within 18 inches
+            scrunchUpBot();
+
+            if (elementPosition == "LEFT") {
+                hubLevel = "BOTTOM";
+            } else if (elementPosition == "CENTER") {
+                hubLevel = "MIDDLE";
+            } else if (elementPosition == "RIGHT"){
+                hubLevel = "TOP";
+            }
+            changeHubLevel(elementPosition);
         }
 
         ////////////////above code runs in initialization, readies robot for autonomous  /////////////
@@ -163,6 +169,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                 telemetry.addData("back right distance (in)", "" + String.format("%.2f", backDistance));
                 telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
                 telemetry.addData("potentiometer angle", potentiometer.getVoltage());
+                telemetry.addData("Hub level", hubLevel);
                 telemetry.update();
                 //Update global sensor values
                 updatePoseStrafe();
@@ -193,145 +200,209 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
                 switch (currentStep) {
 
-                    case"PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 25;
-                        targetDistanceY = 3 ;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
+                    case("DRIVE_TO_WALL"):
+                        targetDistanceX = 0;
+                        targetDistanceY = 5;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "", "frontDistance", 90, 5));
                         break;
 
-                    case "MOVE_ARM":
-                        double potTolerance = 0.1;
-                        if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
-                            if (potentiometer.getVoltage() > armAngle) {
+                    case("DRIVE_INTO_WAREHOUSE"):
+                        if (!tenthCheck) {
+                            //if this step has not been run before, sets myTime to the runtime
+                            myTime = runtime.seconds();
+                            tenthCheck = true;
+                        }
+                        double tenthTime = 1;
 
-                                mU.setPower(-1);
-                            } else if (potentiometer.getVoltage() < armAngle) {
+                        if ((runtime.seconds() - myTime) <= tenthTime ){
+                            drive(-1,0,0);
+                        }
+                        if ((runtime.seconds() - myTime) > tenthTime) {
+                            drive(0,0,0);
+                            done = true;
+                            changeStep();
+                        }
+                        break;
 
-                                mU.setPower(1);
+                    case("DRIVE_BACK"):
+                        if (!ninthCheck) {
+                            //if this step has not been run before, sets myTime to the runtime
+                            myTime = runtime.seconds();
+                            ninthCheck = true;
+                        }
+                        double ninthTime = 1.7;
+
+                        if ((runtime.seconds() - myTime) <= ninthTime ){
+                            drive(0.5,0,0);
+                        }
+                        if ((runtime.seconds() - myTime) > ninthTime) {
+                            drive(0,0,0);
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+
+                    case("MOVE_BACKWARD"):
+                        targetDistanceX = 0;
+                        targetDistanceY = 10;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
+                        break;
+
+                    case("RESET_ARM"):
+                        drive(0,0,0);
+                        double potTolerance = 0.05;
+                        boolean angleDone = false;
+                        boolean extendDone = false;
+                        double armAngleBack = 3.3;
+                        telemetry.addData("target arm angle", armAngle);
+                        telemetry.addData("target arm extension", armReach);
+                        telemetry.addData("arm extension", mE.getCurrentPosition());
+                        telemetry.addData("telescope pose (offset)", telescopePose);
+                        sV.setPosition(0);
+                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                            telescopePose = mE.getCurrentPosition();
+                            mE.setPower(0);
+                            extendDone = true;
+                        }
+
+                        else if (!lAB.isPressed()) {
+                            mE.setPower(-1);
+                        }
+
+                        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
+                            if (potentiometer.getVoltage() > armAngleBack) {
+
+                                mU.setPower(-0.5);
+                            } else if (potentiometer.getVoltage() < armAngleBack) {
+
+                                mU.setPower(0.5);
                             }
                         } else {
 
                             mU.setPower(0);
-                            done = true;
-                        }
+                            angleDone = true;
 
-                        double reachTolerance = 10;
-                        if (Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) {
+                        }
+                        telemetry.addData("arm done", angleDone);
+                        if(angleDone && extendDone){
+
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+
+                    case("DRIVE_TO_HUB_TIME_W"):
+                        if (!eighthCheck) {
+                            //if this step has not been run before, sets myTime to the runtime
+                            myTime = runtime.seconds();
+                            eighthCheck = true;
+                        }
+                        double eighthTime = 1.3;
+
+                        if ((runtime.seconds() - myTime) <= eighthTime ){
+                            drive(0,0.5,0);
+                        }
+                        if ((runtime.seconds() - myTime) > eighthTime) {
+                            drive(0,0,0);
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+
+                    case("DRIVE_FORWARD_TO_HUB"):
+                        targetDistanceX = 0;
+                        targetDistanceY = 18;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
+                        break;
+
+
+                    case "DROP_BLOCK":
+                        if (!sixthCheck) {
+                            //if this step has not been run before, sets myTime to the runtime
+                            myTime = runtime.seconds();
+                            sixthCheck = true;
+                        }
+                        double sixthTime = 2;
+
+                        if ((runtime.seconds() - myTime) <= sixthTime ){
+                            sI.setPower(0.5);
+                        }
+                        if ((runtime.seconds() - myTime) > sixthTime) {
+                            sI.setPower(0);
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+
+                    case "MOVE_ARM":
+                        //43 extension ticks per cm
+                        drive(0,0,0);
+                        potTolerance = 0.05;
+                        angleDone = false;
+                        extendDone = false;
+                        telemetry.addData("hub level", hubLevel);
+                        telemetry.addData("target arm angle", armAngle);
+                        telemetry.addData("target arm extension", armReach);
+                        telemetry.addData("arm extension", mE.getCurrentPosition());
+                        telemetry.addData("telescope pose (offset)", telescopePose);
+                        sV.setPosition(wristPosition);
+                        if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
+                            if (potentiometer.getVoltage() > armAngle) {
+
+                                mU.setPower(-0.4);
+                            } else if (potentiometer.getVoltage() < armAngle) {
+
+                                mU.setPower(0.4);
+                            }
+                        } else {
+
+                            mU.setPower(0);
+                            angleDone = true;
+
+                        }
+                        telemetry.addData("arm done", angleDone);
+
+                        double reachTolerance = 50;
+                        if ((Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) && angleDone) {
                             if (mE.getCurrentPosition() > armReach) {
 
-                                mE.setPower(-1);
+                                mE.setPower(-0.65);
                             } else if (mE.getCurrentPosition() < armReach) {
 
-                                mE.setPower(1);
+                                mE.setPower(0.65);
                             }
                         } else {
 
                             mE.setPower(0);
-                            done = true;
+                            extendDone = true;
                         }
+                        telemetry.addData("extend done", extendDone);
+
+                        if(angleDone && extendDone){
+
+                            done = true;
+                            changeStep();
+                        }
+
                         break;
 
                     case "DRIVE_TO_LIMIT":
                         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
+                            mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
+                            done = true;
                         }
 
                         else if (!limitTriggered) {
-                            mE.setPower(-1);
+                            mE.setPower(-0.65);
                         }
-                        done = true;
-                        break;
-
-//                    case "MOVE_ARM_OUT_OF_WAY":
-//                        //raises arm so that it doesn't get in the way of the shooting rings
-//                        armMotion = 1591;
-//                        armStopPosition = armStartPosition - armMotion;
-//
-//                        if(mA.getCurrentPosition() <= armStopPosition) {
-//                            mA.setPower(0);
-//                            done = true;
-//                            changeStep();
-//                        }
-//                        else {
-//                            mA.setPower(-1);
-//                        }
-//                        break;
-
-//                    case "READ_ARM_POSITION":
-//                        //reads arm encoder position for future steps
-//                        armStartPosition = mA.getCurrentPosition();
-//                        done = true;
-//                        break;
-
-                    case "SPIN_SPINNER":
-                        if (!fifthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            fifthCheck = true;
-                        }
-                        double fifthTime = 6;
-
-                        if ((runtime.seconds() - myTime) <= fifthTime ){
-                            sSL.setPower(1);
-                            sSR.setPower(-1);
-                        }
-                        if ((runtime.seconds() - myTime) > fifthTime) {
-                            sSL.setPower(0);
-                            sSR.setPower(0);
-                            done = true;
-                        }
-                        break;
-
-                    case "MOVE_TINY_ARM":
-                        sCU.setPosition(1);
-                        done = true;
-//                        if (!sixthCheck) {
-//                            //if this step has not been run before, sets myTime to the runtime
-//                            myTime = runtime.seconds();
-//                            sixthCheck = true;
-//                        }
-//                        double sixthTime = 2;
-//
-//                        if ((runtime.seconds() - myTime) <= sixthTime ){
-//                               sCU.setPosition(1);
-//                        }
-//                        if ((runtime.seconds() - myTime) > sixthTime) {
-//                            done = true;
-//                        }
                         break;
 
                     case "FIND_ELEMENT_POSITION":
                         //changes the target zone that the robot moves to based on the number of rings counted during initialization
-                        if (elementPosition == "LEFT") {
-                            hubLevel = "BOTTOM";
-                        } else if (elementPosition == "CENTER") {
-                            hubLevel = "CENTER";
-                        } else {
-                            hubLevel = "TOP";
-                        }
-                        changeHubLevel(elementPosition);
+                        changeHubLevel(hubLevel);
                         done = true;
-                        break;
-
-                    case("MOVE_TO_BLUE_HUB"):
-                        double distanceThreshold = 2;
-                        double minDistance = Math.min(leftDistance, rightDistance);
-                        double targetDistance = 18 * 2.54;
-                        double toleranceDistance = 1 * 2.54;
-
-                        if (targetDistance - minDistance > toleranceDistance) {
-                            drive(0.4, 0, 0);
-
-                        } else if (targetDistance - minDistance < toleranceDistance) {
-                            drive(-0.4, 0, 0);
-
-
-                        } else {
-
-                            stopDriveTrain();
-                        }
-                        //done = true;
                         break;
 
                     case "Test" :
@@ -344,7 +415,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 10) {
+                        if(runtime.seconds() > 0 && runtime.seconds() < 5) {
                             done = false;
                         }
                         else {
@@ -359,45 +430,22 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                         done = true;
                         break;
 
-                    case ("MOVE_FROM_WALL"):
+                    case ("MOVE_FROM_WALL_W"):
                         //moves to way point based on the location of the target zone
-                        targetDistanceX = 50;
+                        targetDistanceX = 0;
                         targetDistanceY = 5;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "lefttDistance", "backDistance", 0, 5));
-                        break;
-
-                    case ("STRAFE_SQUARE"):
-                        double strafeTolerance = 1;
-                        double targetDistance3 = 24 * 2.54;
-                        double toleranceDistance3 = 1 * 2.54;
-                        //double backLeftDistance = rangeSensorBackLeft.getDistance(DistanceUnit.CM);
-                        gyroZ = 0;
-
-                        if (backDistance - strafeTolerance >= 1) {
-
-                            drive(0, -0.8, 0);
-
-                        } else if (targetDistance3 - backDistance > toleranceDistance3 && backDistance - strafeTolerance <= 1) {
-                            drive(-0.4, 0, 0);
-
-                        } else if (targetDistance3 - backDistance < toleranceDistance3) {
-                            stopDriveTrain();
-                            done = true;
-                            changeStep();
-
-                        }
-                        //done = true;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
                         break;
 
                     case ("DRIVE_TO_HUB"):
                         //moves to way point based on the location of the target zone
-                        targetDistanceX = 12;
-                        targetDistanceY = 48;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
+                        targetDistanceX = 10;
+                        targetDistanceY = 44;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
                         break;
 
                     case "ROTATE_TO_90":
-                        rotationAngle1 = 90;
+                        rotationAngle1 = -90;
                         tolerance = 5;
                         //totalAngleChange (second variable) cannot be 0
                         //preciseRotationChange(rotationAngle1, rotationAngle1);
@@ -422,61 +470,51 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         break;
 
-                    case "POINT_TO_CARGO":
-                        rotationAngle1 = 135;
-                        tolerance = 5;
-                        //totalAngleChange (second variable) cannot be 0
-                        preciseRotationChange(rotationAngle1, 90);
-                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
-                            done = true;
-                            finalGyro = gyroZ;
-                            changeStep();
-                        }
-                        break;
-
-                    case ("DRIVE_INTO_WALL"):
-
-                        if (!seventhCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            seventhCheck = true;
-                        }
-                        double seventhTime = 2;
-
-                        if ((runtime.seconds() - myTime) <= seventhTime) {
-                            drive(-0.25, 0, 0);
-                        }
-                        if ((runtime.seconds() - myTime) > seventhTime) {
-                            done = true;
-                        }
-
-                        break;
+//                    case "POINT_TO_CARGO":
+//                        rotationAngle1 = 135;
+//                        tolerance = 5;
+//                        //totalAngleChange (second variable) cannot be 0
+//                        preciseRotationChange(rotationAngle1, 90);
+//                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
+//                            done = true;
+//                            finalGyro = gyroZ;
+//                            changeStep();
+//                        }
+//                        break;
 
                     case ("DRIVE_TO_WAREHOUSE"):
                         //moves to way point based on the location of the target zone
-                        targetDistanceX = 22;
-                        targetDistanceY = 20;
-                        targetTheta = 0;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "rightDistance", "frontDistance", targetTheta, 5));
+                        targetDistanceX = 20;
+                        targetDistanceY = 15;
+                        targetTheta = -90;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "frontDistance", targetTheta, 5));
                         break;
 
-                    case ("DRIVE_FORWARD"):
+                    case ("DRIVE_FORWARD_W"):
 
                         if (!check) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
                             check = true;
                         }
-                        double time = 0.75;
+                        double time = 0.7;
 
                         if ((runtime.seconds() - myTime) <= time) {
-                            drive(-1, 0, 0);
+                            drive(-0.5, 0, 0);
                         }
                         if ((runtime.seconds() - myTime) > time) {
                             done = true;
                         }
 
                         break;
+
+                    case("STRAFE_TO_ELEMENT"):
+                        targetDistanceX = 19;
+                        targetDistanceY = 0;
+                        targetTheta = -90;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "rightDistance", "", targetTheta, 5));
+                        break;
+
 
                     case ("DRIVE_FROM_WALL"):
 
@@ -495,63 +533,6 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                             done = true;
                         }
                         break;
-
-                    case ("MOVE_TO_CAROUSEL"):
-                        //moves to way point based on the location of the target zone
-//                        targetDistanceX = 8;
-//                        targetDistanceY = 5;
-//                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
-
-                        if (!thirdCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            thirdCheck = true;
-                        }
-
-                        double thirdTime = 0.8;
-
-                        if ((runtime.seconds() - myTime) <= thirdTime) {
-                            drive(0.5, 0.1, 0);
-                        }
-                        if ((runtime.seconds() - myTime) > thirdTime) {
-                            done = true;
-                        }
-
-                        break;
-
-                    case ("MOVE_TO_CAROUSEL_2"):
-                        //moves to way point based on the location of the target zone
-//                        targetDistanceX = 8;
-//                        targetDistanceY = 5;
-//                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
-
-                        if (!fourthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            fourthCheck = true;
-                        }
-
-                        double fourthTime = 0.5;
-
-                        if ((runtime.seconds() - myTime) <= fourthTime) {
-                            drive(0.1, 0.4, 0);
-                        }
-                        if ((runtime.seconds() - myTime) > fourthTime) {
-                            drive(0,0,0);
-                            done = true;
-                        }
-
-                        break;
-
-
-//                    case ("MOVE_TO_BLUE_HUB"):
-//                        //moves to way point based on the location of the target zone
-//                        targetDistanceX = 27 / 2.54;
-//                        targetDistanceY = 129 / 2.54;
-//                        targetTheta = 90;
-//                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backRightDistance", targetTheta, 5));
-//                        break;
-
 
 
                 }
@@ -576,31 +557,39 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
     }
     public void changeHubLevel(String hubLevel) {
-        //sets coordinates for all three target zones, target zone is chosen depending on number of rings counted
+        //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
         switch (hubLevel) {
 
             case "BOTTOM":
 
-                armAngle = 3.3;
-                armReach = 0;
+                armAngle = 3.2;
+                //3.0
+                armReach = telescopePose + 400;
+                wristPosition = 0.9;
+                //0.8
                 break;
 
-            case "CENTER":
+            case "MIDDLE":
 
-                armAngle = 2.6;
-                armReach = 0;
+//                armAngle = 2.5;
+                armAngle = 2.5;
+                armReach = telescopePose + 364;
+                wristPosition = 0.77;
                 break;
 
             case "TOP":
 
-                armAngle = 1.7;
-                armReach = telescopePose + 100;
+                //1.65
+                armAngle = 1.55;
+                wristPosition = 0.3;
+                armReach = telescopePose + 700;
                 break;
 
             default:
 
-                armAngle = 1.7;
-                armReach = telescopePose + 100;
+                armAngle = 1.55;
+                wristPosition = 0.3;
+                armReach = telescopePose + 700;
                 break;
 
         }

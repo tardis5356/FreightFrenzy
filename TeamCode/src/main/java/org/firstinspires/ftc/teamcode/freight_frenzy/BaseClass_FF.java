@@ -47,9 +47,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sC; //cup servo for Fred
     DcMotor mA;
     Servo sW;
-    Servo sCG;
+//    Servo sCG;
     Servo sG;
-    Servo sCU;
+//    Servo sCU;
     Servo sA;
     CRServo sS;
     DistanceSensor distance1;
@@ -457,8 +457,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sWH = hardwareMap.servo.get("sH");//left-right wrist movement servo
         sI = hardwareMap.crservo.get("sI");//intake servo
-        sCG = hardwareMap.servo.get("sCG");//capstone gripper
-        sCU = hardwareMap.servo.get("sCU");//capstone rotate servo
+//        sCG = hardwareMap.servo.get("sCG");//capstone gripper
+//        sCU = hardwareMap.servo.get("sCU");//capstone rotate servo
         //limit for telescope arm
 //        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");

@@ -27,7 +27,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         boolean intaking = false;
         boolean wirelessConnected = true;
         double sVPosition = sV.getPosition();
-        double sCUPosition = sCU.getPosition();
+//        double sCUPosition = sCU.getPosition();
         //used later to determine intake and outtake points for the arm
         double armLevelReading = mU.getCurrentPosition();
         double extensionPosition = mE.getCurrentPosition();
@@ -114,7 +114,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             boolean xButton2 = (gamepad2.x);//sets wrist for outtake
 
             telemetry.addData("prevRBumper", previousRightBumperState);
-            telemetry.addData("capstone gripper servo", sCG.getPosition());
+//            telemetry.addData("capstone gripper servo", sCG.getPosition());
             telemetry.addData("LeftY1 position", leftY1);
             telemetry.addData("LeftX1 position", leftX1);
             telemetry.addData("RightX1 position", rightX1);
@@ -130,7 +130,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             telemetry.addData("extension position", mE.getCurrentPosition());
             telemetry.addData("arm limit", lAB.isPressed());
             telemetry.addData("arm limit offset", armLimitOffset);
-            telemetry.addData("tiny arm", sCUPosition);
+//            telemetry.addData("tiny arm", sCUPosition);
             telemetry.update();
 
             //drives robot
@@ -244,24 +244,24 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
 
             //controls capstone angle
-            if ((rightTrigger >= 0.99)) {//&& (sWVPosition < 1))
-                sCUPosition += .008;
-            } else if ((leftTrigger >= 0.99)) { //&& (sWVPosition > 0))
-                sCUPosition -= .008;
-            }
-            sCU.setPosition(Range.clip(sCUPosition, 0, 1));
-            sCUPosition = sCU.getPosition();
+//            if ((rightTrigger >= 0.99)) {//&& (sWVPosition < 1))
+//                sCUPosition += .008;
+//            } else if ((leftTrigger >= 0.99)) { //&& (sWVPosition > 0))
+//                sCUPosition -= .008;
+//            }
+//            sCU.setPosition(Range.clip(sCUPosition, 0, 1));
+//            sCUPosition = sCU.getPosition();
 
             //gripper for capstone
-            if (rightBumper != previousRightBumperState && rightBumper) {
-                if (grippingCapstone) {
-                    grippingCapstone = false;
-                    sCG.setPosition(1);
-                } else {
-                    grippingCapstone = true;
-                    sCG.setPosition(0);
-                }
-            }
+//            if (rightBumper != previousRightBumperState && rightBumper) {
+//                if (grippingCapstone) {
+//                    grippingCapstone = false;
+//                    sCG.setPosition(1);
+//                } else {
+//                    grippingCapstone = true;
+//                    sCG.setPosition(0);
+//                }
+//            }
 
             //controls intake
             if (xButton2 != previousX2State && xButton2) {
