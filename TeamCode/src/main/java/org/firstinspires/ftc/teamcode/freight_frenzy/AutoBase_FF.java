@@ -8,6 +8,52 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     //Check for push and pull
     //Global variables
     double timeAtStop = 0;
+    String hubLevel = "TOP";
+    double armAngle = 0;
+    double armReach = 0;
+    double wristPosition = 0;
+    double telescopePose = 0;
+
+
+
+    public void changeHubLevel(String hubLevel) {
+        //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
+        switch (hubLevel) {
+
+            case "BOTTOM":
+
+                armAngle = 3.2;
+                //3.0
+                armReach = telescopePose + 400;
+                wristPosition = 0.8;
+                //0.8
+                break;
+
+            case "MIDDLE":
+
+//                armAngle = 2.5;
+                armAngle = 2.5;
+                armReach = telescopePose + 364;
+                wristPosition = 0.77;
+                break;
+
+            case "TOP":
+
+                //1.65
+                armAngle = 1.55;
+                wristPosition = 0.3;
+                armReach = telescopePose + 700;
+                break;
+
+            default:
+
+                armAngle = 1.55;
+                wristPosition = 0.3;
+                armReach = telescopePose + 700;
+                break;
+
+        }
+    }
 
     //Drives forward while correcting to face designated gyro heading
     public void driveForwardGyro(double power, double degree, double tolerance) {

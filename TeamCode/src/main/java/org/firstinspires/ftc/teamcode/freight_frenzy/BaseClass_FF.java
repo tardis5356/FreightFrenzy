@@ -115,6 +115,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double distanceX = 0;
     double distanceY = 0;
 
+
     //potentiometer readings in volts for important positions
     double potInput = 3.3;
     double potLevel = 2.3;
@@ -122,6 +123,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potOutput = 0.6;
 
     //initialization step to fit bot in 18 inches
+
+
     public void scrunchUpBot() {
 
         drive(0,0,0);

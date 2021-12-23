@@ -20,11 +20,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
     double targetZoneY = 0;
     double lastTheta = 0;
     double myTime = 0;
-    String hubLevel = "TOP";
-    double armAngle = 0;
-    double armReach = 0;
-    double wristPosition = 0;
-    double telescopePose = 0;
+
     //initializes target zone variables, sets default target zone
 
     public void CreateSteps() {
@@ -98,6 +94,8 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
         boolean seventhCheck = false;
         boolean ninthCheck = false;
         boolean tenthCheck = false;
+        //initializing intake so that it's not powered
+        sI.setPower(0);
         //double telescopePose = 0;
 
         //instance fields/global variables
@@ -556,44 +554,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
         }
 
     }
-    public void changeHubLevel(String hubLevel) {
-        //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
-        switch (hubLevel) {
 
-            case "BOTTOM":
-
-                armAngle = 3.2;
-                //3.0
-                armReach = telescopePose + 400;
-                wristPosition = 0.9;
-                //0.8
-                break;
-
-            case "MIDDLE":
-
-//                armAngle = 2.5;
-                armAngle = 2.5;
-                armReach = telescopePose + 364;
-                wristPosition = 0.77;
-                break;
-
-            case "TOP":
-
-                //1.65
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
-                break;
-
-            default:
-
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
-                break;
-
-        }
-    }
 }
 
 

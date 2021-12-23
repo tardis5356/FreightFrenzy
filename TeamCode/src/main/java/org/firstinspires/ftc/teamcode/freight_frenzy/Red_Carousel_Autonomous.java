@@ -20,11 +20,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
     double targetZoneY = 0;
     double lastTheta = 0;
     double myTime = 0;
-    String hubLevel = "TOP";
-    double armAngle = 0;
-    double armReach = 0;
-    double wristPosition = 0;
-    double telescopePose = 0;
+
     //initializes target zone variables, sets default target zone
 
     public void CreateSteps() {
@@ -110,6 +106,8 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
         boolean eighthCheck = false;
         boolean seventhCheck = false;
         boolean ninthCheck = false;
+        //initializing intake so that it's not powered
+        sI.setPower(0);
         //double telescopePose = 0;
 
         //instance fields/global variables
@@ -241,7 +239,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
-                        double armAngleBack = 3.3;
+                        double armAngleBack = 3.0;
                         telemetry.addData("target arm angle", armAngle);
                         telemetry.addData("target arm extension", armReach);
                         telemetry.addData("arm extension", mE.getCurrentPosition());
@@ -434,41 +432,23 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
 //                        break;
 
                     case "SPIN_SPINNER":
-                        if (!fifthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            fifthCheck = true;
-                        }
-                        double fifthTime = 6;
+//                        if (!fifthCheck) {
+//                            //if this step has not been run before, sets myTime to the runtime
+//                            myTime = runtime.seconds();
+//                            fifthCheck = true;
+//                        }
+                        double fifthTime = 4.5;
 
-                        if ((runtime.seconds() - myTime) <= fifthTime ){
+                        if ((runtime.seconds()) <= fifthTime ){
                             sSL.setPower(1);
                             sSR.setPower(-1);
                         }
-                        if ((runtime.seconds() - myTime) > fifthTime) {
+                        if ((runtime.seconds()) > fifthTime) {
                             sSL.setPower(0);
                             sSR.setPower(0);
                             done = true;
                             changeStep();
                         }
-                        break;
-
-                    case "MOVE_TINY_ARM":
-//                        sCU.setPosition(1);
-                        done = true;
-//                        if (!sixthCheck) {
-//                            //if this step has not been run before, sets myTime to the runtime
-//                            myTime = runtime.seconds();
-//                            sixthCheck = true;
-//                        }
-//                        double sixthTime = 2;
-//
-//                        if ((runtime.seconds() - myTime) <= sixthTime ){
-//                               sCU.setPosition(1);
-//                        }
-//                        if ((runtime.seconds() - myTime) > sixthTime) {
-//                            done = true;
-//                        }
                         break;
 
                     case "FIND_ELEMENT_POSITION":
@@ -720,44 +700,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
         }
 
     }
-    public void changeHubLevel(String hubLevel) {
-        //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
-        switch (hubLevel) {
 
-            case "BOTTOM":
-
-                armAngle = 3.2;
-                //3.0
-                armReach = telescopePose + 400;
-                wristPosition = 0.9;
-                //0.8
-                break;
-
-            case "MIDDLE":
-
-//                armAngle = 2.5;
-                armAngle = 2.5;
-                armReach = telescopePose + 364;
-                wristPosition = 0.77;
-                break;
-
-            case "TOP":
-
-                //1.65
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
-                break;
-
-            default:
-
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
-                break;
-
-        }
-    }
 }
 
 
