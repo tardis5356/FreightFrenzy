@@ -16,40 +16,45 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
 
 
+
     public void changeHubLevel(String hubLevel) {
         //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
         switch (hubLevel) {
 
             case "BOTTOM":
 
-                armAngle = 3.2;
+                armAngle = armHorizontal + 1.11;
                 //3.0
-                armReach = telescopePose + 400;
-                wristPosition = 0.8;
+                armReach = telescopePose + 409;
+                wristPosition = 0.75;
                 //0.8
                 break;
 
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = 2.5;
-                armReach = telescopePose + 364;
-                wristPosition = 0.77;
+                armAngle = armHorizontal + 0.4;
+                armReach = telescopePose + 108;
+                //364
+                wristPosition = 0.55;
                 break;
 
             case "TOP":
 
                 //1.65
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
+                //1.55
+                armAngle = armHorizontal - 0.45;
+                //0.3
+                wristPosition = 0.21;
+                //700
+                armReach = telescopePose + 895;
                 break;
 
             default:
 
-                armAngle = 1.55;
-                wristPosition = 0.3;
-                armReach = telescopePose + 700;
+                armAngle = armHorizontal - 0.45;
+                wristPosition = 0.21;
+                armReach = telescopePose + 895;
                 break;
 
         }
@@ -142,9 +147,11 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
     //Sigmoid function for rotating clockwise
     public void rotateSigmoid(double degree) {
-        double rotationAggressiveness = 0.05;
+        double rotationAggressiveness = 0.08;
+        //0.05
         double powerThreshold = 0.15;
         double pMax = 0.5;
+        //0.5
         double power = 2 * pMax * ((1 / (1 + Math.pow(Math.E, -(rotationAggressiveness * (gyroZ - degree))))) - 0.5);
         if (power < powerThreshold && power > 0) {
             power = powerThreshold;

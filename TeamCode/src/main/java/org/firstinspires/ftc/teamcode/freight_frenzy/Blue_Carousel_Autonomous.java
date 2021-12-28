@@ -32,7 +32,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                steps.add("ROTATE_TO_90");
                 steps.add("MOVE_TO_CAROUSEL");
                 steps.add("MOVE_TO_CAROUSEL_2");
-                steps.add("MOVE_TO_CAROUSEL_3");
+//                steps.add("MOVE_TO_CAROUSEL_3");
                 steps.add("SPIN_SPINNER");
                 steps.add("DRIVE_TO_HUB_TIME");
                 //steps.add("WAIT");
@@ -46,17 +46,6 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                 steps.add("ROTATE_TO_90");
                 steps.add("DRIVE_BACK");
                 steps.add("PARK_IN_STORAGE_UNIT");
-
-//                steps.add("WAIT");
-//                steps.add("ROTATE_TO_90");
-//                //steps.add("WAIT");
-//                steps.add("DRIVE_FORWARD");
-//                steps.add("DRIVE_TO_WAREHOUSE");
-//                steps.add("DRIVE_INTO_WALL");
-//                //steps.add("WAIT");
-//        //        steps.add("POINT_AT_CARGO");
-//        //        steps.add("WAIT");
-
                 steps.add("STOP");
 
 
@@ -216,10 +205,10 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             ninthCheck = true;
                         }
-                        double ninthTime = 1.7;
+                        double ninthTime = 1.9;
 
                         if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.5,0,0);
+                            drive(0.4,-0.2,0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
                             drive(0,0,0);
@@ -239,7 +228,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
-                        double armAngleBack = 3.3;
+                        double armAngleBack = armHorizontal;
                         telemetry.addData("target arm angle", armAngle);
                         telemetry.addData("target arm extension", armReach);
                         telemetry.addData("arm extension", mE.getCurrentPosition());
@@ -287,7 +276,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         double seventhTime = 1;
 
                         if ((runtime.seconds() - myTime) <= seventhTime ){
-                            drive(0,0.5,0);
+                            drive(0.2,0.5,0);
                         }
                         if ((runtime.seconds() - myTime) > seventhTime) {
                             drive(0,0,0);
@@ -340,7 +329,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
                     case "PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 23;
+                        targetDistanceX = 22;
                         targetDistanceY = 1;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
                         break;
@@ -403,6 +392,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             done = true;
+                            changeStep();
                         }
 
                         else if (!limitTriggered) {
@@ -456,6 +446,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         //changes the target zone that the robot moves to based on the number of rings counted during initialization
                         changeHubLevel(hubLevel);
                         done = true;
+                        changeStep();
                         break;
 
 //                    case("MOVE_TO_BLUE_HUB"):
@@ -501,6 +492,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         //stops drive train
                         drive(0, 0, 0);
                         done = true;
+                        changeStep();
                         break;
 
                     case ("MOVE_FROM_WALL"):
@@ -600,6 +592,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         if ((runtime.seconds() - myTime) > time) {
                             done = true;
+                            changeStep();
                         }
 
                         break;
@@ -619,6 +612,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         if ((runtime.seconds() - myTime) > secondTime) {
                             done = true;
+                            changeStep();
                         }
                         break;
 
@@ -637,10 +631,11 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         double thirdTime = 0.8;
 
                         if ((runtime.seconds() - myTime) <= thirdTime) {
-                            drive(0.5, 0.1, 0);
+                            drive(0.5, -0.3, 0);
                         }
                         if ((runtime.seconds() - myTime) > thirdTime) {
                             done = true;
+                            changeStep();
                         }
 
                         break;
@@ -657,7 +652,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             fourthCheck = true;
                         }
 
-                        double fourthTime = 0.5;
+                        double fourthTime = 1.5;
 
                         if ((runtime.seconds() - myTime) <= fourthTime) {
                             drive(0.1, 0.4, 0);
@@ -665,6 +660,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         if ((runtime.seconds() - myTime) > fourthTime) {
                             drive(0,0,0);
                             done = true;
+                            changeStep();
                         }
 
                         break;

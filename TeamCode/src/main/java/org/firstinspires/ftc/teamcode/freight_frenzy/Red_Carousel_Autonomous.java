@@ -46,17 +46,6 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
         steps.add("ROTATE_TO_90");
         steps.add("DRIVE_BACK");
         steps.add("PARK_IN_STORAGE_UNIT");
-
-//                steps.add("WAIT");
-//                steps.add("ROTATE_TO_90");
-//                //steps.add("WAIT");
-//                steps.add("DRIVE_FORWARD");
-//                steps.add("DRIVE_TO_WAREHOUSE");
-//                steps.add("DRIVE_INTO_WALL");
-//                //steps.add("WAIT");
-//        //        steps.add("POINT_AT_CARGO");
-//        //        steps.add("WAIT");
-
         steps.add("STOP");
 
 
@@ -219,7 +208,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double ninthTime = 1.7;
 
                         if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.5,0,0);
+                            drive(0.5,0.2,0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
                             drive(0,0,0);
@@ -239,7 +228,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
-                        double armAngleBack = 3.0;
+                        double armAngleBack = armHorizontal;
                         telemetry.addData("target arm angle", armAngle);
                         telemetry.addData("target arm extension", armReach);
                         telemetry.addData("arm extension", mE.getCurrentPosition());
@@ -535,7 +524,8 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                     case ("DRIVE_TO_HUB"):
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 10;
-                        targetDistanceY = 44;
+                        //44
+                        targetDistanceY = 48;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
                         break;
 
@@ -636,7 +626,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double thirdTime = 0.8;
 
                         if ((runtime.seconds() - myTime) <= thirdTime) {
-                            drive(0.5, -0.1, 0);
+                            drive(0.5, 0, 0);
                         }
                         if ((runtime.seconds() - myTime) > thirdTime) {
                             done = true;

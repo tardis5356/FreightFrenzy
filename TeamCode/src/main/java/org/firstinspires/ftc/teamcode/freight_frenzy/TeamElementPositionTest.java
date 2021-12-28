@@ -142,11 +142,11 @@ public class TeamElementPositionTest extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(10,98);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130,98);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(10,70);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130,70);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,70);
         static final int REGION_WIDTH = 50; //HEIGHT on screen
-        static final int REGION_HEIGHT = 50; //WIDTH on screen
+        static final int REGION_HEIGHT = 100; //WIDTH on screen
        // static final int FOUR_RING_THRESHOLD = 110;
        // static final int ONE_RING_THRESHOLD = 122;
 

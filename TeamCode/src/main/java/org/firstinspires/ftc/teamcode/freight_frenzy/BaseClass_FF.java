@@ -121,6 +121,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potLevel = 2.3;
     double potVertical = 1.1;
     double potOutput = 0.6;
+    //this is the potentiometer reading when the arm is horizontal
+    double armHorizontal = 2.24;
 
     //initialization step to fit bot in 18 inches
 
@@ -128,10 +130,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
     public void scrunchUpBot() {
 
         drive(0,0,0);
-        double potTolerance = 0.05;
+        double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = 3.3;
+        double armAngleBack = armHorizontal + 0.67;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         sV.setPosition(0);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
@@ -146,10 +148,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
             if (potentiometer.getVoltage() > armAngleBack) {
 
-                mU.setPower(-0.5);
+                mU.setPower(-0.3);
             } else if (potentiometer.getVoltage() < armAngleBack) {
 
-                mU.setPower(0.5);
+                mU.setPower(0.3);
             }
         } else {
 
@@ -368,18 +370,18 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mE = hardwareMap.dcMotor.get("mE");//arm motor extends
         mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
         sSL = hardwareMap.crservo.get("sSL");
-        sSR = hardwareMap.crservo.get("sSR");
+        //sSR = hardwareMap.crservo.get("sSR");
         //sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sS = hardwareMap.crservo.get("sS");//servo spinner
         //sWH = hardwareMap.servo.get("sWH");//left-right wrist movement servo
         //sI = hardwareMap.crservo.get("sI");
         crsIL = hardwareMap.crservo.get("crsIL"); //rubber band intake left servo
         crsIR = hardwareMap.crservo.get("crsIR");//rubber band intake right servo
-        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
-        rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
-        rangeSensorBack = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_back");
+        //rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
+        //rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
+        //rangeSensorBack = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_back");
         //rangeSensorBackLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_bL");
-        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
+        //rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
 
        // sSpinner = hardwareMap.crservo.get("sSpinner");
 //        mA = hardwareMap.dcMotor.get("mA");

@@ -32,6 +32,10 @@ public class Fred_Sensor_Test extends BaseClass_FF {
 //            telemetry.addData("right odometer wheel",mBL.getCurrentPosition());
 //            telemetry.addData("x pos",pose.x);
 //            telemetry.addData("y pos",pose.y);
+            telemetry.addData("front right", mFR.getCurrentPosition());
+            telemetry.addData("front left", mFL.getCurrentPosition());
+            telemetry.addData("back right", mBR.getCurrentPosition());
+            telemetry.addData("back left", mBL.getCurrentPosition());
             telemetry.addData(" back right distance", "" + String.format("%.2f in", Range.clip(rangeSensorBack.getDistance(DistanceUnit.INCH), 0, 200)));
             telemetry.addData(" left distance", "" + String.format("%.2f in", Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200)));
             telemetry.addData(" right distance", "" + String.format("%.2f in", Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200)));

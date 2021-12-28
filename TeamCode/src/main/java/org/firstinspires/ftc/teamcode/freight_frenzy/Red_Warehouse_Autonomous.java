@@ -29,9 +29,9 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
         steps.add("FIND_ELEMENT_POSITION");
         steps.add("DRIVE_FROM_WALL");
         steps.add("MOVE_FROM_WALL_W");
-        steps.add("DRIVE_TO_HUB_TIME_W");
+        steps.add("DRIVE_WITH_ENCODERS");
         //steps.add("WAIT");
-        steps.add("DRIVE_TO_HUB");
+//        steps.add("DRIVE_TO_HUB");
         steps.add("MOVE_ARM");
         steps.add("ROTATE_TO_0");
         steps.add("DRIVE_FORWARD_TO_HUB");
@@ -94,6 +94,8 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
         boolean seventhCheck = false;
         boolean ninthCheck = false;
         boolean tenthCheck = false;
+        boolean eleventhCheck = false;
+        double frontLeftPosition = 0;
         //initializing intake so that it's not powered
         sI.setPower(0);
         //double telescopePose = 0;
@@ -198,10 +200,37 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
                 switch (currentStep) {
 
+                    case("DRIVE_WITH_ENCODERS"):
+                        double encoderDist = 800;
+                        if (!eleventhCheck) {
+                            //if this step has not been run before, sets myTime to the runtime
+                            frontLeftPosition = mFL.getCurrentPosition();
+                            eleventhCheck = true;
+                        }
+
+                        double enTolerance = 50;
+                        if (Math.abs((mFL.getCurrentPosition() - frontLeftPosition) - encoderDist) > enTolerance) {
+                            if ((mFL.getCurrentPosition() - frontLeftPosition) < encoderDist) {
+
+                                drive(0,0.5,0.05);
+                                //rotates by a small amount to compensate for bot drift
+                            } else if ((mFL.getCurrentPosition() - frontLeftPosition) > encoderDist) {
+
+                                drive(0,-0.5,-0.05);
+                            }
+                        } else {
+
+                            drive(0,0,0);
+                            done = true;
+                            changeStep();
+
+                        }
+                        break;
+
                     case("DRIVE_TO_WALL"):
                         targetDistanceX = 0;
-                        targetDistanceY = 5;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "", "frontDistance", 90, 5));
+                        targetDistanceY = 10;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "", "frontDistance", -90, 5));
                         break;
 
                     case("DRIVE_INTO_WAREHOUSE"):
@@ -210,7 +239,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             tenthCheck = true;
                         }
-                        double tenthTime = 1;
+                        double tenthTime = 0.6;
 
                         if ((runtime.seconds() - myTime) <= tenthTime ){
                             drive(-1,0,0);
@@ -251,7 +280,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                         double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
-                        double armAngleBack = 3.3;
+                        double armAngleBack = armHorizontal;
                         telemetry.addData("target arm angle", armAngle);
                         telemetry.addData("target arm extension", armReach);
                         telemetry.addData("arm extension", mE.getCurrentPosition());
@@ -290,17 +319,16 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                         break;
 
                     case("DRIVE_TO_HUB_TIME_W"):
-                        if (!eighthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            eighthCheck = true;
-                        }
-                        double eighthTime = 1.3;
+//                        if (!eighthCheck) {
+                        //if this step has not been run before, sets myTime to the runtime
+//                            eighthCheck = true;
+//                        }
+                        double eighthTime = 2.2;
 
-                        if ((runtime.seconds() - myTime) <= eighthTime ){
-                            drive(0,0.5,0);
+                        if ((runtime.seconds() <= eighthTime )){
+                            drive(0,-0.5,0);
                         }
-                        if ((runtime.seconds() - myTime) > eighthTime) {
+                        if ((runtime.seconds() > eighthTime)) {
                             drive(0,0,0);
                             done = true;
                             changeStep();
@@ -437,9 +465,9 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
                     case ("DRIVE_TO_HUB"):
                         //moves to way point based on the location of the target zone
-                        targetDistanceX = 10;
-                        targetDistanceY = 44;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
+                        targetDistanceX = 0;
+                        targetDistanceY = 10;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "", "backDistance", 0, 5));
                         break;
 
                     case "ROTATE_TO_90":
@@ -468,23 +496,23 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         break;
 
-//                    case "POINT_TO_CARGO":
-//                        rotationAngle1 = 135;
-//                        tolerance = 5;
-//                        //totalAngleChange (second variable) cannot be 0
-//                        preciseRotationChange(rotationAngle1, 90);
-//                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
-//                            done = true;
-//                            finalGyro = gyroZ;
-//                            changeStep();
-//                        }
-//                        break;
+                    case "POINT_TO_CARGO":
+                        rotationAngle1 = 135;
+                        tolerance = 5;
+                        //totalAngleChange (second variable) cannot be 0
+                        preciseRotationChange(rotationAngle1, 90);
+                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
+                            done = true;
+                            finalGyro = gyroZ;
+                            changeStep();
+                        }
+                        break;
 
                     case ("DRIVE_TO_WAREHOUSE"):
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 20;
                         targetDistanceY = 15;
-                        targetTheta = -90;
+                        targetTheta = 90;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "frontDistance", targetTheta, 5));
                         break;
 
@@ -495,7 +523,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             check = true;
                         }
-                        double time = 0.7;
+                        double time = 0.6;
 
                         if ((runtime.seconds() - myTime) <= time) {
                             drive(-0.5, 0, 0);
