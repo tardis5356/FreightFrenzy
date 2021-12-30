@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -20,6 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+
+import java.util.Arrays;
 
 
 public abstract class BaseClass_FF extends LinearOpMode {
@@ -66,7 +69,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     TouchSensor frontLimit; //front limit
     TouchSensor backLimit; //back limit
     BNO055IMU imuControl; //REV gyro - Control hub
-//    BNO055IMU imuExpansion;   // expansion hub gyro
+    BNO055IMU imuExpansion;   // expansion hub gyro
     Orientation angles;
     ElapsedTime runtime;
     ElapsedTime runtimeTwo;
@@ -114,6 +117,16 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double backDistance; // = rangeSensorBackRight.getDistance(DistanceUnit.CM);
     double distanceX = 0;
     double distanceY = 0;
+    int sensorArrayLength = 5;
+    double[] leftDistanceArray = new double[sensorArrayLength];
+    double[] rightDistanceArray = new double[sensorArrayLength];
+    double[] backDistanceArray = new double[sensorArrayLength];
+    double[] frontDistanceArray = new double[sensorArrayLength];
+    double leftDistanceFiltered = 0;
+    double rightDistanceFiltered = 0;
+    double frontDistanceFiltered = 0;
+    double backDistanceFiltered = 0;
+    double medianReplaceTolerance = 50;
 
 
     //potentiometer readings in volts for important positions
@@ -122,7 +135,92 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 2.24;
+    double armHorizontal = 1.73;
+    //old value: 2.24
+
+    public void readDistanceSensors() {
+
+        leftDistance = Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200);
+        rightDistance = Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200);
+        backDistance = Range.clip(rangeSensorBack.getDistance(DistanceUnit.INCH), 0, 200);
+        frontDistance = Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200);
+
+        //sets distance sensors to a small negative number if sensors read not a number -- this is necessary when the robot is too close to a wall
+        if (Double.isNaN(leftDistance)) {
+
+            leftDistance = -2;
+        }
+        if (Double.isNaN(rightDistance)) {
+
+            rightDistance = -2;
+        }
+        if (Double.isNaN(backDistance)) {
+
+            backDistance = -2;
+        }
+        if (Double.isNaN(frontDistance)) {
+
+            frontDistance = -2;
+        }
+
+//                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+//                rightDistanceArray = popValueIntoArray(rightDistanceArray, rightDistance);
+//                frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
+//                backDistanceArray = popValueIntoArray(backDistanceArray, backDistance);
+
+        if(Math.abs(leftDistance - leftDistanceFiltered) > medianReplaceTolerance){
+            //this detects nonsensical data, replaces it with median (filtered) data
+
+            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistanceFiltered);
+
+        }else{
+            //this uses the good data
+
+            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+
+        }
+
+        if(Math.abs(rightDistance - rightDistanceFiltered) > medianReplaceTolerance){
+            //this detects nonsensical data, replaces it with median (filtered) data
+
+            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistanceFiltered);
+
+        }else{
+            //this uses the good data
+
+            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistance);
+
+        }
+
+        if(Math.abs(frontDistance - frontDistanceFiltered) > medianReplaceTolerance){
+            //this detects nonsensical data, replaces it with median (filtered) data
+
+            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistanceFiltered);
+
+        }else{
+            //this uses the good data
+
+            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistance);
+
+        }
+
+        if(Math.abs(backDistance - backDistanceFiltered) > medianReplaceTolerance){
+            //this detects nonsensical data, replaces it with median (filtered) data
+
+            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistanceFiltered);
+
+        }else{
+            //this uses the good data
+
+            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistance);
+
+        }
+
+        leftDistanceFiltered = median(leftDistanceArray);
+        rightDistanceFiltered = median(rightDistanceArray);
+        frontDistanceFiltered = median(frontDistanceArray);
+        backDistanceFiltered = median(backDistanceArray);
+    }
 
     //initialization step to fit bot in 18 inches
 
@@ -182,12 +280,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
             //You can only use the left and right distance sensors for the X axis
             case "rightDistance":
-                distanceX = rightDistance;
+                distanceX = rightDistanceFiltered;
                 distanceToTargetX = (targetDistanceX - distanceX);
                 break;
 
             case "leftDistance":
-                distanceX = leftDistance;
+                distanceX = leftDistanceFiltered;
                 distanceToTargetX = -(targetDistanceX - distanceX);
                 break;
 
@@ -201,12 +299,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
         switch(sensorForY){
 
             case "frontDistance":
-                distanceY = frontDistance;
+                distanceY = frontDistanceFiltered;
                 distanceToTargetY = (targetDistanceY - distanceY);
                 break;
 
             case "backDistance":
-                distanceY = backDistance;
+                distanceY = backDistanceFiltered;
                 distanceToTargetY = -(targetDistanceY - distanceY);
                 break;
 
@@ -396,8 +494,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //        backLimit = hardwareMap.get(TouchSensor.class, "backLimit");
 //        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -419,8 +517,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         //Set motors of robot backwards
         mBR.setDirection(DcMotor.Direction.REVERSE);
-        //mFR.setDirection(DcMotor.Direction.REVERSE);
-        mFL.setDirection(DcMotor.Direction.REVERSE);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+        //mFL.setDirection(DcMotor.Direction.REVERSE);
 //        mS.setDirection(DcMotor.Direction.REVERSE);
 //        mI.setDirection(DcMotor.Direction.REVERSE);
 //        mE.setDirection(DcMotor.Direction.REVERSE);
@@ -1048,4 +1146,61 @@ public abstract class BaseClass_FF extends LinearOpMode {
         telemetry.update();
         */
     }
+
+    static double median(double[] values) {
+        // get array length
+        int totalElements = values.length;
+        // make temporary array that gets the sorted/manipulated
+        double[] newArray = new double[totalElements];
+        // now make the actual copy
+        for (int i = 0; i < totalElements; i++) {
+            newArray[i] = values[i];
+        }
+
+        // sort array
+        Arrays.sort(newArray);
+
+        double median; // now get the median by finding the "halfway" element in the sorted array
+        //      System.out.println("# elements is : " + totalElements);
+        // check if total number of scores is even
+        if (totalElements % 2 == 0) {
+            double sumOfMiddleElements = newArray[totalElements / 2] +
+                    newArray[totalElements / 2 - 1];
+            // calculate average of middle elements
+            median = ((double) sumOfMiddleElements) / 2;
+        } else {
+            // get the middle element
+            median = (double) newArray[newArray.length / 2];
+        }
+        return median;
+    }
+
+    static double[] popValueIntoArray(double[] previousArray, double latestValue) {
+        // add element to end of array, drop out first element in array;
+        int totalElements = previousArray.length;
+        double[] newArray = new double[totalElements];
+
+        for (int i = 0; i < totalElements-1; i++) {
+            newArray[i] = previousArray[i+1];
+        }
+        newArray[totalElements-1]=latestValue; // append latest value to the end of the array
+
+        // now placed updates in returned array
+        for (int i = 0; i < totalElements; i++) {
+            previousArray[i] = newArray[i];
+        }
+
+        return previousArray;
+    }
+
+    static void printArray(double[] values) {
+        for (double i : values) {
+            System.out.print(" " +i);
+        }
+        System.out.println("");
+        int totalElements = values.length;
+        System.out.println("# elements is : " + totalElements);
+    }
+
 }
+

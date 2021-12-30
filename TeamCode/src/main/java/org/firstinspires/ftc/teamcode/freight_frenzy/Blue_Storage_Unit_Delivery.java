@@ -9,9 +9,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Red_Carousel_Autonomous", group = "Autonomous")
+@Autonomous(name = "Blue_Storage_Unit_Delivery", group = "Autonomous")
 
-public class Red_Carousel_Autonomous extends AutoBase_FF {
+public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -20,7 +20,6 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
     double targetZoneY = 0;
     double lastTheta = 0;
     double myTime = 0;
-
 
     //initializes target zone variables, sets default target zone
 
@@ -33,19 +32,16 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
         steps.add("ROTATE_TO_90");
         steps.add("MOVE_TO_CAROUSEL");
         steps.add("MOVE_TO_CAROUSEL_2");
-        steps.add("MOVE_TO_CAROUSEL_3");
+//                steps.add("MOVE_TO_CAROUSEL_3");
         steps.add("SPIN_SPINNER");
-        steps.add("DRIVE_TO_HUB_TIME");
+        steps.add("STRAFE_AGAINST_WALL");
         //steps.add("WAIT");
-        steps.add("DRIVE_TO_HUB");
         steps.add("MOVE_ARM");
-        steps.add("ROTATE_TO_0");
-        steps.add("DRIVE_FORWARD_TO_HUB");
+        steps.add("CORRECT_HUB_POSITION");
         steps.add("DROP_BLOCK");
         steps.add("MOVE_BACKWARD");
         steps.add("RESET_ARM");
-        steps.add("ROTATE_TO_90");
-        steps.add("DRIVE_BACK");
+        //steps.add("PARK_IN_STORAGE_UNIT");
         steps.add("PARK_IN_STORAGE_UNIT");
         steps.add("STOP");
 
@@ -157,14 +153,17 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
 //                    telemetry.addData("last theta", lastTheta);
 //                    telemetry.addData("potentiometer angle", getElevAngle(potentiometer.getVoltage()));
                 telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
-                telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
-                telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
-                telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
-                telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
+//                    telemetry.addData("current position x", "" + String.format("%.2f in.", pose.x));
+//                    telemetry.addData("current position y", "" + String.format("%.2f in.", pose.y));
+//                    telemetry.addData("arm position", mA.getCurrentPosition());
+//                    telemetry.addData("wrist position", sW.getPosition());
+//                    telemetry.addData("gripper position", sG.getPosition());
+//                    telemetry.addData("runtime two", runtimeTwo);
                 telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
-                telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
                 telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
-                telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
+                //telemetry.addData("back left distance", "" + String.format("%.2f cm", backLeftDistance));
+                telemetry.addData("back right distance (in)", "" + String.format("%.2f", backDistance));
+                telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
                 telemetry.addData("potentiometer angle", potentiometer.getVoltage());
                 telemetry.addData("Hub level", hubLevel);
                 telemetry.update();
@@ -172,7 +171,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                 updatePoseStrafe();
                 gyroUpdate();
 
-                readDistanceSensors();
+               readDistanceSensors();
 
                 switch (currentStep) {
 
@@ -182,10 +181,10 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             ninthCheck = true;
                         }
-                        double ninthTime = 1.7;
+                        double ninthTime = 1.9;
 
                         if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.5,0.2,0);
+                            drive(0.4,-0.2,0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
                             drive(0,0,0);
@@ -197,7 +196,8 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                     case("MOVE_BACKWARD"):
                         targetDistanceX = 0;
                         targetDistanceY = 10;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
+                        targetTheta = 90;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", targetTheta, 5));
                         break;
 
                     case("RESET_ARM"):
@@ -253,7 +253,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double seventhTime = 1;
 
                         if ((runtime.seconds() - myTime) <= seventhTime ){
-                            drive(0,-0.5,0);
+                            drive(0.2,0.5,0);
                         }
                         if ((runtime.seconds() - myTime) > seventhTime) {
                             drive(0,0,0);
@@ -262,28 +262,23 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         }
                         break;
 
-                    case("DRIVE_TO_HUB_TIME"):
-                        if (!eighthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
-                            myTime = runtime.seconds();
-                            eighthCheck = true;
-                        }
-                        double eighthTime = 1.3;
+                    case("STRAFE_AGAINST_WALL"):
+                        double eighthTime = 1.5;
 
-                        if ((runtime.seconds() - myTime) <= eighthTime ){
-                            drive(-0.5,0,0);
+                        if ((runtime.seconds()) <= eighthTime ){
+                            drive(-0.1,-0.6, 0);
                         }
-                        if ((runtime.seconds() - myTime) > eighthTime) {
+                        if ((runtime.seconds()) > eighthTime) {
                             drive(0,0,0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("DRIVE_FORWARD_TO_HUB"):
-                        targetDistanceX = 0;
-                        targetDistanceY = 18;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
+                    case("CORRECT_HUB_POSITION"):
+                        targetDistanceX = 37;
+                        targetDistanceY = 28.7;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
                         break;
 
 
@@ -306,9 +301,9 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
                     case "PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 23;
+                        targetDistanceX = 24;
                         targetDistanceY = 1;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 0.5, "leftDistance", "backDistance", 90, 5));
                         break;
 
                     case "MOVE_ARM":
@@ -369,6 +364,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             done = true;
+                            changeStep();
                         }
 
                         else if (!limitTriggered) {
@@ -417,10 +413,12 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         }
                         break;
 
+
                     case "FIND_ELEMENT_POSITION":
                         //changes the target zone that the robot moves to based on the number of rings counted during initialization
                         changeHubLevel(hubLevel);
                         done = true;
+                        changeStep();
                         break;
 
 //                    case("MOVE_TO_BLUE_HUB"):
@@ -466,13 +464,14 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         //stops drive train
                         drive(0, 0, 0);
                         done = true;
+                        changeStep();
                         break;
 
                     case ("MOVE_FROM_WALL"):
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 26;
                         targetDistanceY = 5;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 0, 5));
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "rightDistance", "backDistance", 0, 5));
                         break;
 
                     case ("STRAFE_SQUARE"):
@@ -501,13 +500,12 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                     case ("DRIVE_TO_HUB"):
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 10;
-                        //44
-                        targetDistanceY = 48;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
+                        targetDistanceY = 44;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
                         break;
 
                     case "ROTATE_TO_90":
-                        rotationAngle1 = -90;
+                        rotationAngle1 = 90;
                         tolerance = 5;
                         //totalAngleChange (second variable) cannot be 0
                         //preciseRotationChange(rotationAngle1, rotationAngle1);
@@ -532,23 +530,23 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         }
                         break;
 
-//                    case "POINT_TO_CARGO":
-//                        rotationAngle1 = 135;
-//                        tolerance = 5;
-//                        //totalAngleChange (second variable) cannot be 0
-//                        preciseRotationChange(rotationAngle1, -90);
-//                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
-//                            done = true;
-//                            finalGyro = gyroZ;
-//                            changeStep();
-//                        }
-//                        break;
+                    case "POINT_TO_CARGO":
+                        rotationAngle1 = 135;
+                        tolerance = 5;
+                        //totalAngleChange (second variable) cannot be 0
+                        preciseRotationChange(rotationAngle1, 90);
+                        if (Math.abs(gyroZ - rotationAngle1) < tolerance) {
+                            done = true;
+                            finalGyro = gyroZ;
+                            changeStep();
+                        }
+                        break;
 
                     case ("DRIVE_TO_WAREHOUSE"):
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 20;
                         targetDistanceY = 15;
-                        targetTheta = -90;
+                        targetTheta = 90;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "frontDistance", targetTheta, 5));
                         break;
 
@@ -566,6 +564,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         }
                         if ((runtime.seconds() - myTime) > time) {
                             done = true;
+                            changeStep();
                         }
 
                         break;
@@ -585,6 +584,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         }
                         if ((runtime.seconds() - myTime) > secondTime) {
                             done = true;
+                            changeStep();
                         }
                         break;
 
@@ -603,10 +603,11 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         double thirdTime = 0.8;
 
                         if ((runtime.seconds() - myTime) <= thirdTime) {
-                            drive(0.5, 0, 0);
+                            drive(0.5, -0.3, 0);
                         }
                         if ((runtime.seconds() - myTime) > thirdTime) {
                             done = true;
+                            changeStep();
                         }
 
                         break;
@@ -623,14 +624,15 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                             fourthCheck = true;
                         }
 
-                        double fourthTime = 0.5;
+                        double fourthTime = 1.5;
 
                         if ((runtime.seconds() - myTime) <= fourthTime) {
-                            drive(0.1, -0.4, 0);
+                            drive(0.1, 0.4, 0);
                         }
                         if ((runtime.seconds() - myTime) > fourthTime) {
                             drive(0,0,0);
                             done = true;
+                            changeStep();
                         }
 
                         break;
@@ -667,7 +669,6 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
         }
 
     }
-
 }
 
 

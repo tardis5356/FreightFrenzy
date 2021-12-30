@@ -175,28 +175,7 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
                 updatePoseStrafe();
                 gyroUpdate();
 
-                leftDistance = Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200);
-                rightDistance = Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200);
-                backDistance = Range.clip(rangeSensorBack.getDistance(DistanceUnit.INCH), 0, 200);
-                frontDistance = Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200);
-
-                //sets distance sensors to a small negative number if sensors read not a number -- this is necessary when the robot is too close to a wall
-                if (Double.isNaN(leftDistance)) {
-
-                    leftDistance = -2;
-                }
-                if (Double.isNaN(rightDistance)) {
-
-                    rightDistance = -2;
-                }
-                if (Double.isNaN(backDistance)) {
-
-                    backDistance = -2;
-                }
-                if (Double.isNaN(frontDistance)) {
-
-                    frontDistance = -2;
-                }
+               readDistanceSensors();
 
                 switch (currentStep) {
 

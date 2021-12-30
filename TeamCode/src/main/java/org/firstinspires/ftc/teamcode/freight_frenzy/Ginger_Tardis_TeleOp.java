@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Ginger_Tardis_TeleOp", group = "Linear Opmode")
-@Disabled
+
 
 public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
@@ -170,13 +170,16 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 crsIR.setPower(0);
             }
 
-            if(aButton){
+            if(aButton && !xButton){
                 //spinner for carousel
-                sSR.setPower(1);
+                sSL.setPower(1);
+//                sSR.setPower(-1);
+            } else if(xButton && !aButton){
                 sSL.setPower(-1);
-            } else {
-                sSR.setPower(0);
+//                sSR.setPower(1);
+            }else{
                 sSL.setPower(0);
+//                sSR.setPower(0);
             }
         }
             //else

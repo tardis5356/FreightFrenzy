@@ -13,6 +13,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     double armReach = 0;
     double wristPosition = 0;
     double telescopePose = 0;
+    //armHorizontal = 1.73
 
 
 
