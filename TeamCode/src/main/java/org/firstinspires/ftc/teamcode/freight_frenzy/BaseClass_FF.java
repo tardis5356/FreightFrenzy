@@ -469,7 +469,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
         sSL = hardwareMap.crservo.get("sSL");
         //sSR = hardwareMap.crservo.get("sSR");
-        //sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
+        sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sS = hardwareMap.crservo.get("sS");//servo spinner
         //sWH = hardwareMap.servo.get("sWH");//left-right wrist movement servo
         //sI = hardwareMap.crservo.get("sI");

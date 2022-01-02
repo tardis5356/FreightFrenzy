@@ -28,10 +28,12 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         boolean motorPowerFast = false;
         boolean wirelessConnected = true;
         //double sWHPosition = sWH.getPosition();
-       // double sWVPosition = sV.getPosition();
+       double sVPosition = sV.getPosition();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        sV.setPosition(0.5);
 
         waitForStart();
 
@@ -73,6 +75,8 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             double leftTrigger2 = (gamepad2.left_trigger);//sWV servo
             boolean leftBumper = (gamepad2.left_bumper);//sWH servo
             boolean rightBumper = (gamepad2.right_bumper);//sWH servo
+            boolean leftBumper2 = (gamepad2.left_bumper);//free
+            boolean rightBumper2 = (gamepad2.right_bumper);//free
             boolean bButton2 = (gamepad2.b);
             boolean aButton2 = (gamepad2.a);
             boolean xButton2 = (gamepad2.x);
@@ -85,7 +89,6 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             // telemetry.addData("LeftY2 position", leftY2);
             // telemetry.addData("RightY2 position", rightY2);
             // telemetry.addData("Right trigger position", rightTrigger2);
-
 
             //drives robot
             drive(leftY1, -rightX1, -leftX1);
@@ -105,79 +108,42 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
             }
 
-            //control wrist left-right motion
-            //pressed = 1, released = 0
-            /*if (rightBumper) { //&& sWHPosition < 1)
-                sWHPosition += .008;
-            } else if (leftBumper) {// && sWHPosition > 0) {
-                sWHPosition -= .008;
-            }
-            sWH.setPosition(Range.clip(sWHPosition, 0, 1));
-            sWHPosition = sWH.getPosition();*/
-
             //controls wrist up-down motion
-            /*if ((rightTrigger2 >= 0.99)) {//&& (sWVPosition < 1))
-                sWVPosition += .008;
-            } else if ((leftTrigger2 >= 0.99)) { //&& (sWVPosition > 0))
-                sWVPosition -= .008;
+            //controls wrist up-down motion
+            if ((rightBumper2)) {//&& (sWVPosition < 1))
+                sVPosition += .01;
+            } else if ((leftBumper2)) { //&& (sWVPosition > 0))
+                sVPosition -= .01;
             }
-            sV.setPosition(Range.clip(sWVPosition, 0, 1));
-            sWVPosition = sV.getPosition();*/
+            sV.setPosition(Range.clip(sVPosition, 0.01, 1));
+            sVPosition = sV.getPosition();
 
-            /*
             //controls intake
-            if (xButton2) {
-
-                //sucks blocks in
+            if (leftTrigger2  >= 0.99) {//sucks elements in
                 // sI.setPower(-0.5);
                 crsIL.setPower(-0.5);
                 crsIR.setPower(0.5);
-            } else if (yButton2) {
-
-                //spits blocks out
+            } else if (rightTrigger2 >= 0.99) {//spits elements out
                 // sI.setPower(0.5);
                 crsIL.setPower(0.5);
                 crsIR.setPower(-0.5);
-
-            } else if (!xButton2 && !yButton2) {
-
-                //if both buttons are not pressed, power is off
-                // sI.setPower(0);
-                crsIL.setPower(0);
-                crsIR.setPower(0);
-            }
-            */
-
-            //controls intake
-            if (xButton2) {
-
-                //sucks blocks in
-                // sI.setPower(-0.5);
-                crsIL.setPower(-0.5);
-                crsIR.setPower(0.5);
-            } else if (yButton2) {
-
-                //spits blocks out
-                // sI.setPower(0.5);
-                crsIL.setPower(0.5);
-                crsIR.setPower(-0.5);
-
-            } else if (!xButton2 && !yButton2) {
-
-                //if both buttons are not pressed, power is off
+            } else if (rightTrigger2 <= 0.01 && leftTrigger2 <= 0.01) {//if both buttons are not pressed, power is off
                 // sI.setPower(0);
                 crsIL.setPower(0);
                 crsIR.setPower(0);
             }
 
-            if(aButton && !xButton){
-                //spinner for carousel
+            //spinner for carousel
+            if(leftTrigger <= -0.99){
                 sSL.setPower(1);
+                telemetry.addData("left", leftTrigger);
 //                sSR.setPower(-1);
-            } else if(xButton && !aButton){
+            } else if(rightTrigger >= 0.99){
                 sSL.setPower(-1);
+                telemetry.addData("right", rightTrigger);
 //                sSR.setPower(1);
-            }else{
+            }else if(rightTrigger <= 0.01 && leftTrigger <= 0.01){
+                telemetry.addData("none", rightTrigger+leftTrigger);
                 sSL.setPower(0);
 //                sSR.setPower(0);
             }

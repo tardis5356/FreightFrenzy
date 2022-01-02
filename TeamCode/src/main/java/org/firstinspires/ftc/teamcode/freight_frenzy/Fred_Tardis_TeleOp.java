@@ -151,14 +151,14 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
             }
 
-                //controls wrist up-down motion
-                if ((rightTrigger2 >= 0.99)) {//&& (sWVPosition < 1))
-                    sVPosition += .008;
-                } else if ((leftTrigger2 >= 0.99)) { //&& (sWVPosition > 0))
-                    sVPosition -= .008;
-                }
-                sV.setPosition(Range.clip(sVPosition, 0.01, 1));
-                sVPosition = sV.getPosition();
+            //controls wrist up-down motion
+            if ((rightBumper2)) {//&& (sWVPosition < 1))
+                sVPosition += .01;
+            } else if ((leftBumper2)) { //&& (sWVPosition > 0))
+                sVPosition -= .01;
+            }
+            sV.setPosition(Range.clip(sVPosition, 0.01, 1));
+            sVPosition = sV.getPosition();
 
             //sets arm limit based on limit switch
             if(!bButton2 && !aButton2){
@@ -264,7 +264,41 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 //            }
 
             //controls intake
-            if (xButton2 != previousX2State && xButton2) {
+            if (leftTrigger2  >= 0.99) {
+                //sucks elements in
+                // sI.setPower(-0.5);
+                crsIL.setPower(-0.5);
+                crsIR.setPower(0.5);
+            } else if (rightTrigger2 >= 0.99) {
+                //spits elements out
+                // sI.setPower(0.5);
+                crsIL.setPower(0.5);
+                crsIR.setPower(-0.5);
+            } else if (rightTrigger2 <= 0.01 && leftTrigger2 <= 0.01) {
+                //if both buttons are not pressed, power is off
+                // sI.setPower(0);
+                crsIL.setPower(0);
+                crsIR.setPower(0);
+            }
+
+            /*if (xButton2 && !yButton2) {
+                //sucks elements in
+                // sI.setPower(-0.5);
+                crsIL.setPower(-0.5);
+                crsIR.setPower(0.5);
+            } else if (yButton2 && !xButton2) {
+                //spits elements out
+                // sI.setPower(0.5);
+                crsIL.setPower(0.5);
+                crsIR.setPower(-0.5);
+            } else if (!xButton2 && !yButton2) {
+                //if both buttons are not pressed, power is off
+                // sI.setPower(0);
+                crsIL.setPower(0);
+                crsIR.setPower(0);
+            }*/
+            //old toggle code
+            /*if (xButton2 != previousX2State && xButton2) {
                 if (intaking) {
                     intaking = false;
                     sI.setPower(0.5);
@@ -272,21 +306,35 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     intaking = true;
                     sI.setPower(-0.5);
                 }
-            }
+            }*/
 
-            if(aButton && !xButton){
+            /*if(yButton && !xButton){
                 //spinner for carousel
                 sSR.setPower(-1);
                 sSL.setPower(1);
-            } else if(xButton && !aButton){
+            } else if(xButton && !yButton){
                 sSL.setPower(-1);
                 sSR.setPower(1);
             }else{
                 sSL.setPower(0);
                 sSR.setPower(0);
+            }*/
+            //spinner for carousel
+            if(leftTrigger <= -0.99){
+                sSL.setPower(1);
+                telemetry.addData("left", leftTrigger);
+                sSR.setPower(-1);
+            } else if(rightTrigger >= 0.99){
+                sSL.setPower(-1);
+                telemetry.addData("right", rightTrigger);
+                sSR.setPower(1);
+            }else if(rightTrigger <= 0.01 && leftTrigger <= 0.01) {
+                telemetry.addData("none", rightTrigger + leftTrigger);
+                sSL.setPower(0);
+                sSR.setPower(0);
             }
 
-            previousRightBumperState = rightBumper;
+                previousRightBumperState = rightBumper;
             previousBState = bButton;
             previousX2State = xButton2;
             extensionPosition = mE.getCurrentPosition();
