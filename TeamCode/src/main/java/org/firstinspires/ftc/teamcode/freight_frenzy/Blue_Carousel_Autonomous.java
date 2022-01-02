@@ -46,6 +46,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                 steps.add("ROTATE_TO_90");
                 steps.add("DRIVE_BACK");
                 steps.add("PARK_IN_STORAGE_UNIT");
+                steps.add("PARK_IN_STORAGE_UNIT");
                 steps.add("STOP");
 
 
@@ -152,24 +153,10 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
             // decides which step we are on, and runs that action
             while (opModeIsActive() && (done == false)) {
+
                 telemetry.addData("current step", currentStep);
-//                    telemetry.addData("last theta", lastTheta);
-//                    telemetry.addData("potentiometer angle", getElevAngle(potentiometer.getVoltage()));
-                telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
-//                    telemetry.addData("current position x", "" + String.format("%.2f in.", pose.x));
-//                    telemetry.addData("current position y", "" + String.format("%.2f in.", pose.y));
-//                    telemetry.addData("arm position", mA.getCurrentPosition());
-//                    telemetry.addData("wrist position", sW.getPosition());
-//                    telemetry.addData("gripper position", sG.getPosition());
-//                    telemetry.addData("runtime two", runtimeTwo);
-                telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
-                telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
-                //telemetry.addData("back left distance", "" + String.format("%.2f cm", backLeftDistance));
-                telemetry.addData("back right distance (in)", "" + String.format("%.2f", backDistance));
-                telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
-                telemetry.addData("potentiometer angle", potentiometer.getVoltage());
-                telemetry.addData("Hub level", hubLevel);
-                telemetry.update();
+                fredTelemetry();
+
                 //Update global sensor values
                 updatePoseStrafe();
                 gyroUpdate();
@@ -284,7 +271,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                     case("DRIVE_FORWARD_TO_HUB"):
                         targetDistanceX = 0;
-                        targetDistanceY = 18;
+                        targetDistanceY = 17;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
                         break;
 
@@ -295,7 +282,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             sixthCheck = true;
                         }
-                        double sixthTime = 2;
+                        double sixthTime = 1.0;
 
                         if ((runtime.seconds() - myTime) <= sixthTime ){
                             sI.setPower(0.5);
@@ -308,7 +295,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
                     case "PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 24;
+                        targetDistanceX = 22;
                         targetDistanceY = 1;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
                         break;

@@ -153,24 +153,10 @@ public class Red_Warehouse_Autonomous extends AutoBase_FF {
 
             // decides which step we are on, and runs that action
             while (opModeIsActive() && (done == false)) {
+
                 telemetry.addData("current step", currentStep);
-//                    telemetry.addData("last theta", lastTheta);
-//                    telemetry.addData("potentiometer angle", getElevAngle(potentiometer.getVoltage()));
-                telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
-//                    telemetry.addData("current position x", "" + String.format("%.2f in.", pose.x));
-//                    telemetry.addData("current position y", "" + String.format("%.2f in.", pose.y));
-//                    telemetry.addData("arm position", mA.getCurrentPosition());
-//                    telemetry.addData("wrist position", sW.getPosition());
-//                    telemetry.addData("gripper position", sG.getPosition());
-//                    telemetry.addData("runtime two", runtimeTwo);
-                telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
-                telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
-                //telemetry.addData("back left distance", "" + String.format("%.2f cm", backLeftDistance));
-                telemetry.addData("back right distance (in)", "" + String.format("%.2f", backDistance));
-                telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
-                telemetry.addData("potentiometer angle", potentiometer.getVoltage());
-                telemetry.addData("Hub level", hubLevel);
-                telemetry.update();
+                fredTelemetry();
+
                 //Update global sensor values
                 updatePoseStrafe();
                 gyroUpdate();

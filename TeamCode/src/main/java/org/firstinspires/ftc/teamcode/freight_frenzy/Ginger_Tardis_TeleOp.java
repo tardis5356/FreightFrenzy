@@ -91,7 +91,7 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             // telemetry.addData("Right trigger position", rightTrigger2);
 
             //drives robot
-            drive(leftY1, -rightX1, -leftX1);
+            drive(leftX1, leftY1, rightX1);
 
             //moves bottom and top arm joints
             mE.setPower(-leftY2); //also works for mF on Toby bot

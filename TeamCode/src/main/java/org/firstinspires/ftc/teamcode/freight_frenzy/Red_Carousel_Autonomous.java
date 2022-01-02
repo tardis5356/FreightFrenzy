@@ -153,21 +153,10 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
 
             // decides which step we are on, and runs that action
             while (opModeIsActive() && (done == false)) {
+
                 telemetry.addData("current step", currentStep);
-//                    telemetry.addData("last theta", lastTheta);
-//                    telemetry.addData("potentiometer angle", getElevAngle(potentiometer.getVoltage()));
-                telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
-                telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
-                telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
-                telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
-                telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
-                telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
-                telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
-                telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
-                telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
-                telemetry.addData("potentiometer angle", potentiometer.getVoltage());
-                telemetry.addData("Hub level", hubLevel);
-                telemetry.update();
+                fredTelemetry();
+
                 //Update global sensor values
                 updatePoseStrafe();
                 gyroUpdate();

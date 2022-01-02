@@ -41,6 +41,18 @@ public class Fred_Sensor_Test extends BaseClass_FF {
             telemetry.addData(" right distance", "" + String.format("%.2f in", Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200)));
             telemetry.addData(" front distance", "" + String.format("%.2f in", Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200)));
             telemetry.addData("potentiometer angle", potentiometer.getVoltage());
+            telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
+            telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
+            telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
+            telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
+            telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
+            telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
+            telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
+            telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
+            telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
+            telemetry.addData("potentiometer angle", potentiometer.getVoltage());
+            telemetry.addData("extension position", mE.getCurrentPosition());
+            telemetry.addData("arm limit", lAB.isPressed());
             telemetry.update();
 
 

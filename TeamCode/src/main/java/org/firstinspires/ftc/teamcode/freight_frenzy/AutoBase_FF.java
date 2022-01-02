@@ -18,6 +18,26 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
 
 
+    public void fredTelemetry() {
+
+        telemetry.addData("Hub level", hubLevel);
+        telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
+        telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
+        telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
+        telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
+        telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
+        telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
+        telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
+        telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
+        telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
+        telemetry.addData("potentiometer angle", potentiometer.getVoltage());
+        telemetry.addData("extension position", mE.getCurrentPosition());
+        telemetry.addData("arm limit", lAB.isPressed());
+//        telemetry.addData("arm limit offset", armLimitOffset);
+        telemetry.addData("Wrist angle", sV.getPosition());
+        telemetry.update();
+    }
+
     public void changeHubLevel(String hubLevel) {
         //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
         switch (hubLevel) {

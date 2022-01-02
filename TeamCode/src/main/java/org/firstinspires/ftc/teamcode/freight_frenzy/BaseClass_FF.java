@@ -126,6 +126,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double rightDistanceFiltered = 0;
     double frontDistanceFiltered = 0;
     double backDistanceFiltered = 0;
+    double armLimitOffset = 0;
     double medianReplaceTolerance = 50;
 
 
@@ -163,58 +164,58 @@ public abstract class BaseClass_FF extends LinearOpMode {
             frontDistance = -2;
         }
 
-//                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
-//                rightDistanceArray = popValueIntoArray(rightDistanceArray, rightDistance);
-//                frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
-//                backDistanceArray = popValueIntoArray(backDistanceArray, backDistance);
+                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+                rightDistanceArray = popValueIntoArray(rightDistanceArray, rightDistance);
+                frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
+                backDistanceArray = popValueIntoArray(backDistanceArray, backDistance);
 
-        if(Math.abs(leftDistance - leftDistanceFiltered) > medianReplaceTolerance){
-            //this detects nonsensical data, replaces it with median (filtered) data
-
-            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistanceFiltered);
-
-        }else{
-            //this uses the good data
-
-            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
-
-        }
-
-        if(Math.abs(rightDistance - rightDistanceFiltered) > medianReplaceTolerance){
-            //this detects nonsensical data, replaces it with median (filtered) data
-
-            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistanceFiltered);
-
-        }else{
-            //this uses the good data
-
-            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistance);
-
-        }
-
-        if(Math.abs(frontDistance - frontDistanceFiltered) > medianReplaceTolerance){
-            //this detects nonsensical data, replaces it with median (filtered) data
-
-            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistanceFiltered);
-
-        }else{
-            //this uses the good data
-
-            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistance);
-
-        }
-
-        if(Math.abs(backDistance - backDistanceFiltered) > medianReplaceTolerance){
-            //this detects nonsensical data, replaces it with median (filtered) data
-
-            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistanceFiltered);
-
-        }else{
-            //this uses the good data
-
-            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistance);
-
-        }
+//        if(Math.abs(leftDistance - leftDistanceFiltered) > medianReplaceTolerance){
+//            //this detects nonsensical data, replaces it with median (filtered) data
+//
+//            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistanceFiltered);
+//
+//        }else{
+//            //this uses the good data
+//
+//            leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+//
+//        }
+//
+//        if(Math.abs(rightDistance - rightDistanceFiltered) > medianReplaceTolerance){
+//            //this detects nonsensical data, replaces it with median (filtered) data
+//
+//            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistanceFiltered);
+//
+//        }else{
+//            //this uses the good data
+//
+//            rightDistanceArray =  popValueIntoArray(rightDistanceArray, rightDistance);
+//
+//        }
+//
+//        if(Math.abs(frontDistance - frontDistanceFiltered) > medianReplaceTolerance){
+//            //this detects nonsensical data, replaces it with median (filtered) data
+//
+//            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistanceFiltered);
+//
+//        }else{
+//            //this uses the good data
+//
+//            frontDistanceArray =  popValueIntoArray(frontDistanceArray, frontDistance);
+//
+//        }
+//
+//        if(Math.abs(backDistance - backDistanceFiltered) > medianReplaceTolerance){
+//            //this detects nonsensical data, replaces it with median (filtered) data
+//
+//            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistanceFiltered);
+//
+//        }else{
+//            //this uses the good data
+//
+//            backDistanceArray =  popValueIntoArray(backDistanceArray, backDistance);
+//
+//        }
 
         leftDistanceFiltered = median(leftDistanceArray);
         rightDistanceFiltered = median(rightDistanceArray);
