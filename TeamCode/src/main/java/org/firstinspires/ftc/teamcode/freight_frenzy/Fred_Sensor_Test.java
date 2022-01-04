@@ -21,6 +21,7 @@ public class Fred_Sensor_Test extends BaseClass_FF {
 
         while (opModeIsActive()) {
             gyroUpdate();
+            readDistanceSensors();
 
             telemetry.addData("gyro",gyroZ);
             updatePoseStrafe();

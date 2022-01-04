@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -138,6 +139,16 @@ public abstract class BaseClass_FF extends LinearOpMode {
     //this is the potentiometer reading when the arm is horizontal
     double armHorizontal = 1.73;
     //old value: 2.24
+
+    public void configDistanceSensors() {
+
+        //sets I2C addresses of range sensors so there are no conflicts
+
+        rangeSensorLeft.setI2cAddress(I2cAddr.create8bit(0x36));
+        rangeSensorRight.setI2cAddress(I2cAddr.create8bit(0x32));
+        rangeSensorFront.setI2cAddress(I2cAddr.create8bit(0x34));
+        rangeSensorBack.setI2cAddress(I2cAddr.create8bit(0x30));
+    }
 
     public void readDistanceSensors() {
 
@@ -639,6 +650,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         encoderXStart = mFR.getCurrentPosition();
         encoderYLeftStart = mFL.getCurrentPosition();
         encoderYRightStart = mBL.getCurrentPosition();
+        //sets I2C addresses of range sensors so that there are no conflicts
+        configDistanceSensors();
 
     }
 

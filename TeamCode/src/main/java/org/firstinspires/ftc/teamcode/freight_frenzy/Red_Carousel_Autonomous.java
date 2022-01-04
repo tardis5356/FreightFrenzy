@@ -271,7 +271,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
 
                     case("DRIVE_FORWARD_TO_HUB"):
                         targetDistanceX = 0;
-                        targetDistanceY = 18;
+                        targetDistanceY = 17;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
                         break;
 
@@ -282,7 +282,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                             myTime = runtime.seconds();
                             sixthCheck = true;
                         }
-                        double sixthTime = 2;
+                        double sixthTime = 1;
 
                         if ((runtime.seconds() - myTime) <= sixthTime ){
                             sI.setPower(0.5);
@@ -491,7 +491,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 10;
                         //44
-                        targetDistanceY = 48;
+                        targetDistanceY = 44;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
                         break;
 
