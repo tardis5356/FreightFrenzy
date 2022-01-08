@@ -287,7 +287,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         break;
 
                     case "PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 24;
+                        targetDistanceX = 26;
                         targetDistanceY = 1;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "leftDistance", "backDistance", 90, 5));
                         break;

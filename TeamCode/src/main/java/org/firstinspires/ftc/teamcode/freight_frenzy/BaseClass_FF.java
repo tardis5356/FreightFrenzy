@@ -137,7 +137,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 1.73;
+    double armHorizontal = 1.86;
+    double wristStraight = 0;
     //old value: 2.24
 
     public void configDistanceSensors() {

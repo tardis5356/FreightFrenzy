@@ -166,7 +166,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                 switch (currentStep) {
 
                     case("DRIVE_WITH_ENCODERS"):
-                        double encoderDist = 750;
+                        double encoderDist = 700;
                         if (!eleventhCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             frontRightPosition = mFR.getCurrentPosition();
