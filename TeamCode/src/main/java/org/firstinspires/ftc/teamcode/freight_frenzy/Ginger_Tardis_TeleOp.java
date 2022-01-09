@@ -121,14 +121,14 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //controls intake
             if (leftTrigger2  >= 0.99) {//sucks elements in
                 // sI.setPower(-0.5);
-                crsIL.setPower(-0.5);
-                crsIR.setPower(0.5);
+                crsIL.setPower(-1);
+                crsIR.setPower(1);
             } else if (rightTrigger2 >= 0.99) {//spits elements out
                 // sI.setPower(0.5);
-                crsIL.setPower(0.5);
-                crsIR.setPower(-0.5);
+                crsIL.setPower(1);
+                crsIR.setPower(-1);
             } else if (rightTrigger2 <= 0.01 && leftTrigger2 <= 0.01) {//if both buttons are not pressed, power is off
-                // sI.setPower(0);
+                // sI.setPower(0)[
                 crsIL.setPower(0);
                 crsIR.setPower(0);
             }

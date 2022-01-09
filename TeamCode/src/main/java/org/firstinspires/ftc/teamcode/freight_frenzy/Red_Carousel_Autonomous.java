@@ -491,7 +491,7 @@ public class Red_Carousel_Autonomous extends AutoBase_FF {
                         //moves to way point based on the location of the target zone
                         targetDistanceX = 10;
                         //44
-                        targetDistanceY = 44;
+                        targetDistanceY = 47;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
                         break;
 

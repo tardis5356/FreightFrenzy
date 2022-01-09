@@ -163,7 +163,7 @@ public class Red_Storage_Unit_Delivery extends AutoBase_FF {
 
                     case("CORRECT_HUB_POSITION"):
                         targetDistanceX = 36;
-                        targetDistanceY = 30;
+                        targetDistanceY = 26;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "rightDistance", "backDistance", -90, 5));
                         break;
 
@@ -294,7 +294,7 @@ public class Red_Storage_Unit_Delivery extends AutoBase_FF {
                         break;
 
                     case "PARK_IN_STORAGE_UNIT":
-                        targetDistanceX = 23;
+                        targetDistanceX = 25;
                         targetDistanceY = 1;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 1, "rightDistance", "backDistance", -90, 5));
                         break;

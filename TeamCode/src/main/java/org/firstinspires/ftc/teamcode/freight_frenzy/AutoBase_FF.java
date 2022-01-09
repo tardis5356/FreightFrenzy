@@ -45,7 +45,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
             case "BOTTOM":
 
-                armAngle = armHorizontal + 1.01;
+                armAngle = armHorizontal + 0.91;
                 //3.0
                 armReach = telescopePose + 409;
                 wristPosition = 0.61 + wristStraight;
@@ -55,8 +55,8 @@ public abstract class AutoBase_FF extends BaseClass_FF {
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = armHorizontal + 0.4;
-                armReach = telescopePose + 108;
+                armAngle = armHorizontal + 0.3;
+                armReach = telescopePose + 237;
                 //364
                 wristPosition = 0.48 + wristStraight;
                 break;
@@ -65,7 +65,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
                 //1.65
                 //1.55
-                armAngle = armHorizontal - 0.25;
+                armAngle = armHorizontal - 0.35;
                 //0.3
                 wristPosition = 0.21 + wristStraight;
                 //700
@@ -74,7 +74,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
             default:
 
-                armAngle = armHorizontal - 0.25;
+                armAngle = armHorizontal - 0.35;
                 wristPosition = 0.21 + wristStraight;
                 armReach = telescopePose + 895;
                 break;

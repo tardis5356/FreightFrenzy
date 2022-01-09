@@ -244,7 +244,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal + 0.67;
+        double armAngleBack = armHorizontal + 0.51;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         sV.setPosition(0);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
