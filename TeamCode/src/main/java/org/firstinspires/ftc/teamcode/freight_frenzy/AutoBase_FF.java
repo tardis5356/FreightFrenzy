@@ -13,7 +13,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     double armReach = 0;
     double wristPosition = 0;
     double telescopePose = 0;
-    //armHorizontal = 1.86;
+    //armHorizontal = 2.13;
     //wristStraight = 0;
 
 
@@ -39,23 +39,60 @@ public abstract class AutoBase_FF extends BaseClass_FF {
         telemetry.update();
     }
 
+//    public void resetArm() {
+//
+//        drive(0,0,0);
+//        double armAngleBack = armHorizontal;
+////        telemetry.addData("target arm angle", armAngle);
+////        telemetry.addData("target arm extension", armReach);
+////        telemetry.addData("arm extension", mE.getCurrentPosition());
+////        telemetry.addData("telescope pose (offset)", telescopePose);
+//        sV.setPosition(0.1);
+//        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+//            telescopePose = mE.getCurrentPosition();
+//            mE.setPower(0);
+//            extendDone = true;
+//        }
+//
+//        else if (!lAB.isPressed()) {
+//            mE.setPower(-1);
+//        }
+//
+//        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
+//            if (potentiometer.getVoltage() > armAngleBack) {
+//
+//                mU.setPower(-0.5);
+//            } else if (potentiometer.getVoltage() < armAngleBack) {
+//
+//                mU.setPower(0.5);
+//            }
+//        } else {
+//
+//            mU.setPower(0);
+//            angleDone = true;
+//
+//        }
+////        telemetry.addData("arm done", angleDone);
+//
+//    }
+
     public void changeHubLevel(String hubLevel) {
         //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
         switch (hubLevel) {
 
             case "BOTTOM":
 
-                armAngle = armHorizontal + 0.91;
+                armAngle = armHorizontal + 1.11;
                 //3.0
                 armReach = telescopePose + 409;
-                wristPosition = 0.61 + wristStraight;
+                wristPosition = 0.41 + wristStraight;
                 //0.8
                 break;
 
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = armHorizontal + 0.3;
+                armAngle = armHorizontal + 0.5;
                 armReach = telescopePose + 237;
                 //364
                 wristPosition = 0.48 + wristStraight;
@@ -67,7 +104,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
                 //1.55
                 armAngle = armHorizontal - 0.35;
                 //0.3
-                wristPosition = 0.21 + wristStraight;
+                wristPosition = wristStraight;
                 //700
                 armReach = telescopePose + 895;
                 break;

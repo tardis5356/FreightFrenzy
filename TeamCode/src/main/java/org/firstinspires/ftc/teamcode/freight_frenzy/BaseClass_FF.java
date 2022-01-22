@@ -137,8 +137,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 1.86;
-    double wristStraight = 0;
+    double armHorizontal = 2.13;
+    double wristStraight = 0.36;
     //old value: 2.24
 
     public void configDistanceSensors() {
@@ -246,7 +246,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         boolean extendDone = false;
         double armAngleBack = armHorizontal + 0.51;
         telemetry.addData("arm extension", mE.getCurrentPosition());
-        sV.setPosition(0);
+        sV.setPosition(0.1);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
             extendDone = true;

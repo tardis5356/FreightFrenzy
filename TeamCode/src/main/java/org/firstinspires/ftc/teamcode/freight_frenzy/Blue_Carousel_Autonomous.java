@@ -190,16 +190,16 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
                     case("RESET_ARM"):
-                        drive(0,0,0);
-                        double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
+                        double potTolerance = 0.05;
+                        drive(0,0,0);
                         double armAngleBack = armHorizontal;
-                        telemetry.addData("target arm angle", armAngle);
-                        telemetry.addData("target arm extension", armReach);
-                        telemetry.addData("arm extension", mE.getCurrentPosition());
-                        telemetry.addData("telescope pose (offset)", telescopePose);
-                        sV.setPosition(0);
+//        telemetry.addData("target arm angle", armAngle);
+//        telemetry.addData("target arm extension", armReach);
+//        telemetry.addData("arm extension", mE.getCurrentPosition());
+//        telemetry.addData("telescope pose (offset)", telescopePose);
+                        sV.setPosition(0.1);
                         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
@@ -224,11 +224,11 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        telemetry.addData("arm done", angleDone);
                         if(angleDone && extendDone){
 
                             done = true;
                             changeStep();
+
                         }
                         break;
 
@@ -597,7 +597,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         double thirdTime = 0.8;
 
                         if ((runtime.seconds() - myTime) <= thirdTime) {
-                            drive(0.5, -0.3, 0);
+                            drive(0.5, -0.2, 0);
                         }
                         if ((runtime.seconds() - myTime) > thirdTime) {
                             done = true;
@@ -618,10 +618,10 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             fourthCheck = true;
                         }
 
-                        double fourthTime = 1.5;
+                        double fourthTime = 1.75;
 
                         if ((runtime.seconds() - myTime) <= fourthTime) {
-                            drive(0.1, 0.4, 0);
+                            drive(0.1, 0.5, 0);
                         }
                         if ((runtime.seconds() - myTime) > fourthTime) {
                             drive(0,0,0);

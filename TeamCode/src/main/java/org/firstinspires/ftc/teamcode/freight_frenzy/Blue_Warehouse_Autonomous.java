@@ -193,8 +193,8 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                     case("DRIVE_TO_WALL"):
                         targetDistanceX = 0;
-                        targetDistanceY = 10;
-                        done = (moveToLocation(targetDistanceX, targetDistanceY, 5, "", "frontDistance", 90, 5));
+                        targetDistanceY = 7;
+                        done = (moveToLocation(targetDistanceX, targetDistanceY, 7, "", "frontDistance", 90, 5));
                         break;
 
                     case("DRIVE_INTO_WAREHOUSE"):
@@ -240,16 +240,16 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         break;
 
                     case("RESET_ARM"):
-                        drive(0,0,0);
-                        double potTolerance = 0.05;
                         boolean angleDone = false;
                         boolean extendDone = false;
+                        double potTolerance = 0.05;
+                        drive(0,0,0);
                         double armAngleBack = armHorizontal;
-                        telemetry.addData("target arm angle", armAngle);
-                        telemetry.addData("target arm extension", armReach);
-                        telemetry.addData("arm extension", mE.getCurrentPosition());
-                        telemetry.addData("telescope pose (offset)", telescopePose);
-                        sV.setPosition(0);
+//        telemetry.addData("target arm angle", armAngle);
+//        telemetry.addData("target arm extension", armReach);
+//        telemetry.addData("arm extension", mE.getCurrentPosition());
+//        telemetry.addData("telescope pose (offset)", telescopePose);
+                        sV.setPosition(0.1);
                         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
@@ -274,11 +274,11 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        telemetry.addData("arm done", angleDone);
                         if(angleDone && extendDone){
 
                             done = true;
                             changeStep();
+
                         }
                         break;
 

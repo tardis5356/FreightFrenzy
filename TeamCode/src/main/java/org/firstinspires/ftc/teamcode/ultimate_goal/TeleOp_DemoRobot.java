@@ -27,7 +27,6 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="TeleOp_DemoRobot", group="Linear Opmode")
-@Disabled
 
 public class TeleOp_DemoRobot extends LinearOpMode {
 
