@@ -137,8 +137,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 2.13;
+    double armHorizontal = 1.86;
     double wristStraight = 0.36;
+    //43 extension ticks per cm
     //old value: 2.24
 
     public void configDistanceSensors() {
@@ -244,17 +245,19 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal + 0.51;
+        double armAngleBack = armHorizontal; //+ 0.51;
         telemetry.addData("arm extension", mE.getCurrentPosition());
+        telemetry.addData("arm angle", potentiometer.getVoltage());
+        telemetry.addData("wrist angle", sV.getPosition());
         sV.setPosition(0.1);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
             extendDone = true;
         }
-
         else if (!lAB.isPressed()) {
             mE.setPower(-1);
         }
+        telemetry.addData("extension done", extendDone);
 
         if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
             if (potentiometer.getVoltage() > armAngleBack) {
@@ -270,7 +273,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
             angleDone = true;
 
         }
-        telemetry.addData("arm done", angleDone);
+        telemetry.addData("angle done", angleDone);
+        if(extendDone && angleDone){
+
+            telemetry.addLine("extension and angle are done");
+        }
         }
 
 

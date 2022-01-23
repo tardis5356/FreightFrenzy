@@ -92,7 +92,7 @@ public class Fred_Tardis_TeleOp_Test extends BaseClass_FF {    // LinearOpMode {
             telemetry.addData("intake servo power", sI.getPower());
             telemetry.update();
 
-            double intakePower = 0.5;
+            double intakePower = 1                                                                                                                                                                                                                                                                                                                                                                                                                       ;
 
             //controls intake
             //trigger pressed = 1, trigger not pressed = 0

@@ -27,26 +27,26 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                 steps.add("DRIVE_TO_LIMIT");
                 steps.add("FIND_ELEMENT_POSITION");
-                steps.add("DRIVE_FROM_WALL");
-                steps.add("MOVE_FROM_WALL");
-               steps.add("ROTATE_TO_90");
-                steps.add("MOVE_TO_CAROUSEL");
-                steps.add("MOVE_TO_CAROUSEL_2");
+//                steps.add("DRIVE_FROM_WALL");
+//                steps.add("MOVE_FROM_WALL");
+//               steps.add("ROTATE_TO_90");
+//                steps.add("MOVE_TO_CAROUSEL");
+//                steps.add("MOVE_TO_CAROUSEL_2");
 //                steps.add("MOVE_TO_CAROUSEL_3");
-                steps.add("SPIN_SPINNER");
-                steps.add("DRIVE_TO_HUB_TIME");
+//                steps.add("SPIN_SPINNER");
+//                steps.add("DRIVE_TO_HUB_TIME");
                 //steps.add("WAIT");
-                steps.add("DRIVE_TO_HUB");
+//                steps.add("DRIVE_TO_HUB");
                  steps.add("MOVE_ARM");
-                steps.add("ROTATE_TO_0");
-                steps.add("DRIVE_FORWARD_TO_HUB");
-                steps.add("DROP_BLOCK");
-                steps.add("MOVE_BACKWARD");
-                steps.add("RESET_ARM");
+//                steps.add("ROTATE_TO_0");
+//                steps.add("DRIVE_FORWARD_TO_HUB");
+//                steps.add("DROP_BLOCK");
+//                steps.add("MOVE_BACKWARD");
+//                steps.add("RESET_ARM");
                 steps.add("ROTATE_TO_90");
-                steps.add("DRIVE_BACK");
-                steps.add("PARK_IN_STORAGE_UNIT");
-                steps.add("PARK_IN_STORAGE_UNIT");
+//                steps.add("DRIVE_BACK");
+//                steps.add("PARK_IN_STORAGE_UNIT");
+//                steps.add("PARK_IN_STORAGE_UNIT");
                 steps.add("STOP");
 
 

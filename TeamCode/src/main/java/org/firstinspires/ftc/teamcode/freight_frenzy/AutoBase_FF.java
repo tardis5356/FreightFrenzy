@@ -13,7 +13,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     double armReach = 0;
     double wristPosition = 0;
     double telescopePose = 0;
-    //armHorizontal = 2.13;
+    //armHorizontal = 1.86;
     //wristStraight = 0;
 
 
@@ -79,6 +79,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     public void changeHubLevel(String hubLevel) {
         //sets coordinates for all three target zones, target zone is chosen depending on position of team scoring element
         switch (hubLevel) {
+            //43 extension ticks per cm
 
             case "BOTTOM":
 
@@ -92,8 +93,9 @@ public abstract class AutoBase_FF extends BaseClass_FF {
             case "MIDDLE":
 
 //                armAngle = 2.5;
-                armAngle = armHorizontal + 0.5;
-                armReach = telescopePose + 237;
+                //test values for extension testing
+                armAngle = armHorizontal; //+ 0.5;
+                armReach = telescopePose + 1029; //+ 237;
                 //364
                 wristPosition = 0.48 + wristStraight;
                 break;
