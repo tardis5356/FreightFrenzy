@@ -55,6 +55,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sG;
 //    Servo sCU;
     Servo sA;
+    Servo sYL; //odometer Yleft servo
+    Servo sYR; //odometer Yright servo
+    Servo sX; //odometer X servo
     CRServo sS;
     DistanceSensor distance1;
     DistanceSensor distance2;
@@ -490,16 +493,22 @@ public abstract class BaseClass_FF extends LinearOpMode {
         sSL = hardwareMap.crservo.get("sSL");
         //sSR = hardwareMap.crservo.get("sSR");
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
+        //servos for raising odometers
+        sYL = hardwareMap.servo.get("sYL");//odometer Yleft servo
+        sYR = hardwareMap.servo.get("sYR");//odometer Yright servo
+        sX = hardwareMap.servo.get("sX");//odometer X servo
         //sS = hardwareMap.crservo.get("sS");//servo spinner
         //sWH = hardwareMap.servo.get("sWH");//left-right wrist movement servo
         //sI = hardwareMap.crservo.get("sI");
         crsIL = hardwareMap.crservo.get("crsIL"); //rubber band intake left servo
         crsIR = hardwareMap.crservo.get("crsIR");//rubber band intake right servo
-        //rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
+        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_front");
         //rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
         //rangeSensorBack = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_back");
         //rangeSensorBackLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_bL");
-        //rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
+        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
+        rangeSensorLeft.setI2cAddress(I2cAddr.create8bit(0x30));
+        rangeSensorFront.setI2cAddress(I2cAddr.create8bit(0x36));
 
        // sSpinner = hardwareMap.crservo.get("sSpinner");
 //        mA = hardwareMap.dcMotor.get("mA");
@@ -776,10 +785,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Set current values for iteration
 
         //all port numbers for expansion hub
-        int currEnX = -mFR.getCurrentPosition() + encoderXStart;  // Motor Front Right & Odometer X, Port #2
+        int currEnX = mFR.getCurrentPosition() - encoderXStart;  // Motor Front Right & Odometer X, Port #2
         //changed sign to negative when encoder flipped - 1/17/21
         int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
-        int currEnYRight = mBL.getCurrentPosition() - encoderYRightStart; // Motor Back Left & Odometer Y-Right, Port #3
+        int currEnYRight = -mBL.getCurrentPosition() - encoderYRightStart; // Motor Back Left & Odometer Y-Right, Port #3
 
         //original encoder statements for reference
         //int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0

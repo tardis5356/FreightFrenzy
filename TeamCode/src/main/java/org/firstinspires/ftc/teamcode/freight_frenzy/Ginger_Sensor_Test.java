@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Ginger_Sensor_Test", group = "Linear Opmode")
-@Disabled
 
 public class Ginger_Sensor_Test extends BaseClass_FF {
 
@@ -23,6 +22,7 @@ public class Ginger_Sensor_Test extends BaseClass_FF {
 
         while (opModeIsActive()) {
             gyroUpdate();
+            updatePoseStrafe();
 
             telemetry.addData("gyro",gyroZ);
 //            updatePoseStrafe();
@@ -32,16 +32,13 @@ public class Ginger_Sensor_Test extends BaseClass_FF {
 
 //            double rightDistance = rangeSensorRight.getDistance(DistanceUnit.CM);
 
-//            telemetry.addData("left odometer wheel",mFL.getCurrentPosition());
-//            telemetry.addData("back odometer wheel",mFR.getCurrentPosition());
-//            telemetry.addData("right odometer wheel",mBL.getCurrentPosition());
-//            telemetry.addData("x pos",pose.x);
-//            telemetry.addData("y pos",pose.y);
+            telemetry.addData("left odometer wheel",mFL.getCurrentPosition());
+            telemetry.addData("back odometer wheel",mFR.getCurrentPosition());
+            telemetry.addData("right odometer wheel",-mBL.getCurrentPosition());
+            telemetry.addData("x pos",pose.x);
+            telemetry.addData("y pos",pose.y);
 
-            //telemetry.addData(" back left distance", "" + String.format("%.2f cm", rangeSensorBackLeft.getDistance(DistanceUnit.CM)));
-            telemetry.addData(" back right distance", "" + String.format("%.2f cm", Range.clip(rangeSensorBack.getDistance(DistanceUnit.CM), 0, 200)));
             telemetry.addData(" left distance", "" + String.format("%.2f cm", Range.clip(rangeSensorLeft.getDistance(DistanceUnit.CM), 0, 200)));
-            telemetry.addData(" right distance", "" + String.format("%.2f cm", Range.clip(rangeSensorRight.getDistance(DistanceUnit.CM), 0, 200)));
             telemetry.addData(" front distance", "" + String.format("%.2f cm", Range.clip(rangeSensorFront.getDistance(DistanceUnit.CM), 0, 200)));
             telemetry.update();
 
