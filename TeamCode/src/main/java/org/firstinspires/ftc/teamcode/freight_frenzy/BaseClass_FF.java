@@ -29,8 +29,10 @@ import java.util.Arrays;
 public abstract class BaseClass_FF extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 35/25.4; //using 35 mm wheel from rotacaster
-    final static double wheelDistance = 15.75;
+    final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
+    //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
+    final static double wheelDistance = 17.625; //separation between y-axis odometer wheels (in)
+
 
     OpenCvCamera webcam;
     TeamElementPositionTest.SkystoneDeterminationPipeline pipeline;
@@ -490,7 +492,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mFR = hardwareMap.dcMotor.get("mFR");//Front right
         mE = hardwareMap.dcMotor.get("mE");//arm motor extends
         mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
-        sSL = hardwareMap.crservo.get("sSL");
+        sSL = hardwareMap.crservo.get("sSL");//spinner
         //sSR = hardwareMap.crservo.get("sSR");
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //servos for raising odometers
@@ -785,10 +787,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Set current values for iteration
 
         //all port numbers for expansion hub
-        int currEnX = mFR.getCurrentPosition() - encoderXStart;  // Motor Front Right & Odometer X, Port #2
+        int currEnX = -(mFR.getCurrentPosition() - encoderXStart);  // Motor Front Right & Odometer X, Port #2
         //changed sign to negative when encoder flipped - 1/17/21
-        int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
-        int currEnYRight = -mBL.getCurrentPosition() - encoderYRightStart; // Motor Back Left & Odometer Y-Right, Port #3
+        int currEnYLeft = (mFL.getCurrentPosition() - encoderYLeftStart); // Motor Front Left & Odometer Y-Left, Port #0
+        int currEnYRight = -(mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
 
         //original encoder statements for reference
         //int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
@@ -803,7 +805,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-7/8.25); // multiply ratio of x/y odometer radii
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-9/(17.625/2));
+        //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
         //0.448
