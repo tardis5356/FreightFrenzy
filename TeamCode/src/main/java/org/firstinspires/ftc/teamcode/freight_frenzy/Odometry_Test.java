@@ -25,17 +25,17 @@ public class Odometry_Test extends AutoBase_FF {
 
     public void CreateSteps() {
 
-        steps.add("STRAFE_TO_CAROUSEL");
-        steps.add("DRIVE_INTO_CAROUSEL");
-        steps.add("SPIN_SPINNER");
-        steps.add("DRIVE_FORWARD");
-        steps.add("ROTATE_TO_90");
-        steps.add("MOVE_TO_HUB");
-        steps.add("HELLO_WORLD");
+//        steps.add("STRAFE_TO_CAROUSEL");
+//        steps.add("DRIVE_INTO_CAROUSEL");
+//        steps.add("SPIN_SPINNER");
+//        steps.add("DRIVE_FORWARD");
+//        steps.add("ROTATE_TO_90");
+//        steps.add("MOVE_TO_HUB");
+//        steps.add("HELLO_WORLD");
 //        steps.add("MOVE_SERVOS");
 //        steps.add("MOVE_X_SERVO");
-
-
+        steps.add("TEST");
+        steps.add("WAIT");
         steps.add("STOP");
 
 
@@ -65,7 +65,7 @@ public class Odometry_Test extends AutoBase_FF {
         double targetTheta = 0;
         String elementPosition = "NONE";
 
-        double distanceTolerance = 1;
+        double distanceTolerance = 2;
         double rotationTolerance = 1;
         double endDistanceTolerance = 1;
         double endRotationTolerance = 0.5;
@@ -226,7 +226,7 @@ public class Odometry_Test extends AutoBase_FF {
                         break;
 
                     case "STRAFE_TO_CAROUSEL":
-                        targetX = 0;
+                        targetX = -26;
                         targetY = 24;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
@@ -255,8 +255,8 @@ public class Odometry_Test extends AutoBase_FF {
 
                     case "MOVE_TO_HUB":
                         targetX = 24;
-                        targetY = 0;
-                        targetTheta = 0;
+                        targetY = 10;
+                        targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
@@ -268,8 +268,8 @@ public class Odometry_Test extends AutoBase_FF {
 //                        break;
                     case "TEST":
                         //used for testing odometry
-                        targetX = 12;
-                        targetY = 0;
+                        targetX = 0;
+                        targetY = 24;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;

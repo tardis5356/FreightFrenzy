@@ -29,9 +29,10 @@ import java.util.Arrays;
 public abstract class BaseClass_FF extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
+    final static double wheelDiameter = 35/25.4; //black and white 60 mm omni wheel rev robotics
     //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
-    final static double wheelDistance = 17.625; //separation between y-axis odometer wheels (in)
+    final static double wheelDistance = 16;
+            // 17.625; //separation between y-axis odometer wheels (in)
 
 
     OpenCvCamera webcam;
@@ -787,10 +788,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Set current values for iteration
 
         //all port numbers for expansion hub
-        int currEnX = -(mFR.getCurrentPosition() - encoderXStart);  // Motor Front Right & Odometer X, Port #2
+        int currEnX = (mFR.getCurrentPosition() - encoderXStart);  // Motor Front Right & Odometer X, Port #2
         //changed sign to negative when encoder flipped - 1/17/21
         int currEnYLeft = (mFL.getCurrentPosition() - encoderYLeftStart); // Motor Front Left & Odometer Y-Left, Port #0
-        int currEnYRight = -(mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
+        int currEnYRight = (mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
 
         //original encoder statements for reference
         //int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
@@ -805,7 +806,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-9/(17.625/2));
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-8.25/(16/2));
         //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
@@ -820,7 +821,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         //Update odometer values (+, -)
         posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) - (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
-        posX -= (Math.sin(Math.toRadians(gyroZ)) * changeEnY) + (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
+        posX += (Math.sin(Math.toRadians(gyroZ)) * changeEnY) + (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
         //posY += (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) - (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
         //posX -= (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) + (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
 
@@ -870,16 +871,16 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Powers
         // old value = 0.04
         // strafe is forward, forward is strafe for 2021 robot
-        double aggressivenessStrafe = 0.025;
-        double aggressivenessForward = 0.08; //0.04
+        double aggressivenessStrafe = 0.04;
+        double aggressivenessForward = 0.04;//0.08; //0.04
         double PmaxStrafe = 1;
-        double PmaxForward = 1;
+        double PmaxForward = 0.7;
         double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
         double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
         //Threshold values for motor power
-        forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.15);
+        forward = thresholdMotorPower(forward, 0.1); //0.25, 0.2, 0.1
+        strafe = thresholdMotorPower(strafe, 0.35);
 
         //Adjust for quadrants
         if (pose.y < targetY) {
