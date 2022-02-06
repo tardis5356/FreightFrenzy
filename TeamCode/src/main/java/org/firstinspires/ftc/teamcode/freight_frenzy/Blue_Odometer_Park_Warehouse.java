@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.freight_frenzy;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Blue_Odometer_Delivery", group = "Autonomous")
+@Autonomous(name = "Blue_Odometer_Park_Warehouse", group = "Autonomous")
 
-public class Blue_Odometer_Delivery extends AutoBase_FF {
+public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -23,25 +25,28 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
 
     public void CreateSteps() {
 
-        steps.add("DRIVE_TO_LIMIT");
-        steps.add("FIND_ELEMENT_POSITION");
+//        steps.add("DRIVE_TO_LIMIT");
+//        steps.add("FIND_ELEMENT_POSITION");
         steps.add("STRAFE_TO_CAROUSEL");//odometry
-        steps.add("BACK_INTO_CAROUSEL");//time
-
-        steps.add("SPIN_SPINNER");
-
-        steps.add("DRIVE_TO_HUB");//odometry
-
-        steps.add("MOVE_ARM");
-        steps.add("DROP_BLOCK");
-
-        steps.add("BACK_AWAY_FROM_HUB");//odometry
-
-        steps.add("RESET_ARM");
-
-        steps.add("STRAFE_FROM_HUB");//odometry
-        steps.add("GO_TO_WAREHOUSE");//time
-        steps.add("PARK_IN_WAREHOUSE");//distance
+//        steps.add("BACK_INTO_CAROUSEL");//time
+//
+//        steps.add("SPIN_SPINNER");
+//
+//        steps.add("DRIVE_TO_HUB_SU");//odometry
+//
+//        //steps.add("MOVE_ARM");
+//        //steps.add("DROP_BLOCK");
+//
+//        steps.add("BACK_AWAY_FROM_HUB");//odometry
+//
+//        //steps.add("RESET_ARM");//make arm straight up instead of horizontal
+//
+//        steps.add("STRAFE_FROM_HUB");//odometry
+//        steps.add("GO_NEAR_WAREHOUSE");
+//        steps.add("STRAFE_TSE");
+//        steps.add("RAISE_ODOMETERS");
+//        steps.add("GO_IN_WAREHOUSE");//time
+//        steps.add("PARK_IN_WAREHOUSE");//distance
 
         steps.add("STOP");
 
@@ -56,7 +61,7 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
         CreateSteps();
 
         //Init functions
-        defineComponentsFred();
+        defineComponentsGinger();
 
         double targetDistanceX = 0;
         double targetDistanceY = 0;
@@ -93,48 +98,48 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
         boolean seventhCheck = false;
         boolean ninthCheck = false;
         //initializing intake so that it's not powered
-        sI.setPower(0);
+//        sI.setPower(0);
         //double telescopePose = 0;
 
         //instance fields/global variables
 
 //            ////////////////setting robot in initialization, readies robot for autonomous  /////////////
-        pipeline = new TeamElementPositionTest.SkystoneDeterminationPipeline();
-        webcam.setPipeline(pipeline);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                /*
-                 * This will be called if the camera could not be opened
-                 */
-            }
-        });
-
-        while (!opModeIsActive() && !isStopRequested()) {
-            //adds vision recognition telemetry for debug and check
-            elementPosition = TeamElementPositionTest.getPosition();
-            telemetry.addData("Team Element Position", elementPosition);
-            telemetry.addData("Hub level", hubLevel);
-            telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
-            telemetry.update();
-            //sets arm, extension, and wrist on initialization to get within 18 inches
-            scrunchUpBot();
-
-            if (elementPosition == "LEFT") {
-                hubLevel = "BOTTOM";
-            } else if (elementPosition == "CENTER") {
-                hubLevel = "MIDDLE";
-            } else if (elementPosition == "RIGHT"){
-                hubLevel = "TOP";
-            }
-            changeHubLevel(elementPosition);
-        }
+//        pipeline = new TeamElementPositionTest.SkystoneDeterminationPipeline();
+//        webcam.setPipeline(pipeline);
+//        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+//            @Override
+//            public void onOpened() {
+//                //Upright rotation works, do not set to sideways left
+//                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+//            }
+//
+//            @Override
+//            public void onError(int errorCode) {
+//                /*
+//                 * This will be called if the camera could not be opened
+//                 */
+//            }
+//        });
+//
+//        while (!opModeIsActive() && !isStopRequested()) {
+//            //adds vision recognition telemetry for debug and check
+//            elementPosition = TeamElementPositionTest.getPosition();
+//            telemetry.addData("Team Element Position", elementPosition);
+//            telemetry.addData("Hub level", hubLevel);
+//            telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
+//            telemetry.update();
+//            //sets arm, extension, and wrist on initialization to get within 18 inches
+//            scrunchUpBot();
+//
+//            if (elementPosition == "LEFT") {
+//                hubLevel = "BOTTOM";
+//            } else if (elementPosition == "CENTER") {
+//                hubLevel = "MIDDLE";
+//            } else if (elementPosition == "RIGHT"){
+//                hubLevel = "TOP";
+//            }
+//            changeHubLevel(elementPosition);
+//        }
 
         ////////////////above code runs in initialization, readies robot for autonomous  /////////////
 
@@ -151,15 +156,108 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
             while (opModeIsActive() && (done == false)) {
 
                 telemetry.addData("current step", currentStep);
-                fredTelemetry();
-
+                gingerTelemetry();
                 //Update global sensor values
                 updatePoseStrafe();
                 gyroUpdate();
 
-               readDistanceSensors();
+//               readDistanceSensors();
+                leftDistance = Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200);
+                frontDistance = Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200);
+
+                //sets distance sensors to a small negative number if sensors read not a number -- this is necessary when the robot is too close to a wall
+                if (Double.isNaN(leftDistance)) {
+
+                    leftDistance = -2;
+                }
+                if (Double.isNaN(frontDistance)) {
+
+                    frontDistance = -2;
+                }
+
+                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+                frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
+
+                leftDistanceFiltered = median(leftDistanceArray);
+                frontDistanceFiltered = median(frontDistanceArray);
 
                 switch (currentStep) {
+                    case("STRAFE_TO_CAROUSEL"):
+                        targetX = 20;
+                        targetY = 24;
+                        targetTheta = 0;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+
+                    case("BACK_INTO_CAROUSEL"):
+                        if (runtime.seconds() > 0 && runtime.seconds() < 3) {
+                            drive(0.5,0,0);
+                            done = false;
+                        } else {
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+                    case("DRIVE_TO_HUB_SU"):
+                        targetX = 0;
+                        targetY = 36;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+                    case("BACK_AWAY_FROM_HUB"):
+                        targetX = 10;
+                        targetY = 36;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+
+                    case("STRAFE_FROM_HUB"):
+                        targetX = 10;
+                        targetY = 12;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+                    case("GO_NEAR_WAREHOUSE"):
+                        targetX = 48;
+                        targetY = 12;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+                    case("STRAFE_TSE"):
+                        targetX = 48;
+                        targetY = 24;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+                    case("RAISE_ODOMETERS"):
+                        sYL.setPosition(0);
+                        if (runtime.seconds() > 2 && runtime.seconds() < 4) {
+                            sYR.setPosition(1);
+                        } else if (runtime.seconds() >= 4 && runtime.seconds() < 6) {
+                            sX.setPosition(1);
+                        } else if (runtime.seconds() >= 6){
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+                    case("GO_IN_WAREHOUSE"):
+                        if (runtime.seconds() > 0 && runtime.seconds() < 3) {
+                            drive(-1,0,0);
+                            done = false;
+                        } else {
+                            done = true;
+                            changeStep();
+                        }
+                        break;
+                    case("PARK_IN_WAREHOUSE"):
+                        targetDistanceX = 0;
+                        targetDistanceY = 5;
+                        done = (moveToLocationDistance(targetDistanceX, targetDistanceY, 1, "", "frontDistance", 90, 5));
+                        break;
+
+
+
+
 
                     case("RESET_ARM"):
                         boolean angleDone = false;
@@ -299,11 +397,11 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
 
                         if ((runtime.seconds()) <= fifthTime ){
                             sSL.setPower(1);
-                            sSR.setPower(-1);
+//                            sSR.setPower(-1);
                         }
                         if ((runtime.seconds()) > fifthTime) {
                             sSL.setPower(0);
-                            sSR.setPower(0);
+//                            sSR.setPower(0);
                             done = true;
                             changeStep();
                         }
@@ -393,7 +491,21 @@ public class Blue_Odometer_Delivery extends AutoBase_FF {
         }
         shutdown();
     }
+    public boolean moveToLocationDistance
+        //function for setting a point with odometry, changes step when robot position is in a certain tolerance
+    (double targetDistanceX, double targetDistanceY, double distanceTolerance, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
+        if (isInToleranceDistance(targetDistanceX, targetDistanceY, targetTheta, distanceTolerance, tolTheta)) {
+            lastTheta = gyroZ;
+            changeStep(); // you are within tolerance, so stop the drive train and move to next step
+            return true;
+        } else {
+            telemetry.addData("target x", targetDistanceX);
+            telemetry.addData("target y", targetDistanceY);
+            moveToDistFromWall(targetDistanceX, targetDistanceY, sensorForX, sensorForY, targetTheta, tolTheta);
+            return false;
+        }
 
+    }
     public boolean moveToLocationOdometry
         //function for setting a point with odometry, changes step when robot position is in a certain tolerance
     (double targetX, double targetY, double targetTheta, double distanceTolerance, double rotationTolerance) {

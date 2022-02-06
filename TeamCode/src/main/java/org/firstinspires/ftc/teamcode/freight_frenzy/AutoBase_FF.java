@@ -39,6 +39,22 @@ public abstract class AutoBase_FF extends BaseClass_FF {
         telemetry.update();
     }
 
+    public void gingerTelemetry() {
+
+        telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
+        telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
+        telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
+        telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
+        telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
+        telemetry.addData("sX position", sX.getPosition());
+        telemetry.addData("sYL position", sYL.getPosition());
+        telemetry.addData("sYR position", sYR.getPosition());
+        telemetry.addData("x pos",pose.x);
+        telemetry.addData("y pos",pose.y);
+        telemetry.update();
+    }
+
+
 //    public void resetArm() {
 //
 //        drive(0,0,0);

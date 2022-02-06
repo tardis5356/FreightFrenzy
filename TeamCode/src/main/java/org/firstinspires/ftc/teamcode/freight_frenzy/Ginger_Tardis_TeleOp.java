@@ -52,6 +52,7 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
             //Update global sensor values
              */
+
             updatePoseStrafe();
             gyroUpdate();
 
@@ -83,7 +84,6 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             boolean yButton2 = (gamepad2.y);
 
             //telemetry.addData("rangeSensorBackLeft i2c addy", rangeSensorBackLeft.getDeviceName());
-            telemetry.update();
             // telemetry.addData("LeftX1 position", leftX1);
             // telemetry.addData("RightX1 position", rightX1);
             // telemetry.addData("LeftY2 position", leftY2);
@@ -91,7 +91,15 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             // telemetry.addData("Right trigger position", rightTrigger2);
 
             //drives robot
-            drive(leftX1, leftY1, rightX1);
+            drive(leftY1, leftX1, rightX1);
+            //pushing joystick forward and to the right creates negative values
+
+            telemetry.addData("leftY1", leftY1);
+            telemetry.addData("leftX1", leftX1);
+            telemetry.addData("rightX1", rightX1);
+            telemetry.update();
+
+            //drive(forward, strafe, rotate) for reference
 
             //moves bottom and top arm joints
             mE.setPower(-leftY2); //also works for mF on Toby bot

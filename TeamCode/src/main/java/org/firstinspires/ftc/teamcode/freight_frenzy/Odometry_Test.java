@@ -65,7 +65,7 @@ public class Odometry_Test extends AutoBase_FF {
         double targetTheta = 0;
         String elementPosition = "NONE";
 
-        double distanceTolerance = 2;
+        double distanceTolerance = 5;
         double rotationTolerance = 1;
         double endDistanceTolerance = 1;
         double endRotationTolerance = 0.5;
@@ -153,11 +153,17 @@ public class Odometry_Test extends AutoBase_FF {
             while (opModeIsActive() && (done == false)) {
 
                 telemetry.addData("current step", currentStep);
-                telemetry.addData("sX position", sX.getPosition());
-                telemetry.addData("sYL position", sYL.getPosition());
-                telemetry.addData("sYR position", sYR.getPosition());
+//                telemetry.addData("sX position", sX.getPosition());
+//                telemetry.addData("sYL position", sYL.getPosition());
+//                telemetry.addData("sYR position", sYR.getPosition());
+                telemetry.addData("gyro", gyroZ);
                 telemetry.addData("x pos",pose.x);
                 telemetry.addData("y pos",pose.y);
+                telemetry.addData("forward", forwardPower);
+                telemetry.addData("strafe", strafePower);
+                telemetry.addData("rotate", rotatePower);
+                telemetry.addData("errInX", errInX);
+                telemetry.addData("errInY", errInY);
                 telemetry.update();
 
 //                fredTelemetry();
@@ -269,7 +275,7 @@ public class Odometry_Test extends AutoBase_FF {
                     case "TEST":
                         //used for testing odometry
                         targetX = 0;
-                        targetY = 24;
+                        targetY = 48;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;

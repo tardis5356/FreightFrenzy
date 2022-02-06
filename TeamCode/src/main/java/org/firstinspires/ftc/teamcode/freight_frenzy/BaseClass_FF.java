@@ -134,6 +134,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double frontDistanceFiltered = 0;
     double backDistanceFiltered = 0;
     double armLimitOffset = 0;
+    double forwardPower = 0;
+    double strafePower = 0;
+    double rotatePower = 0;
+    double errInX = 0;
+    double errInY = 0;
     double medianReplaceTolerance = 50;
 
 
@@ -871,29 +876,42 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Powers
         // old value = 0.04
         // strafe is forward, forward is strafe for 2021 robot
-        double aggressivenessStrafe = 0.04;
+        //forward strafe and rotate are actually correct on ginger :)
+        double aggressivenessStrafe = 0.08;
         double aggressivenessForward = 0.04;//0.08; //0.04
-        double PmaxStrafe = 1;
-        double PmaxForward = 0.7;
+        double PmaxStrafe = 0.5;
+        double PmaxForward = 0.5;
         double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
         double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
+        errInX = distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY));
+        errInY = distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY));
+
+        //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
         forward = thresholdMotorPower(forward, 0.1); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.35);
+        strafe = thresholdMotorPower(strafe, 0.1);
 
         //Adjust for quadrants
-        if (pose.y < targetY) {
-            //forward = -forward;
-            strafe = -strafe;
-        }
-        else{
-            forward = -forward;
-        }
+//        if (pose.y < targetY) {
+//            //forward = -forward;
+//            strafe = -strafe;
+//        }
+//        else{
+//            forward = -forward;
+//        }
 
-        drive(strafe, forward, -rotate);
+//        drive(forward, strafe, -rotate);
 
-        //  drive(strafe, forward, rotate);
+          drive(-forward, -strafe, -rotate);
+
+        forwardPower = -forward;
+        strafePower = -strafe;
+        rotatePower = -rotate;
+
+
+        //theoretically the right command
+//        drive(0,0,-0.5);
     }
 
     public void moveToPoseWaypoint(double targetX, double targetY, double targetTheta, double rotatePercent) {
