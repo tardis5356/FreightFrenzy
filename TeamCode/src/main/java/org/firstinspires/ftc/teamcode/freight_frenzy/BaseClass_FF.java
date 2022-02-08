@@ -850,6 +850,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     }
 
     public void moveToPose(double targetX, double targetY, double targetTheta, double rotatePercent) {
+
         //code below assumes rotatePercent between 0 and 1; user input will be percent-DCP 11/28/20
         rotatePercent/=100;
 
@@ -873,7 +874,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
 
         //Positive rotation = clockwise = decrease in theta
-        double rotate = (1 / (1 + Math.pow(Math.E, -(0.06 * (gyroZ - thetaRobot))))) - 0.5;
+        double rotate = (1 / (1 + Math.pow(Math.E, -(0.03* (gyroZ - thetaRobot))))) - 0.5;
 
        // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
 
@@ -888,6 +889,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double aggressivenessForward = 0.04;//0.08; //0.04
         double PmaxStrafe = 1;
         double PmaxForward = 0.5;
+        //don't use atan - use atan2 (range of 180 to -180 instead of 90 to -90)
         double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
         double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
@@ -922,11 +924,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 //        drive(forward, strafe, -rotate);
 
-          drive(-forward, -strafe, -rotate);
+          drive(-forward, -strafe, rotate);
 
         forwardPower = -forward;
         strafePower = -strafe;
-        rotatePower = -rotate;
+        rotatePower = rotate;
 
 
         //theoretically the right command
