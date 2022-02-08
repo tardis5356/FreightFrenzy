@@ -35,6 +35,7 @@ public class Odometry_Test extends AutoBase_FF {
 //        steps.add("MOVE_SERVOS");
 //        steps.add("MOVE_X_SERVO");
         steps.add("TEST");
+//        steps.add("TEST_2");
         steps.add("WAIT");
         steps.add("STOP");
 
@@ -275,6 +276,14 @@ public class Odometry_Test extends AutoBase_FF {
                     case "TEST":
                         //used for testing odometry
                         targetX = 0;
+                        targetY = 48;
+                        targetTheta = 0;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+
+                    case "TEST_2":
+                        //used for testing odometry
+                        targetX = 24;
                         targetY = 48;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));

@@ -395,11 +395,11 @@ public class Red_Storage_Unit_Delivery extends AutoBase_FF {
 
                         if ((runtime.seconds()) <= fifthTime ){
                             sSL.setPower(1);
-                            sSR.setPower(-1);
+//                            sSR.setPower(-1);
                         }
                         if ((runtime.seconds()) > fifthTime) {
                             sSL.setPower(0);
-                            sSR.setPower(0);
+//                            sSR.setPower(0);
                             done = true;
                             changeStep();
                         }

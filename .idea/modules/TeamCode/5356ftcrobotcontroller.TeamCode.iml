@@ -46,7 +46,9 @@
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.threeten:threetenbp:1.5.1:no-tzdb" level="project" />
+    <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd-websocket:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:Inspection:7.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.acmerobotics.dashboard:dashboard:0.4.4@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:RobotCore:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:Tfod:7.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.tensorflow:tensorflow-lite-task-vision:0.2.0@aar" level="project" />

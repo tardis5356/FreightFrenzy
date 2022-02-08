@@ -45,8 +45,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mFR;//Front right
     DcMotor mE;//arm motor extends
     DcMotor mU;//arm motor tilt
+    DcMotor mSL;//arm motor tilt
+    DcMotor mSR;//arm motor tilt
     Servo sV;//up-down wrist movement servo
-    CRServo sSR;
+//    CRServo sSR;
     CRServo sSL;
     Servo sWH;//left-right wrist movement servo
     CRServo sI;
@@ -592,8 +594,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mFR = hardwareMap.dcMotor.get("mFR");//Front right
         mE = hardwareMap.dcMotor.get("mE");//arm motor extends
         mU = hardwareMap.dcMotor.get("mU");//arm motor rotates
-        sSR = hardwareMap.crservo.get("sSR");//servo spinner right
-        sSL = hardwareMap.crservo.get("sSL");//servo spinner left
+        mSL = hardwareMap.dcMotor.get("mSL");//arm motor extends
+        mSR = hardwareMap.dcMotor.get("mSR");//arm motor rotates
+//        sSR = hardwareMap.crservo.get("sSR");//servo spinner right
+//        sSL = hardwareMap.crservo.get("sSL");//servo spinner left
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sWH = hardwareMap.servo.get("sH");//left-right wrist movement servo
         sI = hardwareMap.crservo.get("sI");//intake servo
@@ -665,6 +669,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        mA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        mE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mSL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mSR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         runtime = new ElapsedTime();
         runtimeTwo = new ElapsedTime();
@@ -879,26 +886,38 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //forward strafe and rotate are actually correct on ginger :)
         double aggressivenessStrafe = 0.08;
         double aggressivenessForward = 0.04;//0.08; //0.04
-        double PmaxStrafe = 0.5;
+        double PmaxStrafe = 1;
         double PmaxForward = 0.5;
-        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
-        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
+        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
-        errInX = distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY));
-        errInY = distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY));
+//        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+//        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+
+        errInX = distanceToTarget * Math.sin(pose.theta + Math.atan(distanceX / distanceY));
+        errInY = distanceToTarget * Math.cos(pose.theta + Math.atan(distanceX / distanceY));
 
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
         forward = thresholdMotorPower(forward, 0.1); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.1);
+        strafe = thresholdMotorPower(strafe, 0.2);
 
-        //Adjust for quadrants
+//        Adjust for quadrants
 //        if (pose.y < targetY) {
-//            //forward = -forward;
-//            strafe = -strafe;
+//            forward = forward;
 //        }
 //        else{
 //            forward = -forward;
+//
+//        }
+//
+//        if (pose.x < targetX) {
+//
+//            strafe = -strafe;
+//        }
+//        else{
+//
+//            strafe = strafe;
 //        }
 
 //        drive(forward, strafe, -rotate);
