@@ -874,9 +874,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
 
         //Positive rotation = clockwise = decrease in theta
-        double rotate = (1 / (1 + Math.pow(Math.E, -(0.03* (gyroZ - thetaRobot))))) - 0.5;
+        double rotate = (0.5 / (1 + Math.pow(Math.E, -(0.03* (gyroZ - thetaRobot))))) - 0.25;
 
-       // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
+       // double rotate = (1 / (1 + Math.pow(Math.E, -(0.03 * (gyroZ - thetaRobot))))) - 0.5;
 
         //Threshold values for motor power
         rotate = thresholdMotorPower(rotate, 0.1);
@@ -896,8 +896,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 //        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
-        errInX = distanceToTarget * Math.sin(pose.theta + Math.atan(distanceX / distanceY));
-        errInY = distanceToTarget * Math.cos(pose.theta + Math.atan(distanceX / distanceY));
+        errInX = distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY));
+        errInY = distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY));
 
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
