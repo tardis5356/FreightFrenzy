@@ -58,12 +58,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sW;
 //    Servo sCG;
     Servo sG;
+    Servo sL;
+    Servo sR;
 //    Servo sCU;
     Servo sA;
     Servo sYL; //odometer Yleft servo
     Servo sYR; //odometer Yright servo
     Servo sX; //odometer X servo
     CRServo sS;
+    CRServo sArm;
     DistanceSensor distance1;
     DistanceSensor distance2;
     CRServo crsIR;
@@ -582,6 +585,29 @@ public abstract class BaseClass_FF extends LinearOpMode {
         encoderXStart = mFR.getCurrentPosition();
         encoderYLeftStart = mFL.getCurrentPosition();
         encoderYRightStart = mBL.getCurrentPosition();
+
+    }
+
+    public void defineComponentsPrimus() {
+
+        mBL = hardwareMap.dcMotor.get("mBL");//Back left
+        mBR = hardwareMap.dcMotor.get("mBR");
+        mFL = hardwareMap.dcMotor.get("mFL");
+        mFR = hardwareMap.dcMotor.get("mFR");//Front right
+
+        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mBL.setDirection(DcMotor.Direction.FORWARD);
+        mBR.setDirection(DcMotor.Direction.REVERSE);
+        mFL.setDirection(DcMotor.Direction.FORWARD);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+
+        sL = hardwareMap.servo.get("sL");
+        sR = hardwareMap.servo.get("sR");
+        sArm = hardwareMap.crservo.get("sArm");
 
     }
 
