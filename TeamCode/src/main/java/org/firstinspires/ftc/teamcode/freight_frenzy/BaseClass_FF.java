@@ -818,7 +818,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-8.25/(16/2));
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8.25/(16/2));
         //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
@@ -832,8 +832,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double changeEnY = (changeEnYLeft + changeEnYRight) / 2  ;
 
         //Update odometer values (+, -)
-        posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) - (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
-        posX += (Math.sin(Math.toRadians(gyroZ)) * changeEnY) + (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
+        posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) + (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
+        posX -= (Math.sin(Math.toRadians(gyroZ)) * changeEnY) - (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
         //posY += (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) - (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
         //posX -= (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) + (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
 
@@ -867,16 +867,24 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
 
         //Robot orientation vs distance to target (in degrees)
-        if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
-            thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
-        } else {
+        if (distanceToTarget > 5) {
+            //if the distance is small don't use rotatePercent
+            if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
+                thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
+            }
+        }
+        else {
             thetaRobot = targetTheta;
         }
 
+        double aggressivenessRotate = 0.04;//0.08; //0.04
+        double PmaxRotate = 0.5;
         //Positive rotation = clockwise = decrease in theta
-        double rotate = (0.5 / (1 + Math.pow(Math.E, -(0.03* (gyroZ - thetaRobot))))) - 0.25;
+        double rotate = PmaxRotate*((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate* (gyroZ - targetTheta))))) - 1);
 
-       // double rotate = (1 / (1 + Math.pow(Math.E, -(0.03 * (gyroZ - thetaRobot))))) - 0.5;
+        telemetry.addData("thetaRobot", thetaRobot);
+
+        // double rotate = (1 / (1 + Math.pow(Math.E, -(0.03 * (gyroZ - thetaRobot))))) - 0.5;
 
         //Threshold values for motor power
         rotate = thresholdMotorPower(rotate, 0.1);
@@ -892,6 +900,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //don't use atan - use atan2 (range of 180 to -180 instead of 90 to -90)
         double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
         double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+
+//        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
+//        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
 
 //        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 //        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
@@ -924,11 +935,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 //        drive(forward, strafe, -rotate);
 
-          drive(-forward, -strafe, rotate);
+//        forward = 0;
+//        strafe = 0;
+
+          drive(-forward, -strafe, -rotate);
+
 
         forwardPower = -forward;
         strafePower = -strafe;
-        rotatePower = rotate;
+        rotatePower = -rotate;
 
 
         //theoretically the right command
