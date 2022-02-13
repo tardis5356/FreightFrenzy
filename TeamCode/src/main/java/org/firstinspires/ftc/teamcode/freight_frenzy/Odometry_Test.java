@@ -285,8 +285,8 @@ public class Odometry_Test extends AutoBase_FF {
 
                     case "TEST_2":
                         //used for testing odometry
-                        targetX = 24;
-                        targetY = 24;
+                        targetX = 0;
+                        targetY = 0;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;

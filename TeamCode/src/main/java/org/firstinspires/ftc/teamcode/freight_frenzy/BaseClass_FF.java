@@ -29,9 +29,9 @@ import java.util.Arrays;
 public abstract class BaseClass_FF extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 35/25.4; //black and white 60 mm omni wheel rev robotics
+    final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
     //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
-    final static double wheelDistance = 16;
+    final static double wheelDistance = 16.25;
             // 17.625; //separation between y-axis odometer wheels (in)
 
 
@@ -63,6 +63,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sYL; //odometer Yleft servo
     Servo sYR; //odometer Yright servo
     Servo sX; //odometer X servo
+    Servo sEB; //encoder back servo - Fred
+    Servo sEL; //encoder left servo - Fred
+    Servo sER; //encoder right servo - Fred
     CRServo sS;
     DistanceSensor distance1;
     DistanceSensor distance2;
@@ -154,6 +157,30 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double wristStraight = 0.36;
     //43 extension ticks per cm
     //old value: 2.24
+
+    public void lowerOdometerServos() {
+
+        sEB.setPosition(0.43);
+        sEL.setPosition(0);
+        sER.setPosition(0.23);
+
+        telemetry.addData("sEB positon", sEB.getPosition());
+        telemetry.addData("sEL positon", sEL.getPosition());
+        telemetry.addData("sER positon", sER.getPosition());
+
+    }
+
+    public void raiseOdometerServos() {
+
+        sEB.setPosition(1);
+        sEL.setPosition(1);
+        sER.setPosition(1);
+
+        telemetry.addData("sEB positon", sEB.getPosition());
+        telemetry.addData("sEL positon", sEL.getPosition());
+        telemetry.addData("sER positon", sER.getPosition());
+
+    }
 
     public void configDistanceSensors() {
 
@@ -601,6 +628,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sWH = hardwareMap.servo.get("sH");//left-right wrist movement servo
         sI = hardwareMap.crservo.get("sI");//intake servo
+        sEB = hardwareMap.servo.get("sEB");//back encoder servo
+        sEL = hardwareMap.servo.get("sEL");//left encoder servo
+        sER = hardwareMap.servo.get("sER");//right encoder servo
 //        sCG = hardwareMap.servo.get("sCG");//capstone gripper
 //        sCU = hardwareMap.servo.get("sCU");//capstone rotate servo
         //limit for telescope arm
@@ -803,7 +833,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         int currEnX = (mFR.getCurrentPosition() - encoderXStart);  // Motor Front Right & Odometer X, Port #2
         //changed sign to negative when encoder flipped - 1/17/21
         int currEnYLeft = (mFL.getCurrentPosition() - encoderYLeftStart); // Motor Front Left & Odometer Y-Left, Port #0
-        int currEnYRight = (mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
+        int currEnYRight = -(mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
 
         //original encoder statements for reference
         //int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
@@ -818,7 +848,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8.25/(16/2));
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8/(16.25/2));
         //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
@@ -898,11 +928,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double PmaxStrafe = 1;
         double PmaxForward = 0.5;
         //don't use atan - use atan2 (range of 180 to -180 instead of 90 to -90)
-        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
-        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+//        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
+//        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
-//        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
-//        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
+        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
+        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
 
 //        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 //        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
