@@ -179,6 +179,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
             }
 
+            //deploy odometers
+            if (xButton) {
+
+            }
+
             //controls wrist up-down motion
             if ((rightBumper2)) {//&& (sWVPosition < 1))
                 sVPosition += .01;
