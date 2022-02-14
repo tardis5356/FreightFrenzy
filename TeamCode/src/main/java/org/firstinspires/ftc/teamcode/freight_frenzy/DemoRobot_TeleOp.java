@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.ultimate_goal;
+package org.firstinspires.ftc.teamcode.freight_frenzy;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -26,24 +26,18 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp_DemoRobot", group="Linear Opmode")
+@TeleOp(name="DemoRobot_TeleOp", group="Linear Opmode")
 
-public class TeleOp_DemoRobot extends LinearOpMode {
+public class DemoRobot_TeleOp extends BaseClass_FF {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor mL = null;
-    private DcMotor mR = null;
-    private DcMotor mA = null;
 
-    private Servo sG = null;
-    private Servo sW = null;
     double wristPosition = 0.5;
-
-
 
     @Override
     public void runOpMode() {
+        defineComponentsDemoRobot();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -59,7 +53,7 @@ public class TeleOp_DemoRobot extends LinearOpMode {
 
         mL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         mL.setDirection(DcMotor.Direction.FORWARD);
@@ -180,6 +174,4 @@ public abstract class TeleOp_DemoRobot extends BaseClass_DemoRobot {
         }
     }
 }*/
-
-
 
