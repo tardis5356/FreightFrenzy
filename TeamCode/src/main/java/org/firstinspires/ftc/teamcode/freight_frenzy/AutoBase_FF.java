@@ -120,11 +120,11 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
                 //1.65
                 //1.55
-                armAngle = armHorizontal - 0.35;
+                armAngle = armHorizontal - 0.67;
                 //0.3
-                wristPosition = wristStraight;
+                wristPosition = wristStraight - 0.06;
                 //700
-                armReach = telescopePose + 895;
+                armReach = telescopePose + 1600;
                 break;
 
             default:
