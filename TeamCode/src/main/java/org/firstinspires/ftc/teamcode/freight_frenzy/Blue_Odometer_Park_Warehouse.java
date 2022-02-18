@@ -24,17 +24,18 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
     //initializes target zone variables, sets default target zone
 
     public void CreateSteps() {
-
-//        steps.add("DRIVE_TO_LIMIT");
-//        steps.add("FIND_ELEMENT_POSITION");
-        steps.add("STRAFE_TO_CAROUSEL");//odometry
+//
+        steps.add("DRIVE_TO_LIMIT");
+        steps.add("FIND_ELEMENT_POSITION");
+//        steps.add("STRAFE_TO_CAROUSEL");//odometry
 //        steps.add("BACK_INTO_CAROUSEL");//time
-//
+////
 //        steps.add("SPIN_SPINNER");
-//
+////
 //        steps.add("DRIVE_TO_HUB_SU");//odometry
-//
-//        //steps.add("MOVE_ARM");
+////
+        steps.add("MOVE_ARM_UP");
+        steps.add("MOVE_ARM");
 //        //steps.add("DROP_BLOCK");
 //
 //        steps.add("BACK_AWAY_FROM_HUB");//odometry
@@ -61,7 +62,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
         CreateSteps();
 
         //Init functions
-        defineComponentsGinger();
+        defineComponentsFred();
 
         double targetDistanceX = 0;
         double targetDistanceY = 0;
@@ -97,49 +98,52 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
         boolean eighthCheck = false;
         boolean seventhCheck = false;
         boolean ninthCheck = false;
+        boolean angleDone = false;
+        boolean extendDone = false;
+        boolean angleUpDone = false;
         //initializing intake so that it's not powered
-//        sI.setPower(0);
-        //double telescopePose = 0;
+        sI.setPower(0);
+        double telescopePose = 0;
 
         //instance fields/global variables
 
 //            ////////////////setting robot in initialization, readies robot for autonomous  /////////////
-//        pipeline = new TeamElementPositionTest.SkystoneDeterminationPipeline();
-//        webcam.setPipeline(pipeline);
-//        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-//            @Override
-//            public void onOpened() {
-//                //Upright rotation works, do not set to sideways left
-//                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-//            }
-//
-//            @Override
-//            public void onError(int errorCode) {
-//                /*
-//                 * This will be called if the camera could not be opened
-//                 */
-//            }
-//        });
-//
-//        while (!opModeIsActive() && !isStopRequested()) {
-//            //adds vision recognition telemetry for debug and check
-//            elementPosition = TeamElementPositionTest.getPosition();
-//            telemetry.addData("Team Element Position", elementPosition);
-//            telemetry.addData("Hub level", hubLevel);
-//            telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
-//            telemetry.update();
-//            //sets arm, extension, and wrist on initialization to get within 18 inches
-//            scrunchUpBot();
-//
-//            if (elementPosition == "LEFT") {
-//                hubLevel = "BOTTOM";
-//            } else if (elementPosition == "CENTER") {
-//                hubLevel = "MIDDLE";
-//            } else if (elementPosition == "RIGHT"){
-//                hubLevel = "TOP";
-//            }
-//            changeHubLevel(elementPosition);
-//        }
+        pipeline = new TeamElementPositionTest.SkystoneDeterminationPipeline();
+        webcam.setPipeline(pipeline);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                //Upright rotation works, do not set to sideways left
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                /*
+                 * This will be called if the camera could not be opened
+                 */
+            }
+        });
+
+        while (!opModeIsActive() && !isStopRequested()) {
+            //adds vision recognition telemetry for debug and check
+            elementPosition = TeamElementPositionTest.getPosition();
+            telemetry.addData("Team Element Position", elementPosition);
+            telemetry.addData("Hub level", hubLevel);
+            telemetry.addData("Anti-Blueness", pipeline.getAnalysis());
+            telemetry.update();
+            //sets arm, extension, and wrist on initialization to get within 18 inches
+            scrunchUpBot();
+            lowerOdometerServos();
+            if (elementPosition == "LEFT") {
+                hubLevel = "BOTTOM";
+            } else if (elementPosition == "CENTER") {
+                hubLevel = "MIDDLE";
+            } else if (elementPosition == "RIGHT"){
+                hubLevel = "TOP";
+            }
+            changeHubLevel(elementPosition);
+        }
 
         ////////////////above code runs in initialization, readies robot for autonomous  /////////////
 
@@ -156,7 +160,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
             while (opModeIsActive() && (done == false)) {
 
                 telemetry.addData("current step", currentStep);
-                gingerTelemetry();
+                fredTelemetry();
                 //Update global sensor values
                 updatePoseStrafe();
                 gyroUpdate();
@@ -183,15 +187,15 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                 switch (currentStep) {
                     case("STRAFE_TO_CAROUSEL"):
-                        targetX = 20;
-                        targetY = 24;
+                        targetX = 26;
+                        targetY = 11;
                         targetTheta = 0;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
 
                     case("BACK_INTO_CAROUSEL"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 3) {
-                            drive(0.5,0,0);
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
+                            drive(0.4,-0.8,0);
                             done = false;
                         } else {
                             done = true;
@@ -199,9 +203,9 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         }
                         break;
                     case("DRIVE_TO_HUB_SU"):
-                        targetX = 0;
-                        targetY = 36;
-                        targetTheta = 90;
+                        targetX = -24;
+                        targetY = 15;
+                        targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case("BACK_AWAY_FROM_HUB"):
@@ -260,8 +264,8 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
 
                     case("RESET_ARM"):
-                        boolean angleDone = false;
-                        boolean extendDone = false;
+                       angleDone = false;
+                       extendDone = false;
                         double potTolerance = 0.05;
                         drive(0,0,0);
                         double armAngleBack = armHorizontal;
@@ -320,6 +324,24 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                             changeStep();
                         }
                         break;
+                    case"MOVE_ARM_UP":
+                        potTolerance = 0.05;
+                        if (Math.abs(potentiometer.getVoltage() - armUp) > potTolerance) {
+                            if (potentiometer.getVoltage() > armUp) {
+
+                                mU.setPower(-0.4);
+                            } else if (potentiometer.getVoltage() < armUp) {
+
+                                mU.setPower(0.4);
+                            }
+                        } else {
+                            mU.setPower(0);
+                            done = true;
+                            changeStep();
+
+                        }
+
+                        break;
 
                     case "MOVE_ARM":
                         //43 extension ticks per cm
@@ -333,37 +355,45 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         telemetry.addData("arm extension", mE.getCurrentPosition());
                         telemetry.addData("telescope pose (offset)", telescopePose);
                         sV.setPosition(wristPosition);
-                        if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
-                            if (potentiometer.getVoltage() > armAngle) {
+                        //points arm upward so arm can extend
 
-                                mU.setPower(-0.4);
-                            } else if (potentiometer.getVoltage() < armAngle) {
+                        double reachTolerance = 50;
+                        //Extension moves only if arm is pointed up
+                            if ((Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) && angleDone) {
+                                if (mE.getCurrentPosition() > armReach) {
 
-                                mU.setPower(0.4);
+                                    mE.setPower(-1);
+                                } else if (mE.getCurrentPosition() < armReach) {
+
+                                    mE.setPower(1);
+                                }
+                            } else {
+
+                                mE.setPower(0);
+                                extendDone = true;
                             }
-                        } else {
 
-                            mU.setPower(0);
-                            angleDone = true;
+                        telemetry.addData("extend done", extendDone);
+                        //Angle of arm only moves when extension is done
+                        if(extendDone) {
+                            if (Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) {
+                                if (potentiometer.getVoltage() > armAngle) {
 
+                                    mU.setPower(-0.4);
+                                } else if (potentiometer.getVoltage() < armAngle) {
+
+                                    mU.setPower(0.4);
+                                }
+                            } else {
+
+                                mU.setPower(0);
+                                angleDone = true;
+
+                            }
                         }
                         telemetry.addData("arm done", angleDone);
 
-                        double reachTolerance = 50;
-                        if ((Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) && angleDone) {
-                            if (mE.getCurrentPosition() > armReach) {
 
-                                mE.setPower(-0.65);
-                            } else if (mE.getCurrentPosition() < armReach) {
-
-                                mE.setPower(0.65);
-                            }
-                        } else {
-
-                            mE.setPower(0);
-                            extendDone = true;
-                        }
-                        telemetry.addData("extend done", extendDone);
 
                         if(angleDone && extendDone){
 
@@ -388,20 +418,11 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case "SPIN_SPINNER":
-//                        if (!fifthCheck) {
-//                            //if this step has not been run before, sets myTime to the runtime
-//                            myTime = runtime.seconds();
-//                            fifthCheck = true;
-//                        }
-                        double fifthTime = 4.5;
-
-                        if ((runtime.seconds()) <= fifthTime ){
-                            sSL.setPower(1);
-//                            sSR.setPower(-1);
-                        }
-                        if ((runtime.seconds()) > fifthTime) {
-                            sSL.setPower(0);
-//                            sSR.setPower(0);
+                        if (runtime.seconds() > 0 && runtime.seconds() < 3) {
+                            mSR.setPower(0.5);
+                            done = false;
+                        } else {
+                            mSR.setPower(0);
                             done = true;
                             changeStep();
                         }

@@ -153,8 +153,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 1.86;
-    double wristStraight = 0.36;
+    double armHorizontal = 2.54;
+    double armUp = 1.53;
+    double wristStraight = 0.34;
     //43 extension ticks per cm
     //old value: 2.24
 
@@ -926,7 +927,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double aggressivenessStrafe = 0.08;
         double aggressivenessForward = 0.04;//0.08; //0.04
         double PmaxStrafe = 1;
-        double PmaxForward = 0.5;
+        double PmaxForward = 1;
         //don't use atan - use atan2 (range of 180 to -180 instead of 90 to -90)
 //        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
 //        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
@@ -942,7 +943,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
-        forward = thresholdMotorPower(forward, 0.1); //0.25, 0.2, 0.1
+        forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
         strafe = thresholdMotorPower(strafe, 0.2);
 
 //        Adjust for quadrants
