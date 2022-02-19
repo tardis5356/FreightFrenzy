@@ -43,7 +43,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
     IntakeState intakeState = IntakeState.OFF;
 
-
     ElapsedTime intakeTimer = new ElapsedTime();
 
     @Override
@@ -181,7 +180,9 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
             //deploy odometers
             if (xButton) {
-
+                lowerOdometerServos();
+            }else{
+                raiseOdometerServos();
             }
 
             //controls wrist up-down motion
@@ -248,6 +249,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         telemetry.addData("neutralpositive", (-1 + scaleShift((potentiometer.getVoltage() - neutralUpright), 0, 4, 0, 1, 8) + 0.4));
                     } else {
                         mU.setPower(0);
+                        intakeState = IntakeState.OFF;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = neutralWrist;
@@ -284,6 +287,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     } else {
                         mU.setPower(0);
                         intakeState = IntakeState.TEN_SEC_INTAKE;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = backIntakeWrist;
@@ -320,6 +324,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         telemetry.addData("deliverypositive", (-1 + scaleShift((potentiometer.getVoltage() - deliveryUpright), 0, 4, 0, 1, 8) + 0.4));
                     } else {
                         mU.setPower(0);
+                        intakeState = IntakeState.OFF;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = deliveryWrist;
@@ -352,6 +358,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         telemetry.addData("capIntakepositive", (-1 + scaleShift((potentiometer.getVoltage() - capIntakeUpright), 0, 4, 0, 1, 8) + 0.4));
                     } else {
                         mU.setPower(0);
+                        intakeState = IntakeState.TEN_SEC_INTAKE;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = capIntakeWrist;
@@ -382,12 +390,13 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     if ((potentiometer.getVoltage() - capDeliveryUpright) >= toleranceU) {
                         mU.setPower(-scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0.3, 4, 1, 0, 4) - 0.4);
                         telemetry.addData("capDeliverynegative", (((((potentiometer.getVoltage() - capDeliveryUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-
                     } else if ((potentiometer.getVoltage() - capDeliveryUpright) < toleranceU) {
                         mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0, 4, 0, 1, 8) + 0.4);
                         telemetry.addData("capDeliverypositive", (-1 + scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0, 4, 0, 1, 8) + 0.4));
                     } else {
                         mU.setPower(0);
+                        intakeState = IntakeState.OFF;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = capDeliveryWrist;
@@ -424,6 +433,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         telemetry.addData("initpositive", (-1 + scaleShift((potentiometer.getVoltage() - initUpright), 0, 4, 0, 1, 8) + 0.4));
                     } else {
                         mU.setPower(0);
+                        intakeState = IntakeState.OFF;
+                        armState = ArmState.FREE;
                     }
 
                     sVPosition = initWrist;
@@ -472,6 +483,15 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             if (dpadUp2) { // no control
                 armState = ArmState.FREE;
             } else if (dpadDown2) {
+                intakeState = IntakeState.TOGGLE;
+            }
+
+            //auto arm overrides
+            if((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)){
+                armState = ArmState.FREE;
+            }
+            //auto intake overrides
+            if((rightTrigger2 != 0) || (leftTrigger2 != 0)){
                 intakeState = IntakeState.TOGGLE;
             }
 
