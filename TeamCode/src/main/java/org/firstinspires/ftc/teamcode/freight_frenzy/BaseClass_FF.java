@@ -144,6 +144,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double rotatePower = 0;
     double errInX = 0;
     double errInY = 0;
+    double telescopePose = 0;//arm offset when extension is at the limit switch
     double medianReplaceTolerance = 50;
 
 
@@ -286,13 +287,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal; //+ 0.51;
+        double armAngleBack = armHorizontal + 0.51;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         telemetry.addData("arm angle", potentiometer.getVoltage());
         telemetry.addData("wrist angle", sV.getPosition());
+        telemetry.addData("telescopePose", telescopePose);
         sV.setPosition(0.1);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
+            telescopePose = mE.getCurrentPosition();
             extendDone = true;
         }
         else if (!lAB.isPressed()) {
@@ -944,7 +947,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
         forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.2);
+        strafe = thresholdMotorPower(strafe, 0.3);
 
 //        Adjust for quadrants
 //        if (pose.y < targetY) {

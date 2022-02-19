@@ -23,20 +23,19 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
         telemetry.addData("Hub level", hubLevel);
         telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
-        telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
-        telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
-        telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
-        telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
-        telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
-        telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
-        telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
-        telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
+//        telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
+//        telemetry.addData("back distance filtered (in)", "" + String.format("%.2f", backDistanceFiltered));
+//        telemetry.addData("front distance (in)", "" + String.format("%.2f", frontDistance));
+//        telemetry.addData("front distance filtered (in)", "" + String.format("%.2f", frontDistanceFiltered));
+//        telemetry.addData("left distance (in)", "" + String.format("%.2f", leftDistance));
+//        telemetry.addData("left distance filtered (in)", "" + String.format("%.2f", leftDistanceFiltered));
+//        telemetry.addData("right distance (in)", "" + String.format("%.2f", rightDistance));
+//        telemetry.addData("right distance filtered (in)", "" + String.format("%.2f", rightDistanceFiltered));
         telemetry.addData("potentiometer angle", potentiometer.getVoltage());
         telemetry.addData("extension position", mE.getCurrentPosition());
         telemetry.addData("arm limit", lAB.isPressed());
 //        telemetry.addData("arm limit offset", armLimitOffset);
         telemetry.addData("Wrist angle", sV.getPosition());
-        telemetry.update();
     }
 
     public void gingerTelemetry() {
@@ -120,11 +119,11 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
                 //1.65
                 //1.55
-                armAngle = armHorizontal - 0.67;
+                armAngle = armHorizontal - 0.71;
                 //0.3
-                wristPosition = wristStraight - 0.06;
+                wristPosition = wristStraight + 0.1;
                 //700
-                armReach = telescopePose + 1600;
+                armReach = telescopePose + 800;
                 break;
 
             default:
