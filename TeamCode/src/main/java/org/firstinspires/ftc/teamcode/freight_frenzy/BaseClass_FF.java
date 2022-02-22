@@ -32,7 +32,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
     //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
     final static double wheelDistance = 16.25;
-            // 17.625; //separation between y-axis odometer wheels (in)
+    // 17.625; //separation between y-axis odometer wheels (in)
 
 
     OpenCvCamera webcam;
@@ -47,6 +47,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mU;//arm motor tilt
     DcMotor mSL;//arm motor tilt
     DcMotor mSR;//arm motor tilt
+    DcMotor mA;
+    DcMotor mR;
+    DcMotor mL;
+    CRServo mArm;
+
+
     Servo sV;//up-down wrist movement servo
 //    CRServo sSR;
     CRServo sSL;
@@ -54,12 +60,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
     CRServo sI;
     CRServo crsGW; //continuous rotation servo for Fred
     Servo sC; //cup servo for Fred
-    DcMotor mA;
     Servo sW;
-//    Servo sCG;
     Servo sG;
-//    Servo sCU;
-    Servo sA;
+    Servo sL;
+    Servo sR;
+    Servo sGA;
     Servo sYL; //odometer Yleft servo
     Servo sYR; //odometer Yright servo
     Servo sX; //odometer X servo
@@ -796,6 +801,45 @@ public abstract class BaseClass_FF extends LinearOpMode {
         encoderYLeftStart = mFL.getCurrentPosition();
         encoderYRightStart = mBL.getCurrentPosition();
 
+    }
+
+    public void defineComponentsPrimus() {
+        mBL = hardwareMap.dcMotor.get("mBL");//Back left
+        mBR = hardwareMap.dcMotor.get("mBR");
+        mFL = hardwareMap.dcMotor.get("mFL");
+        mFR = hardwareMap.dcMotor.get("mFR");//Front right
+
+        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mBL.setDirection(DcMotor.Direction.FORWARD);
+        mBR.setDirection(DcMotor.Direction.REVERSE);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+        mFL.setDirection(DcMotor.Direction.REVERSE);
+
+        sL = hardwareMap.servo.get("sL");
+        sR = hardwareMap.servo.get("sR");
+        mArm = hardwareMap.crservo.get("mArm");
+    }
+
+    public void defineComponentsOptimus() {
+
+        mL = hardwareMap.dcMotor.get("mL");
+        mR = hardwareMap.dcMotor.get("mR");
+        mA = hardwareMap.dcMotor.get("mA");
+
+        sG = hardwareMap.servo.get("sG");
+        sW = hardwareMap.servo.get("sW");
+
+        mL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        mL.setDirection(DcMotor.Direction.FORWARD);
+        mR.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public double scaleShift(double oldVal, double oldMin, double oldMax, double newMax, double newMin, double multiplier) {
