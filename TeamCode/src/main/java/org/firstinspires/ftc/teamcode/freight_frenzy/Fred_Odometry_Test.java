@@ -4,14 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Odometry_Test", group = "Autonomous")
+@Autonomous(name = "Fred_Odometry_Test", group = "Autonomous")
 
-public class Odometry_Test extends AutoBase_FF {
+public class Fred_Odometry_Test extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -37,7 +35,7 @@ public class Odometry_Test extends AutoBase_FF {
 //        steps.add("MOVE_X_SERVO");
         steps.add("TEST_2");
         //steps.add("ROTATE_TO_90");
-//        steps.add("TEST");
+        steps.add("TEST");
         steps.add("WAIT");
         steps.add("STOP");
 
@@ -60,7 +58,7 @@ public class Odometry_Test extends AutoBase_FF {
         CreateSteps();
 
         //Init functions
-        defineComponentsGinger();
+        defineComponentsFred();
         updatePoseStrafe();
 
         double targetDistanceX = 0;
@@ -141,6 +139,8 @@ public class Odometry_Test extends AutoBase_FF {
 //            changeHubLevel(elementPosition);
 //        }
 
+        lowerOdometerServos();
+
         ////////////////above code runs in initialization, readies robot for autonomous  /////////////
 
         waitForStart();
@@ -203,16 +203,16 @@ public class Odometry_Test extends AutoBase_FF {
                         changeStep();
                         break;
 
-                    case "HELLO_WORLD":
-                        telemetry.addLine("Hello World");
-                        telemetry.update();
-                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
-                            done = false;
-                        } else {
-                            done = true;
-                            changeStep();
-                        }
-                        break;
+//                    case "HELLO_WORLD":
+//                        telemetry.addLine("Hello World");
+//                        telemetry.update();
+//                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
+//                            done = false;
+//                        } else {
+//                            done = true;
+//                            changeStep();
+//                        }
+//                        break;
 
                     case "DRIVE_FORWARD":
                         targetX = 0;

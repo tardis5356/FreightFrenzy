@@ -29,9 +29,9 @@ import java.util.Arrays;
 public abstract class BaseClass_FF extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 35/25.4; //black and white 60 mm omni wheel rev robotics
+    final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
     //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
-    final static double wheelDistance = 16;
+    final static double wheelDistance = 16.25;
             // 17.625; //separation between y-axis odometer wheels (in)
 
 
@@ -58,15 +58,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sW;
 //    Servo sCG;
     Servo sG;
-    Servo sL;
-    Servo sR;
 //    Servo sCU;
     Servo sA;
     Servo sYL; //odometer Yleft servo
     Servo sYR; //odometer Yright servo
     Servo sX; //odometer X servo
+    Servo sEB; //encoder back servo - Fred
+    Servo sEL; //encoder left servo - Fred
+    Servo sER; //encoder right servo - Fred
     CRServo sS;
-    CRServo mArm;
     DistanceSensor distance1;
     DistanceSensor distance2;
     CRServo crsIR;
@@ -144,6 +144,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double rotatePower = 0;
     double errInX = 0;
     double errInY = 0;
+    double telescopePose = 0;//arm offset when extension is at the limit switch
     double medianReplaceTolerance = 50;
 
 
@@ -153,10 +154,35 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 1.86;
-    double wristStraight = 0.36;
+    double armHorizontal = 2.54;
+    double armUp = 1.53;
+    double wristStraight = 0.34;
     //43 extension ticks per cm
     //old value: 2.24
+
+    public void lowerOdometerServos() {
+
+        sEB.setPosition(0.43);
+        sEL.setPosition(0);
+        sER.setPosition(0.23);
+
+        telemetry.addData("sEB positon", sEB.getPosition());
+        telemetry.addData("sEL positon", sEL.getPosition());
+        telemetry.addData("sER positon", sER.getPosition());
+
+    }
+
+    public void raiseOdometerServos() {
+
+        sEB.setPosition(1);
+        sEL.setPosition(1);
+        sER.setPosition(1);
+
+        telemetry.addData("sEB positon", sEB.getPosition());
+        telemetry.addData("sEL positon", sEL.getPosition());
+        telemetry.addData("sER positon", sER.getPosition());
+
+    }
 
     public void configDistanceSensors() {
 
@@ -261,13 +287,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal; //+ 0.51;
+        double armAngleBack = armHorizontal + 0.51;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         telemetry.addData("arm angle", potentiometer.getVoltage());
         telemetry.addData("wrist angle", sV.getPosition());
+        telemetry.addData("telescopePose", telescopePose);
         sV.setPosition(0.1);
         if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
+            telescopePose = mE.getCurrentPosition();
             extendDone = true;
         }
         else if (!lAB.isPressed()) {
@@ -588,29 +616,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     }
 
-    public void defineComponentsPrimus() {
-
-        mBL = hardwareMap.dcMotor.get("mBL");//Back left
-        mBR = hardwareMap.dcMotor.get("mBR");
-        mFL = hardwareMap.dcMotor.get("mFL");
-        mFR = hardwareMap.dcMotor.get("mFR");//Front right
-
-        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        mBL.setDirection(DcMotor.Direction.FORWARD);
-        mBR.setDirection(DcMotor.Direction.REVERSE);
-        mFR.setDirection(DcMotor.Direction.REVERSE);
-        mFL.setDirection(DcMotor.Direction.REVERSE);
-
-        sL = hardwareMap.servo.get("sL");
-        sR = hardwareMap.servo.get("sR");
-        mArm = hardwareMap.crservo.get("mArm");
-
-    }
-
     //Defines all components for init()
     public void defineComponentsFred() {
 
@@ -627,6 +632,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         sV = hardwareMap.servo.get("sV");//up-down wrist movement servo
         //sWH = hardwareMap.servo.get("sH");//left-right wrist movement servo
         sI = hardwareMap.crservo.get("sI");//intake servo
+        sEB = hardwareMap.servo.get("sEB");//back encoder servo
+        sEL = hardwareMap.servo.get("sEL");//left encoder servo
+        sER = hardwareMap.servo.get("sER");//right encoder servo
 //        sCG = hardwareMap.servo.get("sCG");//capstone gripper
 //        sCU = hardwareMap.servo.get("sCU");//capstone rotate servo
         //limit for telescope arm
@@ -829,7 +837,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         int currEnX = (mFR.getCurrentPosition() - encoderXStart);  // Motor Front Right & Odometer X, Port #2
         //changed sign to negative when encoder flipped - 1/17/21
         int currEnYLeft = (mFL.getCurrentPosition() - encoderYLeftStart); // Motor Front Left & Odometer Y-Left, Port #0
-        int currEnYRight = (mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
+        int currEnYRight = -(mBL.getCurrentPosition() - encoderYRightStart); // Motor Back Left & Odometer Y-Right, Port #3
 
         //original encoder statements for reference
         //int currEnYLeft = mFL.getCurrentPosition() - encoderYLeftStart; // Motor Front Left & Odometer Y-Left, Port #0
@@ -844,7 +852,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (-8.25/(16/2));
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8/(16.25/2));
         //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
@@ -858,8 +866,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double changeEnY = (changeEnYLeft + changeEnYRight) / 2  ;
 
         //Update odometer values (+, -)
-        posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) - (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
-        posX += (Math.sin(Math.toRadians(gyroZ)) * changeEnY) + (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
+        posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) + (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
+        posX -= (Math.sin(Math.toRadians(gyroZ)) * changeEnY) - (Math.cos(Math.toRadians(gyroZ)) * changeEnX);
         //posY += (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) - (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
         //posX -= (Math.sin(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnY) + (Math.cos(Math.toRadians(prevGyro + (changeGyro / 2))) * changeEnX);
 
@@ -893,16 +901,24 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
 
         //Robot orientation vs distance to target (in degrees)
-        if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
-            thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
-        } else {
+        if (distanceToTarget > 5) {
+            //if the distance is small don't use rotatePercent
+            if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
+                thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
+            }
+        }
+        else {
             thetaRobot = targetTheta;
         }
 
+        double aggressivenessRotate = 0.04;//0.08; //0.04
+        double PmaxRotate = 0.5;
         //Positive rotation = clockwise = decrease in theta
-        double rotate = (1 / (1 + Math.pow(Math.E, -(0.03* (gyroZ - thetaRobot))))) - 0.5;
+        double rotate = PmaxRotate*((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate* (gyroZ - targetTheta))))) - 1);
 
-       // double rotate = (1 / (1 + Math.pow(Math.E, -(0.13 * (gyroZ - thetaRobot))))) - 0.5;
+        telemetry.addData("thetaRobot", thetaRobot);
+
+        // double rotate = (1 / (1 + Math.pow(Math.E, -(0.03 * (gyroZ - thetaRobot))))) - 0.5;
 
         //Threshold values for motor power
         rotate = thresholdMotorPower(rotate, 0.1);
@@ -914,21 +930,24 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double aggressivenessStrafe = 0.08;
         double aggressivenessForward = 0.04;//0.08; //0.04
         double PmaxStrafe = 1;
-        double PmaxForward = 0.5;
+        double PmaxForward = 1;
         //don't use atan - use atan2 (range of 180 to -180 instead of 90 to -90)
-        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
-        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+//        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY)+ Math.toRadians(rotate * 20))))))) - 1);
+//        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY) + Math.toRadians(rotate * 20))))))) - 1);
+
+        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
+        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY))))))) - 1);
 
 //        double strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTarget * Math.cos(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 //        double forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTarget * Math.sin(-pose.theta - Math.atan(distanceX / distanceY) + Math.toRadians(rotate * 20))))))) - 1);
 
-        errInX = distanceToTarget * Math.sin(pose.theta + Math.atan(distanceX / distanceY));
-        errInY = distanceToTarget * Math.cos(pose.theta + Math.atan(distanceX / distanceY));
+        errInX = distanceToTarget * Math.sin(pose.theta + Math.atan2(distanceX, distanceY));
+        errInY = distanceToTarget * Math.cos(pose.theta + Math.atan2(distanceX, distanceY));
 
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
-        forward = thresholdMotorPower(forward, 0.1); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.2);
+        forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
+        strafe = thresholdMotorPower(strafe, 0.4);
 
 //        Adjust for quadrants
 //        if (pose.y < targetY) {
@@ -950,11 +969,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 //        drive(forward, strafe, -rotate);
 
-          drive(-forward, -strafe, rotate);
+//        forward = 0;
+//        strafe = 0;
+
+          drive(-forward, -strafe, -rotate);
+
 
         forwardPower = -forward;
         strafePower = -strafe;
-        rotatePower = rotate;
+        rotatePower = -rotate;
 
 
         //theoretically the right command

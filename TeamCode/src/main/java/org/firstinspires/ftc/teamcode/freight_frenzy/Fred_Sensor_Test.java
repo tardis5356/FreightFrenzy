@@ -15,13 +15,14 @@ public class Fred_Sensor_Test extends BaseClass_FF {
         defineComponentsFred();
 
         telemetry.addData("Status", "Initialized");
+        lowerOdometerServos();
         telemetry.update();
         waitForStart();
-
 
         while (opModeIsActive()) {
             gyroUpdate();
             readDistanceSensors();
+
 
             telemetry.addData("gyro",gyroZ);
             updatePoseStrafe();
@@ -33,14 +34,22 @@ public class Fred_Sensor_Test extends BaseClass_FF {
 //            telemetry.addData("right odometer wheel",mBL.getCurrentPosition());
 //            telemetry.addData("x pos",pose.x);
 //            telemetry.addData("y pos",pose.y);
-            telemetry.addData("front right", mFR.getCurrentPosition());
-            telemetry.addData("front left", mFL.getCurrentPosition());
-            telemetry.addData("back right", mBR.getCurrentPosition());
-            telemetry.addData("back left", mBL.getCurrentPosition());
-            telemetry.addData(" back right distance", "" + String.format("%.2f in", Range.clip(rangeSensorBack.getDistance(DistanceUnit.INCH), 0, 200)));
-            telemetry.addData(" left distance", "" + String.format("%.2f in", Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200)));
-            telemetry.addData(" right distance", "" + String.format("%.2f in", Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200)));
-            telemetry.addData(" front distance", "" + String.format("%.2f in", Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200)));
+            telemetry.addData("left odometer wheel",mFL.getCurrentPosition());
+            telemetry.addData("back odometer wheel",mFR.getCurrentPosition());
+            telemetry.addData("right odometer wheel", mBL.getCurrentPosition());
+            telemetry.addData("x pos",pose.x);
+            telemetry.addData("y pos",pose.y);
+            telemetry.addData("currEnX", (mFR.getCurrentPosition() - encoderXStart));
+            telemetry.addData("currEnYLeft",(mFL.getCurrentPosition() - encoderYLeftStart));
+            telemetry.addData("currEnYRight",-(mBL.getCurrentPosition() - encoderYRightStart));
+//            telemetry.addData("front right", mFR.getCurrentPosition());
+//            telemetry.addData("front left", mFL.getCurrentPosition());
+//            telemetry.addData("back right", mBR.getCurrentPosition());
+//            telemetry.addData("back left", mBL.getCurrentPosition());
+//            telemetry.addData(" back right distance", "" + String.format("%.2f in", Range.clip(rangeSensorBack.getDistance(DistanceUnit.INCH), 0, 200)));
+//            telemetry.addData(" left distance", "" + String.format("%.2f in", Range.clip(rangeSensorLeft.getDistance(DistanceUnit.INCH), 0, 200)));
+//            telemetry.addData(" right distance", "" + String.format("%.2f in", Range.clip(rangeSensorRight.getDistance(DistanceUnit.INCH), 0, 200)));
+//            telemetry.addData(" front distance", "" + String.format("%.2f in", Range.clip(rangeSensorFront.getDistance(DistanceUnit.INCH), 0, 200)));
             telemetry.addData("potentiometer angle", potentiometer.getVoltage());
             telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
             telemetry.addData("back distance (in)", "" + String.format("%.2f", backDistance));
