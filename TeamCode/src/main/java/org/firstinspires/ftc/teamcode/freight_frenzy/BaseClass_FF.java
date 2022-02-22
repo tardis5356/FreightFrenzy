@@ -947,7 +947,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //sin and cos may need to be changed in the equations--but why?
         //Threshold values for motor power
         forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
-        strafe = thresholdMotorPower(strafe, 0.3);
+        strafe = thresholdMotorPower(strafe, 0.4);
 
 //        Adjust for quadrants
 //        if (pose.y < targetY) {

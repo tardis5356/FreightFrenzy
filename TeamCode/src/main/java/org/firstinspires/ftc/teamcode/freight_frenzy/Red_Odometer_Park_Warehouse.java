@@ -9,9 +9,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Blue_Odometer_Park_Warehouse", group = "Autonomous")
+@Autonomous(name = "Red_Odometer_Park_Warehouse", group = "Autonomous")
 
-public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
+public class Red_Odometer_Park_Warehouse extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -191,7 +191,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                 switch (currentStep) {
                     case("STRAFE_TO_CAROUSEL"):
-                        targetX = 26;
+                        targetX = -26;
                         targetY = 11;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
@@ -199,7 +199,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                     case("BACK_INTO_CAROUSEL"):
                         if (runtime.seconds() > 0 && runtime.seconds() < 1) {
-                            drive(0.8,-0.6,0);
+                            drive(0.4,0.8,0);
                             done = false;
                         } else {
                             done = true;
@@ -207,16 +207,16 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         }
                         break;
                     case("DRIVE_TO_HUB_SU"):
-                        targetX = 22;
+                        targetX = -22;
                         targetY = 40;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
                     case("DRIVE_TO_HUB_SU_2"):
-                        targetX = 0;
+                        targetX = 2;
                         targetY = 40;
-                        targetTheta = 90;
+                        targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
@@ -228,21 +228,21 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case("STRAFE_FROM_HUB"):
-                        targetX = -2;
+                        targetX = 2;
                         targetY = 12;
-                        targetTheta = 90;
+                        targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case("GO_NEAR_WAREHOUSE"):
-                        targetX = -44;
+                        targetX = 44;
                         targetY = 12;
-                        targetTheta = 90;
+                        targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case("STRAFE_TSE"):
-                        targetX = -44;
-                        targetY = 20;
-                        targetTheta = 90;
+                        targetX = 44;
+                        targetY = 24;
+                        targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case("RAISE_ODOMETERS"):
@@ -389,10 +389,10 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                             if ((Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) && extendDone) {
                                 if (potentiometer.getVoltage() > armAngle) {
 
-                                    mU.setPower(-0.5);
+                                    mU.setPower(-0.4);
                                 } else if (potentiometer.getVoltage() < armAngle) {
 
-                                    mU.setPower(0.5);
+                                    mU.setPower(0.4);
                                 }
                             } else {
 
