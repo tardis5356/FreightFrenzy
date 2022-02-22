@@ -15,7 +15,7 @@ public class Primus_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        // step (using the FTC Robot Controller app on the phone)
 
         defineComponentsPrimus();
 
@@ -27,30 +27,33 @@ public class Primus_TeleOp extends BaseClass_FF {    // LinearOpMode {
             double leftY1 = gamepad1.left_stick_y;
             double rightX1 = gamepad1.right_stick_x;
 
-
+//++
             //Gamepad 2 Variables
             double leftY2 = gamepad2.left_stick_y;
             double rightTrigger2 = gamepad2.right_trigger;
             double leftTrigger2 = gamepad2.left_trigger;
 
+            //Drivetrain controls
             mBL.setPower(leftY1 - rightX1);
             mBR.setPower(leftY1 + rightX1);
-            mFL.setPower(leftY1 - rightX1);
+            mFL.setPower(-leftY1 + rightX1);
             mFR.setPower(leftY1 + rightX1);
 
-            sArm.setPower(leftY2);
+            //Arm Motor Controls
+            mArm.setPower(leftY2);
 
             if(rightTrigger2 != 0){
-                sL.setPosition(0.75);
-                sR.setPosition(0.75);
-            } else if(leftTrigger2 != 0){
-                sL.setPosition(0.2);
-                sR.setPosition(0.2);
+                //sL.setPosition(0.3);
+                sR.setPosition(0.8);
+            } else if (leftTrigger2 != 0){
+                sL.setPosition(0.3);
+                //sR.setPosition(0.3);
             } else {
-                sL.setPosition(0);
-                sR.setPosition(0);
+                sL.setPosition(0.8);
+                sR.setPosition(0.3);
             }
 
+          
         }
 
 

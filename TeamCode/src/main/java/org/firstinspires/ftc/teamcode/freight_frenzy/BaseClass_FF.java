@@ -66,7 +66,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     Servo sYR; //odometer Yright servo
     Servo sX; //odometer X servo
     CRServo sS;
-    CRServo sArm;
+    CRServo mArm;
     DistanceSensor distance1;
     DistanceSensor distance2;
     CRServo crsIR;
@@ -597,17 +597,17 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         mBL.setDirection(DcMotor.Direction.FORWARD);
         mBR.setDirection(DcMotor.Direction.REVERSE);
-        mFL.setDirection(DcMotor.Direction.FORWARD);
         mFR.setDirection(DcMotor.Direction.REVERSE);
+        mFL.setDirection(DcMotor.Direction.REVERSE);
 
         sL = hardwareMap.servo.get("sL");
         sR = hardwareMap.servo.get("sR");
-        sArm = hardwareMap.crservo.get("sArm");
+        mArm = hardwareMap.crservo.get("mArm");
 
     }
 
