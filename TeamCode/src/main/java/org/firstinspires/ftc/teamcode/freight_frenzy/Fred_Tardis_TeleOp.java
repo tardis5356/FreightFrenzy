@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -54,7 +55,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         boolean previousX2State = false;
         boolean grippingCapstone = false;
         boolean motorPowerFast = false;
-        boolean intaking = false;
+        boolean extensionReset = false;
         boolean wirelessConnected = true;
         double sVPosition = sV.getPosition();
 //        double sCUPosition = sCU.getPosition();
@@ -75,22 +76,22 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double initUpright = neutralUpright + 1.8;
         double capIntakeUpright = neutralUpright + 2.1;
         double capDeliveryUpright = neutralUpright + 0.6;
-        double deliveryUpright = neutralUpright - 0.21;
+        double backDeliveryUpright = neutralUpright - 0.21;
         double backIntakeUpright = neutralUpright - 0.9;
 
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
         double capIntakeWrist = neutralWrist - 0.17;
         double capDeliveryWrist = neutralWrist - 0.35;
-        double deliveryWrist = neutralWrist + 0.25;
+        double backDeliveryWrist = neutralWrist + 0.25;
         double backIntakeWrist = neutralWrist + 0.2;
 
         double neutralExtension = 100;
         double initExtension = 100;
-        double capIntakeExtension = 400;
-        double capDeliveryExtension = 2400;
-        double deliveryExtension = 600;
-        double backIntakeExtension = 1500;
+        double capIntakeExtension = 300;
+        double capDeliveryExtension = 900;
+        double backDeliveryExtension = 500;
+        double backIntakeExtension = 800;
 
         double toleranceU = 0;
         double toleranceE = 0;
@@ -140,28 +141,30 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             boolean dpadLeft2 = (gamepad2.dpad_left);
             boolean dpadRight2 = (gamepad2.dpad_right);
 
-            telemetry.addData("prevRBumper", previousRightBumperState);
+//            telemetry.addData("prevRBumper", previousRightBumperState);
 //            telemetry.addData("capstone gripper servo", sCG.getPosition());
-            telemetry.addData("leftTrigger2", leftTrigger2);
-            telemetry.addData("rightTrigger2", rightTrigger2);
-            telemetry.addData("LeftY1 position", leftY1);
-            telemetry.addData("LeftX1 position", leftX1);
-            telemetry.addData("RightX1 position", rightX1);
+//            telemetry.addData("leftTrigger2", leftTrigger2);
+//            telemetry.addData("rightTrigger2", rightTrigger2);
+//            telemetry.addData("LeftY1 position", leftY1);
+//            telemetry.addData("LeftX1 position", leftX1);
+//            telemetry.addData("RightX1 position", rightX1);
             telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
             telemetry.addData("Motor power fast", motorPowerFast);
-            telemetry.addData("Wireless connection connected", wirelessConnected);
-            telemetry.addData("Left Bumper 2", leftBumper2);
-            telemetry.addData("Right Bumper 2", rightBumper2);
-            telemetry.addData("aButton is pressed", aButton);
+//            telemetry.addData("Wireless connection connected", wirelessConnected);
+//            telemetry.addData("Left Bumper 2", leftBumper2);
+//            telemetry.addData("Right Bumper 2", rightBumper2);
+//            telemetry.addData("aButton is pressed", aButton);
             telemetry.addData("Wrist angle", sVPosition);
-            telemetry.addData("Arm angle", mU.getCurrentPosition());
+//            telemetry.addData("Arm angle", mU.getCurrentPosition());
             telemetry.addData("potentiometer voltage", potentiometer.getVoltage());
             telemetry.addData("extension position", mE.getCurrentPosition());
             telemetry.addData("arm limit", lAB.isPressed());
             telemetry.addData("arm limit offset", armLimitOffset);
-            telemetry.addData("power", power);
-            telemetry.addData("time", time);
-            telemetry.addData("timeCount", timeCount);
+            telemetry.addData("intake state", intakeState);
+            telemetry.addData("arm state", armState);
+            telemetry.addData("extensionReset", extensionReset);
+            telemetry.addData("mE mode", mE.getMode());
+            telemetry.addData("mE current position", mE.getCurrentPosition());
             telemetry.update();
 
             //drives robot
@@ -195,10 +198,20 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             sVPosition = sV.getPosition();
 
             //sets arm limit based on limit switch
-            if (!bButton2 && !aButton2) {
+//            if (!bButton2 && !aButton2) {
+//                if (lAB.isPressed()) {
+//                    armLimitOffset = mE.getCurrentPosition();
+//                }
+//            }
+
+            if (!extensionReset) {
+                mE.setPower(-1);
                 if (lAB.isPressed()) {
-                    armLimitOffset = mE.getCurrentPosition();
+                    mE.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    extensionReset = true;
                 }
+            }else if(extensionReset){
+                mE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             //arm
@@ -221,222 +234,73 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     toleranceU = 0.3;
                     toleranceE = 100;
 
-                    if (armLimitOffset != 0) {
-                        if (Math.abs(potentiometer.getVoltage() - neutralUpright) < 0.5) { //prevent upright motor from being overstressed
-                            if ((mE.getCurrentPosition() - armLimitOffset - neutralExtension) >= toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - neutralExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                                telemetry.addData("-mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - neutralExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else if ((mE.getCurrentPosition() - armLimitOffset - neutralExtension) < toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - neutralExtension), 0, 600, 1, 0, 1));//1
-                                telemetry.addData("+mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - neutralExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else {
-                                mE.setPower(0);
-                            }
+                    pidControlArm(neutralUpright);
+                    //pidControlExtension(neutralExtension);
+                    if (Math.abs(potentiometer.getVoltage() - neutralUpright) < 0.5) { //prevent upright motor from being overstressed
+                        telemetry.addData("abs", Math.abs(mE.getCurrentPosition() - neutralExtension));
+                        if ((mE.getCurrentPosition() - neutralExtension) >= toleranceE) {
+                            mE.setPower(-0.5);
+                        } else if ((mE.getCurrentPosition() - neutralExtension) < toleranceE) {
+                            mE.setPower(0.5);
                         }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
+                        if (Math.abs(mE.getCurrentPosition() - neutralExtension) < toleranceE){
+                            mE.setPower(0);
                         }
                     }
-
-                    if ((potentiometer.getVoltage() - neutralUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - neutralUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("neutralnegative", (((((potentiometer.getVoltage() - neutralUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-
-                    } else if ((potentiometer.getVoltage() - neutralUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - neutralUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("neutralpositive", (-1 + scaleShift((potentiometer.getVoltage() - neutralUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.OFF;
-                        armState = ArmState.FREE;
-                    }
-
                     sVPosition = neutralWrist;
                     break;
                 case BACK_INTAKE:
                     toleranceU = 0.4;
                     toleranceE = 100;
 
-                    if (armLimitOffset != 0) {
-                        if (Math.abs(potentiometer.getVoltage() - backIntakeUpright) < 0.5) { //prevent upright motor from being overstressed
-                            if ((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension) >= toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                                telemetry.addData("-mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else if ((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension) < toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension), 0, 600, 1, 0, 1));//1
-                                telemetry.addData("+mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - backIntakeExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else {
-                                mE.setPower(0);
-                            }
-                        }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
-                        }
-                    }
 
-                    if ((potentiometer.getVoltage() - backIntakeUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - backIntakeUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("backIntakenegative", (((((potentiometer.getVoltage() - backIntakeUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-                    } else if ((potentiometer.getVoltage() - backIntakeUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - backIntakeUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("backIntakepositive", (-1 + scaleShift((potentiometer.getVoltage() - backIntakeUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.TEN_SEC_INTAKE;
-                        armState = ArmState.FREE;
-                    }
-
+                    //intakeState = IntakeState.TEN_SEC_INTAKE;
+                    //armState = ArmState.FREE;
+                    pidControlArm(backIntakeUpright);
+                    pidControlExtension(backIntakeExtension);
                     sVPosition = backIntakeWrist;
                     break;
                 case BACK_DELIVERY:
                     toleranceU = 0.15;
                     toleranceE = 200;
-
-                    if (armLimitOffset != 0) {
-                        if (Math.abs(potentiometer.getVoltage() - deliveryUpright) < 0.5) { //prevent upright motor from being overstressed
-                            if ((mE.getCurrentPosition() - armLimitOffset - deliveryExtension) >= toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - deliveryExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                                telemetry.addData("-mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - deliveryExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else if ((mE.getCurrentPosition() - armLimitOffset - deliveryExtension) < toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - deliveryExtension), 0, 600, 1, 0, 1));//1
-                                telemetry.addData("+mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - deliveryExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else {
-                                mE.setPower(0);
-                            }
-                        }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
-                        }
-                    }
-
-                    if ((potentiometer.getVoltage() - deliveryUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - deliveryUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("deliverynegative", (((((potentiometer.getVoltage() - deliveryUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-
-                    } else if ((potentiometer.getVoltage() - deliveryUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - deliveryUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("deliverypositive", (-1 + scaleShift((potentiometer.getVoltage() - deliveryUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.OFF;
-                        armState = ArmState.FREE;
-                    }
-
-                    sVPosition = deliveryWrist;
+//                        intakeState = IntakeState.OFF;
+//                        armState = ArmState.FREE;
+                    pidControlArm(backDeliveryUpright);
+                    pidControlExtension(backDeliveryExtension);
+                    sVPosition = backDeliveryWrist;
                     break;
                 case CAP_INTAKE:
                     toleranceU = 0.1;
                     toleranceE = 100;
 
-                    if (armLimitOffset != 0) {
-                        if ((mE.getCurrentPosition() - armLimitOffset - capIntakeExtension) >= toleranceE) {
-                            mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - capIntakeExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                        } else if ((mE.getCurrentPosition() - armLimitOffset - capIntakeExtension) < toleranceE) {
-                            mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - capIntakeExtension), 0, 600, 1, 0, 1));//1
-                        } else {
-                            mE.setPower(0);
-                        }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
-                        }
-                    }
 
-                    if ((potentiometer.getVoltage() - capIntakeUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - capIntakeUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("capIntakenegative", (((((potentiometer.getVoltage() - capIntakeUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
+//                        intakeState = IntakeState.TEN_SEC_INTAKE;
+//                        armState = ArmState.FREE;
 
-                    } else if ((potentiometer.getVoltage() - capIntakeUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - capIntakeUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("capIntakepositive", (-1 + scaleShift((potentiometer.getVoltage() - capIntakeUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.TEN_SEC_INTAKE;
-                        armState = ArmState.FREE;
-                    }
-
+                    pidControlArm(capIntakeUpright);
+                    pidControlExtension(capIntakeExtension);
                     sVPosition = capIntakeWrist;
                     break;
                 case CAP_DELIVERY:
                     toleranceU = 0.1;
                     toleranceE = 100;
 
-                    if (armLimitOffset != 0) {
-                        if (Math.abs(potentiometer.getVoltage() - capDeliveryUpright) < 0.5) { //prevent upright motor from being overstressed
-                            if ((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension) >= toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                                telemetry.addData("-mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else if ((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension) < toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension), 0, 600, 1, 0, 1));//1
-                                telemetry.addData("+mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - capDeliveryExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else {
-                                mE.setPower(0);
-                            }
-                        }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
-                        }
-                    }
+//                        intakeState = IntakeState.OFF;
+//                        armState = ArmState.FREE;
 
-                    if ((potentiometer.getVoltage() - capDeliveryUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("capDeliverynegative", (((((potentiometer.getVoltage() - capDeliveryUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-                    } else if ((potentiometer.getVoltage() - capDeliveryUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("capDeliverypositive", (-1 + scaleShift((potentiometer.getVoltage() - capDeliveryUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.OFF;
-                        armState = ArmState.FREE;
-                    }
-
+                    pidControlArm(capDeliveryUpright);
+                    pidControlExtension(capDeliveryExtension);
                     sVPosition = capDeliveryWrist;
                     break;
                 case INIT:
                     toleranceU = 0.2;
                     toleranceE = 100;
 
-                    if (armLimitOffset != 0) {
-                        if (Math.abs(potentiometer.getVoltage() - initUpright) < 0.5) { //prevent upright motor from being overstressed
-                            if ((mE.getCurrentPosition() - armLimitOffset - initExtension) >= toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - initExtension), 0, 600, 1, 0, 1) - 0.2);//-1
-                                telemetry.addData("-mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - initExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else if ((mE.getCurrentPosition() - armLimitOffset - initExtension) < toleranceE) {
-                                mE.setPower(-scaleShift((mE.getCurrentPosition() - armLimitOffset - initExtension), 0, 600, 1, 0, 1));//1
-                                telemetry.addData("+mE", scaleShift((mE.getCurrentPosition() - armLimitOffset - initExtension), 0, 600, 1, 0, 1) + 0.2);
-                            } else {
-                                mE.setPower(0);
-                            }
-                        }
-                    } else {
-                        mE.setPower(-0.5);
-                        if (lAB.isPressed()) {
-                            armLimitOffset = mE.getCurrentPosition();
-                        }
-                    }
+//                        intakeState = IntakeState.OFF;
+//                        armState = ArmState.FREE;
 
-                    if ((potentiometer.getVoltage() - initUpright) >= toleranceU) {
-                        mU.setPower(-scaleShift((potentiometer.getVoltage() - initUpright), 0.3, 4, 1, 0, 4) - 0.4);
-                        telemetry.addData("initnegative", (((((potentiometer.getVoltage() - initUpright) - 0) * (1 - 0)) / (4 - 0)) + 0));
-
-                    } else if ((potentiometer.getVoltage() - initUpright) < toleranceU) {
-                        mU.setPower(-1 + scaleShift((potentiometer.getVoltage() - initUpright), 0, 4, 0, 1, 8) + 0.4);
-                        telemetry.addData("initpositive", (-1 + scaleShift((potentiometer.getVoltage() - initUpright), 0, 4, 0, 1, 8) + 0.4));
-                    } else {
-                        mU.setPower(0);
-                        intakeState = IntakeState.OFF;
-                        armState = ArmState.FREE;
-                    }
-
+                    pidControlArm(initUpright);
+                    pidControlExtension(initExtension);
                     sVPosition = initWrist;
                     break;
                 case FREE:

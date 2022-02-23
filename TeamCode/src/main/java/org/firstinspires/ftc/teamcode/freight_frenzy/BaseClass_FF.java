@@ -329,9 +329,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
         }
 
-
-
-
     public void moveToDistFromWall(double targetDistanceX, double targetDistanceY, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
         //uses distance sensor readings to drive to a set position in x and y, uses gyro to protect against drift
 
@@ -451,7 +448,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-
     //uses range sensors to square on wall
     public void squareOnWallRange(double squareThreshold) {
         currLDistRange = rangeSensorLeft.getDistance(DistanceUnit.CM);
@@ -474,37 +470,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //   drive(0, 0, -(currLDistRange-currRDistRange)/10); //-
     }
 
-   //goes to angle depending on a potentiometer reading
-    public double getElevAngle(double voltage) {
-
-        double elevAngle;
-
-        //double targetPotVolt = 0.0103 * targetElevAngle + 1.074;
-        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
-        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
-        //elevAngle = (voltage - 1.074)/0.0103; OLD
-        //elevAngle = (voltage - 1.0879)/0.01057;
-        elevAngle = (voltage - 1.10809)/0.009864; // 5/16
-        return elevAngle;
-    }
-//    public void goToAngle(double inputElevAngle) {
-//        //angle units are in degrees
-//        targetElevAngle = Range.clip(inputElevAngle, -5, 35);
-//        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
-//        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
-//        double voltage = potentiometer.getVoltage();
-//        double voltageThreshold = 0.01;
-//        if (voltage - targetPotVolt > voltageThreshold) {
-//
-//            mE.setPower(0.8);
-//        } else if (voltage - targetPotVolt < -voltageThreshold) {
-//
-//            mE.setPower(-0.8);
-//        } else {
-//
-//            mE.setPower(0);
-//        }
-//    }
 
     public static double ticksToInches(int ticks) {
         //converts ticks to inches
@@ -1367,6 +1332,75 @@ public abstract class BaseClass_FF extends LinearOpMode {
         System.out.println("");
         int totalElements = values.length;
         System.out.println("# elements is : " + totalElements);
+    }
+
+    double armErrorPrior = 0;
+    double armIntegralPrior = 0;
+    double armLastLoopTime = 0;
+    double armPowerCap = 1;
+
+    public void pidControlArm(double desiredPosition){
+        if(gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right){
+            double changeInTime = (runtime.milliseconds() - armLastLoopTime)/1000;
+            double error = 0;
+            double integral = 0;
+            double derivative = 0;
+            double output = 0;
+            double kp = 1.5;
+            double ki = 0;
+            double kd = 0;
+            error = (desiredPosition - potentiometer.getVoltage());
+            if(Math.abs(error) > 0.1){
+                armIntegralPrior = 0;
+            }
+            integral = armIntegralPrior + error*changeInTime;
+            derivative = (error-armErrorPrior)/changeInTime;
+            output = kp*error + ki*integral + kd*derivative;
+            if(Math.abs(output) > armPowerCap){
+                output = Math.signum(output)*armPowerCap;
+            }
+            armErrorPrior = error;
+            armIntegralPrior = integral;
+            armLastLoopTime = runtime.milliseconds();
+            mU.setPower(output);
+        }
+        else{
+            armLastLoopTime = runtime.milliseconds();
+        }
+    }
+    double extensionErrorPrior = 0;
+    double extensionIntegralPrior = 0;
+    double extensionLastLoopTime = 0;
+    double extensionPowerCap = 1;
+
+    public void pidControlExtension(double desiredPosition){
+        if(gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right){
+            double changeInTime = (runtime.milliseconds() - extensionLastLoopTime)/1000;
+            double error = 0;
+            double integral = 0;
+            double derivative = 0;
+            double output = 0;
+            double kp = 1;
+            double ki = 0;
+            double kd = 0;
+            error = (desiredPosition - potentiometer.getVoltage());
+            if(Math.abs(error) > 0.1){
+                extensionIntegralPrior = 0;
+            }
+            integral = extensionIntegralPrior + error*changeInTime;
+            derivative = (error-extensionErrorPrior)/changeInTime;
+            output = kp*error + ki*integral + kd*derivative;
+            if(Math.abs(output) > extensionPowerCap){
+                output = Math.signum(output)*extensionPowerCap;
+            }
+            extensionErrorPrior = error;
+            extensionIntegralPrior = integral;
+            extensionLastLoopTime = runtime.milliseconds();
+            mE.setPower(output);
+        }
+        else{
+            extensionLastLoopTime = runtime.milliseconds();
+        }
     }
 
 }
