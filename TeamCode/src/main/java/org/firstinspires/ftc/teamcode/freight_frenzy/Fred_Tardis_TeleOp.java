@@ -45,6 +45,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
     IntakeState intakeState = IntakeState.OFF;
 
     ElapsedTime intakeTimer = new ElapsedTime();
+    ElapsedTime spinnerTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -57,11 +58,10 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         armLimitOffset = 0;
         boolean intakeStateSet = false;
 
-        double power = 0;
-        double time = 0;
-        int timeCount = 0;
-        double timeShift = 9;
-        double[] powers = {0.5, 0.6, 0.6, 0.6, 1};
+        int spinnerLevel = 0; //current level of power
+        double[] spinnerPowers = {0.5, 0.6, 1}; //levels of each power shift
+        double[] spinnerLevelTimes = {0.25, 1.25}; //times spinner power shifts
+        double spinnerPower = spinnerPowers[spinnerLevel]; //current power
 
 //        //arm automation presets
         //01-02-21
@@ -89,6 +89,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         int extensionTolerance = 50;
 
         intakeTimer.reset();
+        spinnerTimer.reset();
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -100,10 +101,9 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         while (opModeIsActive()) {
             updatePoseStrafe();
             gyroUpdate();
-
-            //Gamepad 1 Variables
             runtime.reset();
 
+            //Gamepad 1 Variables
             double leftY1 = gamepad1.left_stick_y * powerMultiplier;//drive forward
             double rightX1 = -(gamepad1.right_stick_x) * powerMultiplier;//drive rotate
             double leftX1 = -(gamepad1.left_stick_x) * powerMultiplier;//drive strafe
@@ -323,29 +323,21 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
             //carousel
             if (rightTrigger > 0.5 || leftTrigger > 0.5) {
-                if (timeCount + 1 < powers.length) {
-                    time += 1;
-                    if (time > timeShift) {
-                        timeCount++;
-                        time = 0;
-                    }
-                }
-                if (power < powers[timeCount]) {
-                    power += 0.1;
+                if(spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]){
+                    spinnerLevel++;
+                    spinnerPower = spinnerPowers[spinnerLevel+1];
                 }
                 if (rightTrigger > 0.5) {
-                    mSL.setPower(power);
+                    mSL.setPower(spinnerPower);
                     mSR.setPower(1);
-                } else {
-                    mSL.setPower(-power);
+                } else if(leftTrigger > 0.5) {
+                    mSL.setPower(-spinnerPower);
                     mSR.setPower(-1);
                 }
             } else {
                 mSL.setPower(0);
                 mSR.setPower(0);
-                power = 0;
-                timeCount = 0;
-                time = 0;
+                spinnerTimer.reset();
             }
 
             previousBState = bButton;
