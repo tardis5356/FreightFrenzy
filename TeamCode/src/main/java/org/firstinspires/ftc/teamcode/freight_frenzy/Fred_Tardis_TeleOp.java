@@ -51,18 +51,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         defineComponentsFred();
         double powerMultiplier = 0.6;
         boolean previousBState = false;
-        boolean previousRightBumperState = false;
-        boolean previousX2State = false;
-        boolean grippingCapstone = false;
         boolean motorPowerFast = false;
         boolean extensionReset = false;
-        boolean wirelessConnected = true;
         double sVPosition = sV.getPosition();
-//        double sCUPosition = sCU.getPosition();
-        //used later to determine intake and delivery points for the arm
-        double armLevelReading = mU.getCurrentPosition();
-        double extensionPosition = mE.getCurrentPosition();
         armLimitOffset = 0;
+        boolean intakeStateSet = false;
 
         double power = 0;
         double time = 0;
@@ -81,7 +74,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
-        double capIntakeWrist = neutralWrist - 0.17;
+        double capIntakeWrist = neutralWrist - 0.09;
         double capDeliveryWrist = neutralWrist - 0.35;
         double backDeliveryWrist = neutralWrist + 0.25;
         double backIntakeWrist = neutralWrist + 0.2;
@@ -93,8 +86,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double backDeliveryExtension = 500;
         double backIntakeExtension = 800;
 
-        double toleranceU = 0;
-        double toleranceE = 0;
+        int extensionTolerance = 50;
 
         intakeTimer.reset();
 
@@ -110,7 +102,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             gyroUpdate();
 
             //Gamepad 1 Variables
-            // waitForStart();
             runtime.reset();
 
             double leftY1 = gamepad1.left_stick_y * powerMultiplier;//drive forward
@@ -141,21 +132,9 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             boolean dpadLeft2 = (gamepad2.dpad_left);
             boolean dpadRight2 = (gamepad2.dpad_right);
 
-//            telemetry.addData("prevRBumper", previousRightBumperState);
-//            telemetry.addData("capstone gripper servo", sCG.getPosition());
-//            telemetry.addData("leftTrigger2", leftTrigger2);
-//            telemetry.addData("rightTrigger2", rightTrigger2);
-//            telemetry.addData("LeftY1 position", leftY1);
-//            telemetry.addData("LeftX1 position", leftX1);
-//            telemetry.addData("RightX1 position", rightX1);
             telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
             telemetry.addData("Motor power fast", motorPowerFast);
-//            telemetry.addData("Wireless connection connected", wirelessConnected);
-//            telemetry.addData("Left Bumper 2", leftBumper2);
-//            telemetry.addData("Right Bumper 2", rightBumper2);
-//            telemetry.addData("aButton is pressed", aButton);
             telemetry.addData("Wrist angle", sVPosition);
-//            telemetry.addData("Arm angle", mU.getCurrentPosition());
             telemetry.addData("potentiometer voltage", potentiometer.getVoltage());
             telemetry.addData("extension position", mE.getCurrentPosition());
             telemetry.addData("arm limit", lAB.isPressed());
@@ -165,6 +144,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             telemetry.addData("extensionReset", extensionReset);
             telemetry.addData("mE mode", mE.getMode());
             telemetry.addData("mE current position", mE.getCurrentPosition());
+            telemetry.addData("intakeState", intakeState);
+            telemetry.addData("intakeTimer", intakeTimer);
             telemetry.update();
 
             //drives robot
@@ -184,7 +165,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //deploy odometers
             if (xButton) {
                 lowerOdometerServos();
-            }else{
+            } else {
                 raiseOdometerServos();
             }
 
@@ -197,20 +178,13 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             sV.setPosition(Range.clip(sVPosition, 0.01, 1));
             sVPosition = sV.getPosition();
 
-            //sets arm limit based on limit switch
-//            if (!bButton2 && !aButton2) {
-//                if (lAB.isPressed()) {
-//                    armLimitOffset = mE.getCurrentPosition();
-//                }
-//            }
-
             if (!extensionReset) {
                 mE.setPower(-1);
                 if (lAB.isPressed()) {
                     mE.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     extensionReset = true;
                 }
-            }else if(extensionReset){
+            } else if (extensionReset) {
                 mE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
@@ -229,108 +203,96 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 armState = ArmState.INIT;
             }
 
-            switch (armState) {
-                case NEUTRAL:
-                    toleranceU = 0.3;
-                    toleranceE = 100;
+            if (gamepad2.y || gamepad1.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
+                intakeStateSet = false;
+            }
 
-                    pidControlArm(neutralUpright);
-                    //pidControlExtension(neutralExtension);
-                    if (Math.abs(potentiometer.getVoltage() - neutralUpright) < 0.5) { //prevent upright motor from being overstressed
-                        telemetry.addData("abs", Math.abs(mE.getCurrentPosition() - neutralExtension));
-                        if ((mE.getCurrentPosition() - neutralExtension) >= toleranceE) {
-                            mE.setPower(-0.5);
-                        } else if ((mE.getCurrentPosition() - neutralExtension) < toleranceE) {
-                            mE.setPower(0.5);
+            if(extensionReset) {
+                switch (armState) {
+                    case NEUTRAL:
+                        armToPosPID(neutralUpright);
+                        extensionToPos(neutralExtension, extensionTolerance);
+                        sVPosition = neutralWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TOGGLE;
+                            intakeStateSet = true;
                         }
-                        if (Math.abs(mE.getCurrentPosition() - neutralExtension) < toleranceE){
-                            mE.setPower(0);
+                        break;
+                    case BACK_INTAKE:
+                        armToPosPID(backIntakeUpright);
+                        extensionToPos(backIntakeExtension, extensionTolerance);
+                        sVPosition = backIntakeWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TEN_SEC_INTAKE;
+                            intakeStateSet = true;
                         }
-                    }
-                    sVPosition = neutralWrist;
-                    break;
-                case BACK_INTAKE:
-                    toleranceU = 0.4;
-                    toleranceE = 100;
-
-
-                    //intakeState = IntakeState.TEN_SEC_INTAKE;
-                    //armState = ArmState.FREE;
-                    pidControlArm(backIntakeUpright);
-                    pidControlExtension(backIntakeExtension);
-                    sVPosition = backIntakeWrist;
-                    break;
-                case BACK_DELIVERY:
-                    toleranceU = 0.15;
-                    toleranceE = 200;
-//                        intakeState = IntakeState.OFF;
-//                        armState = ArmState.FREE;
-                    pidControlArm(backDeliveryUpright);
-                    pidControlExtension(backDeliveryExtension);
-                    sVPosition = backDeliveryWrist;
-                    break;
-                case CAP_INTAKE:
-                    toleranceU = 0.1;
-                    toleranceE = 100;
-
-
-//                        intakeState = IntakeState.TEN_SEC_INTAKE;
-//                        armState = ArmState.FREE;
-
-                    pidControlArm(capIntakeUpright);
-                    pidControlExtension(capIntakeExtension);
-                    sVPosition = capIntakeWrist;
-                    break;
-                case CAP_DELIVERY:
-                    toleranceU = 0.1;
-                    toleranceE = 100;
-
-//                        intakeState = IntakeState.OFF;
-//                        armState = ArmState.FREE;
-
-                    pidControlArm(capDeliveryUpright);
-                    pidControlExtension(capDeliveryExtension);
-                    sVPosition = capDeliveryWrist;
-                    break;
-                case INIT:
-                    toleranceU = 0.2;
-                    toleranceE = 100;
-
-//                        intakeState = IntakeState.OFF;
-//                        armState = ArmState.FREE;
-
-                    pidControlArm(initUpright);
-                    pidControlExtension(initExtension);
-                    sVPosition = initWrist;
-                    break;
-                case FREE:
-                    //sets arm extension and arm upright motion
-                    mE.setPower(-leftY2); //also works for mF on Toby bot
-                    mU.setPower(rightY2 * 0.8);//0.8 power multiplier
-                    break;
+                        break;
+                    case BACK_DELIVERY:
+                        armToPosPID(backDeliveryUpright);
+                        extensionToPos(backDeliveryExtension, extensionTolerance);
+                        sVPosition = backDeliveryWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TOGGLE;
+                            intakeStateSet = true;
+                        }
+                        break;
+                    case CAP_INTAKE:
+                        armToPosPID(capIntakeUpright);
+                        extensionToPos(capIntakeExtension, extensionTolerance);
+                        sVPosition = capIntakeWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TEN_SEC_INTAKE;
+                            intakeStateSet = true;
+                        }
+                        break;
+                    case CAP_DELIVERY:
+                        armToPosPID(capDeliveryUpright);
+                        extensionToPos(capDeliveryExtension, extensionTolerance);
+                        sVPosition = capDeliveryWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TOGGLE;
+                            intakeStateSet = true;
+                        }
+                        break;
+                    case INIT:
+                        armToPosPID(initUpright);
+                        extensionToPos(initExtension, extensionTolerance);
+                        sVPosition = initWrist;
+                        if (!intakeStateSet) {
+                            intakeState = IntakeState.TOGGLE;
+                            intakeStateSet = true;
+                        }
+                        break;
+                    case FREE:
+                        //sets arm extension and arm upright motion
+                        mE.setPower(-leftY2); //also works for mF on Toby bot
+                        mU.setPower(rightY2 * 0.8);//0.8 power multiplier
+                        break;
+                }
             }
 
             // intake (in postitive, out negative)
             switch (intakeState) {
                 case TEN_SEC_INTAKE:
-                    sI.setPower(1);
+                    sI.setPower(-1);
                     if (intakeTimer.seconds() > 10) {
-                        intakeState = IntakeState.OFF;
+                        intakeState = IntakeState.TOGGLE;
                     }
                     break;
                 case INDEFININTE_INTAKE:
-                    sI.setPower(1);
+                    sI.setPower(-1);
                     break;
                 case FIVE_SEC_DELIVERY:
-                    sI.setPower(-1);
+                    sI.setPower(1);
                     if (intakeTimer.seconds() > 5) {
-                        intakeState = IntakeState.OFF;
+                        intakeState = IntakeState.TOGGLE;
                     }
                     break;
                 case INDEFININTE_DELIVERY:
-                    sI.setPower(-1);
+                    sI.setPower(1);
                     break;
                 case TOGGLE:
+                    intakeTimer.reset();
                     if (leftTrigger2 == 1 && rightTrigger2 == 0) {
                         //sucks elements in
                         sI.setPower(1);
@@ -351,11 +313,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //auto arm overrides
-            if((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)){
+            if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
                 armState = ArmState.FREE;
             }
             //auto intake overrides
-            if((rightTrigger2 != 0) || (leftTrigger2 != 0)){
+            if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
                 intakeState = IntakeState.TOGGLE;
             }
 
@@ -386,10 +348,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 time = 0;
             }
 
-            previousRightBumperState = rightBumper;
             previousBState = bButton;
-            previousX2State = xButton2;
-            extensionPosition = mE.getCurrentPosition();
         }
 
 
