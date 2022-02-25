@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -149,6 +150,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             telemetry.addData("spinnerTimer", spinnerTimer.seconds());
             telemetry.addData("spinnerLevel", spinnerLevel);
             telemetry.addData("spinnerPower", spinnerPower);
+            telemetry.addData("intakeDistance", dI.getDistance(DistanceUnit.CM));
             telemetry.update();
 
             //drives robot
@@ -170,6 +172,10 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 lowerOdometerServos();
             } else {
                 raiseOdometerServos();
+            }
+
+            if(dI.getDistance(DistanceUnit.CM) < 10 && !gamepad2.isRumbling()){
+                gamepad2.rumbleBlips(2);
             }
 
             //controls wrist up-down motion

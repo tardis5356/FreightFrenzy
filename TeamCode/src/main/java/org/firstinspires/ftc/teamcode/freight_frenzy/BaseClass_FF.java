@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -52,7 +53,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mL;
     CRServo mArm;
 
-
     Servo sV;//up-down wrist movement servo
     //    CRServo sSR;
     CRServo sSL;
@@ -74,6 +74,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     CRServo sS;
     DistanceSensor distance1;
     DistanceSensor distance2;
+    Rev2mDistanceSensor dI; // intake distrance sensor
     CRServo crsIR;
     CRServo crsIL;
     TouchSensor lAB; //Bottom arm limit
@@ -615,6 +616,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
         potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
         lAB = hardwareMap.get(TouchSensor.class, "lAB");
+        dI = hardwareMap.get(Rev2mDistanceSensor.class, "dI"); // intake distance sensor
 
         // mI = hardwareMap.dcMotor.get("mI"); //intake motor for David
         // sC = hardwareMap.servo.get("sC"); //rotates cup for David
