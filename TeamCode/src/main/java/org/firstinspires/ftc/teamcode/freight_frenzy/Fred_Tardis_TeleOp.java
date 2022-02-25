@@ -25,12 +25,13 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         BACK_INTAKE,
         BACK_DELIVERY,
         CAP_INTAKE,
-        CAP_DELIVERY,
+        BOTTOM_CAP_DELIVERY,
+        TOP_CAP_DELIVERY,
         NEUTRAL,
         FREE
     }
 
-    ;
+
     ArmState armState = ArmState.NEUTRAL;
 
     public enum IntakeState {
@@ -38,7 +39,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         INDEFININTE_INTAKE,
         FIVE_SEC_DELIVERY,
         INDEFININTE_DELIVERY,
-        TOGGLE,
+        FREE,
         OFF
     }
 
@@ -68,21 +69,23 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double neutralUpright = 1.08;
         double initUpright = neutralUpright + 1.8;
         double capIntakeUpright = neutralUpright + 2.25;
-        double capDeliveryUpright = neutralUpright + 0.6;
+        double bottomCapDeliveryUpright = neutralUpright + 0.53;
+        double topCapDeliveryUpright = neutralUpright + 0.39;
         double backDeliveryUpright = neutralUpright - 0.21;
         double backIntakeUpright = neutralUpright - 0.9;
 
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
         double capIntakeWrist = neutralWrist - 0.09;
-        double capDeliveryWrist = neutralWrist - 0.35;
+        double bottomCapDeliveryWrist = neutralWrist - 0.41;
+        double topCapDeliveryWrist = neutralWrist - 0.48;
         double backDeliveryWrist = neutralWrist + 0.25;
         double backIntakeWrist = neutralWrist + 0.2;
 
         double neutralExtension = 100;
         double initExtension = 100;
         double capIntakeExtension = 550;
-        double capDeliveryExtension = 900;
+        double capDeliveryExtension = 950;
         double backDeliveryExtension = 500;
         double backIntakeExtension = 800;
 
@@ -198,10 +201,10 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     armState = ArmState.BACK_INTAKE;
                 } else if (aButton2) {// capIntake position
                     armState = ArmState.CAP_INTAKE;
-                } else if (dpadRight2) {// capDelivery
-                    armState = ArmState.CAP_DELIVERY;
-                } else if (dpadLeft2) {// init
-                    armState = ArmState.INIT;
+                } else if (dpadLeft2) {// capDelivery
+                    armState = ArmState.TOP_CAP_DELIVERY;
+                } else if (dpadRight2) {// init
+                    armState = ArmState.BOTTOM_CAP_DELIVERY;
                 }
 
                 if (gamepad2.y || gamepad1.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
@@ -215,7 +218,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(neutralExtension, extensionTolerance);
                             sVPosition = neutralWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TOGGLE;
+                                intakeState = IntakeState.FREE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -233,7 +236,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(backDeliveryExtension, extensionTolerance);
                             sVPosition = backDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TOGGLE;
+                                intakeState = IntakeState.FREE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -246,12 +249,21 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                                 intakeStateSet = true;
                             }
                             break;
-                        case CAP_DELIVERY:
-                            armToPosPID(capDeliveryUpright);
+                        case BOTTOM_CAP_DELIVERY:
+                            armToPosPID(bottomCapDeliveryUpright);
                             extensionToPos(capDeliveryExtension, extensionTolerance);
-                            sVPosition = capDeliveryWrist;
+                            sVPosition = bottomCapDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TOGGLE;
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case TOP_CAP_DELIVERY:
+                            armToPosPID(topCapDeliveryUpright);
+                            extensionToPos(capDeliveryExtension, extensionTolerance);
+                            sVPosition = topCapDeliveryWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -260,7 +272,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(initExtension, extensionTolerance);
                             sVPosition = initWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TOGGLE;
+                                intakeState = IntakeState.FREE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -277,7 +289,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     case TEN_SEC_INTAKE:
                         sI.setPower(-1);
                         if (intakeTimer.seconds() > 10) {
-                            intakeState = IntakeState.TOGGLE;
+                            intakeState = IntakeState.FREE;
                         }
                         break;
                     case INDEFININTE_INTAKE:
@@ -286,13 +298,13 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     case FIVE_SEC_DELIVERY:
                         sI.setPower(1);
                         if (intakeTimer.seconds() > 5) {
-                            intakeState = IntakeState.TOGGLE;
+                            intakeState = IntakeState.FREE;
                         }
                         break;
                     case INDEFININTE_DELIVERY:
                         sI.setPower(1);
                         break;
-                    case TOGGLE:
+                    case FREE:
                         intakeTimer.reset();
                         if (leftTrigger2 == 1 && rightTrigger2 == 0) {
                             //sucks elements in
@@ -310,7 +322,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 if (dpadUp2) { // no control
                     armState = ArmState.FREE;
                 } else if (dpadDown2) {
-                    intakeState = IntakeState.TOGGLE;
+                    intakeState = IntakeState.FREE;
                 }
 
                 //auto arm overrides
@@ -319,7 +331,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
                 //auto intake overrides
                 if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
-                    intakeState = IntakeState.TOGGLE;
+                    intakeState = IntakeState.FREE;
                 }
             }
 
@@ -358,3 +370,4 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
 
 }
+

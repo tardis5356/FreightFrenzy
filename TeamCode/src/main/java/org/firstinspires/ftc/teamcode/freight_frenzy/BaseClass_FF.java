@@ -1337,15 +1337,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double armPowerCap = 1;
 
     public void armToPosPID(double desiredPosition) {
-        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
+        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right || gamepad2.dpad_left) {
             double changeInTime = (runtime.milliseconds() - armLastLoopTime) / 1000;
             double error = 0;
             double integral = 0;
             double derivative = 0;
             double output = 0;
-            double kp = 1.5;
-            double ki = 0;
-            double kd = 0;
+            double kp = 5;
+            double ki = 0.5;
+            double kd = 0.1;
             error = (desiredPosition - potentiometer.getVoltage());
             if (Math.abs(error) > 0.1) {
                 armIntegralPrior = 0;
