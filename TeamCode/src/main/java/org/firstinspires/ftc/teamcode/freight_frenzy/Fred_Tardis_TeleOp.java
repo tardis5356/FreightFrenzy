@@ -181,7 +181,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //deploy odometers
             if (xButton) {
                 lowerOdometerServos();
-            }else{
+            } else {
                 raiseOdometerServos();
             }
 
@@ -487,11 +487,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //auto arm overrides
-            if((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)){
+            if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
                 armState = ArmState.FREE;
             }
             //auto intake overrides
-            if((rightTrigger2 != 0) || (leftTrigger2 != 0)){
+            if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
                 intakeState = IntakeState.TOGGLE;
             }
 

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Optimus_TeleOp", group="Linear Opmode")
+@TeleOp(name = "Optimus_TeleOp", group = "Linear Opmode")
 
 public class Optimus_TeleOp extends BaseClass_FF {
 
@@ -60,30 +60,55 @@ public class Optimus_TeleOp extends BaseClass_FF {
             double leftY2 = gamepad2.left_stick_y;
             double leftTrigger2 = gamepad2.left_trigger;
             double rightY2 = gamepad2.right_stick_y;
+            boolean yButton2 = gamepad2.y;
             double rightTrigger2 = gamepad2.right_trigger;
+//            boolean aButton2 = gamepad2.a;
             boolean leftBumper2 = gamepad2.left_bumper;
+
+
             boolean rightBumper2 = gamepad2.right_bumper;
 
             mL.setPower(leftY1 - rightX1);
             mR.setPower(leftY1 + rightX1);
 
-            if (rightTrigger2 != 0) {
-                sG.setPosition(0.5);
-            } else {
-                sG.setPosition(0.85);
-            }
-            //mGA.setPower(leftY2);
+
+//            if (yButton2 == true) {
+//                sG.setPosition(0.5);
+//            } else {
+//                sG.setPosition(0);
+//            }
 
             //controls wrist, moves in increments
             if (rightBumper2 && wristPosition < 1) {
-                wristPosition += .006;
+                wristPosition += .020;
             } else if (leftBumper2 && wristPosition > 0) {
-                wristPosition -= .006;
+                wristPosition -= .020;
             }
+
+
             sW.setPosition(Range.clip(wristPosition, 0.1, 0.83));
 
             mA.setPower(-rightY2);
 
+
+
+
+
+            //if(i eat an orange || i go outside) {
+            // i am healthy;
+            //}else{
+            //i won't have enough vitamins; }
+
+
+
+
+
+
+
+
+
+
+            //0.006
 //            // Setup a variable for each drive wheel to save power level for telemetry
 //            double leftPower;
 //            double rightPower;
@@ -107,6 +132,12 @@ public class Optimus_TeleOp extends BaseClass_FF {
             //mL.setPower(leftPower);
             //mR.setPower(rightPower);
 
+
+//            if (rightTrigger2 != 0) {
+//                sG.setPosition(0.5);
+//            } else {
+//                sG.setPosition(0.85);
+//            }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 //            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
@@ -114,4 +145,5 @@ public class Optimus_TeleOp extends BaseClass_FF {
             telemetry.update();
         }
     }
+
 }

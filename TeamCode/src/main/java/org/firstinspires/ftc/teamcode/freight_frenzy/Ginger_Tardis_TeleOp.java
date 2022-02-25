@@ -28,7 +28,7 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         boolean motorPowerFast = false;
         boolean wirelessConnected = true;
         //double sWHPosition = sWH.getPosition();
-       double sVPosition = sV.getPosition();
+        double sVPosition = sV.getPosition();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -127,7 +127,7 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             sVPosition = sV.getPosition();
 
             //controls intake
-            if (leftTrigger2  >= 0.99) {//sucks elements in
+            if (leftTrigger2 >= 0.99) {//sucks elements in
                 // sI.setPower(-0.5);
                 crsIL.setPower(-1);
                 crsIR.setPower(1);
@@ -142,21 +142,21 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //spinner for carousel
-            if(leftTrigger <= -0.99){
+            if (leftTrigger <= -0.99) {
                 sSL.setPower(1);
                 telemetry.addData("left", leftTrigger);
 //                sSR.setPower(-1);
-            } else if(rightTrigger >= 0.99){
+            } else if (rightTrigger >= 0.99) {
                 sSL.setPower(-1);
                 telemetry.addData("right", rightTrigger);
 //                sSR.setPower(1);
-            }else if(rightTrigger <= 0.01 && leftTrigger <= 0.01){
-                telemetry.addData("none", rightTrigger+leftTrigger);
+            } else if (rightTrigger <= 0.01 && leftTrigger <= 0.01) {
+                telemetry.addData("none", rightTrigger + leftTrigger);
                 sSL.setPower(0);
 //                sSR.setPower(0);
             }
         }
-            //else
+        //else
 //
 //                //default: power off
 //                crsIL.setPower(0);
@@ -169,11 +169,11 @@ public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 //                sSpinner.setPower(0);
 //            }
 
-            //previousBState = bButton;
-
-
-        }
+        //previousBState = bButton;
 
 
     }
+
+
+}
 

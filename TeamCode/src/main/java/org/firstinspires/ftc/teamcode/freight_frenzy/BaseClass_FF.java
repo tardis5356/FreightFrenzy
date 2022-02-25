@@ -29,7 +29,7 @@ import java.util.Arrays;
 public abstract class BaseClass_FF extends LinearOpMode {
 
     //Final variables (in inches)
-    final static double wheelDiameter = 60/25.4; //black and white 60 mm omni wheel rev robotics
+    final static double wheelDiameter = 60 / 25.4; //black and white 60 mm omni wheel rev robotics
     //35/25.4; //using 35 mm wheel from rotacaster (blue and black)
     final static double wheelDistance = 16.25;
     // 17.625; //separation between y-axis odometer wheels (in)
@@ -54,7 +54,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 
     Servo sV;//up-down wrist movement servo
-//    CRServo sSR;
+    //    CRServo sSR;
     CRServo sSL;
     Servo sWH;//left-right wrist movement servo
     CRServo sI;
@@ -167,8 +167,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void lowerOdometerServos() {
 
-        sEB.setPosition(0.43);
-        sEL.setPosition(0);
+        sEB.setPosition(0.6);
+        sEL.setPosition(0.05);
         sER.setPosition(0.23);
 
         telemetry.addData("sEB positon", sEB.getPosition());
@@ -179,7 +179,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void raiseOdometerServos() {
 
-        sEB.setPosition(1);
+        sEB.setPosition(0.8);
         sEL.setPosition(1);
         sER.setPosition(1);
 
@@ -224,10 +224,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
             frontDistance = -2;
         }
 
-                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
-                rightDistanceArray = popValueIntoArray(rightDistanceArray, rightDistance);
-                frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
-                backDistanceArray = popValueIntoArray(backDistanceArray, backDistance);
+        leftDistanceArray = popValueIntoArray(leftDistanceArray, leftDistance);
+        rightDistanceArray = popValueIntoArray(rightDistanceArray, rightDistance);
+        frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
+        backDistanceArray = popValueIntoArray(backDistanceArray, backDistance);
 
 //        if(Math.abs(leftDistance - leftDistanceFiltered) > medianReplaceTolerance){
 //            //this detects nonsensical data, replaces it with median (filtered) data
@@ -288,7 +288,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void scrunchUpBot() {
 
-        drive(0,0,0);
+        drive(0, 0, 0);
         double potTolerance = 0.02;
         boolean angleDone = false;
         boolean extendDone = false;
@@ -298,12 +298,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
         telemetry.addData("wrist angle", sV.getPosition());
         telemetry.addData("telescopePose", telescopePose);
         sV.setPosition(0.1);
-        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
             telescopePose = mE.getCurrentPosition();
             extendDone = true;
-        }
-        else if (!lAB.isPressed()) {
+        } else if (!lAB.isPressed()) {
             mE.setPower(-1);
         }
         telemetry.addData("extension done", extendDone);
@@ -323,13 +322,11 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         }
         telemetry.addData("angle done", angleDone);
-        if(extendDone && angleDone){
+        if (extendDone && angleDone) {
 
             telemetry.addLine("extension and angle are done");
         }
-        }
-
-
+    }
 
 
     public void moveToDistFromWall(double targetDistanceX, double targetDistanceY, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
@@ -345,7 +342,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 
         //switches sensors that are being read depending on the sensors that are input
-        switch(sensorForX){
+        switch (sensorForX) {
 
             //You can only use the left and right distance sensors for the X axis
             case "rightDistance":
@@ -365,7 +362,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         }
 
-        switch(sensorForY){
+        switch (sensorForY) {
 
             case "frontDistance":
                 distanceY = frontDistanceFiltered;
@@ -423,12 +420,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //            gyroAdjust2(targetTheta, tolTheta);
 //        } else {
 
-            strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTargetX))))) - 1);
-            forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTargetY))))) - 1);
-            rotate = PmaxRotate * ((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate * (targetTheta - gyroZ))))) - 1);
+        strafe = PmaxStrafe * ((2 / (1 + Math.pow(Math.E, -(aggressivenessStrafe * (distanceToTargetX))))) - 1);
+        forward = PmaxForward * ((2 / (1 + Math.pow(Math.E, -(aggressivenessForward * (distanceToTargetY))))) - 1);
+        rotate = PmaxRotate * ((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate * (targetTheta - gyroZ))))) - 1);
 
 
-            //Threshold values for motor power
+        //Threshold values for motor power
         forward = thresholdMotorPower(forward, 0.2); //0.25, 0.2, 0.1
         strafe = thresholdMotorPower(strafe, 0.5);
         rotate = thresholdMotorPower(rotate, 0.1);
@@ -458,23 +455,23 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         currRDistRange = rangeSensorRight.getDistance(DistanceUnit.CM);
         //if distance value is over 200, set it to 200 to eliminate crazy squaring
-        if(currRDistRange > 200) {
+        if (currRDistRange > 200) {
             currRDistRange = 200;
         }
 
-        if(currLDistRange > 200) {
+        if (currLDistRange > 200) {
             currLDistRange = 200;
         }
         //if value is less than 2 cm, don't square
-        if(Math.abs(currLDistRange - currRDistRange) > squareThreshold) {
+        if (Math.abs(currLDistRange - currRDistRange) > squareThreshold) {
             drive(0, 0, -(currLDistRange - currRDistRange) / 10); //+
-        }else{
-            drive(0,0,0);
+        } else {
+            drive(0, 0, 0);
         }//else if (Math.abs(currLDistRange - currRDistRange) > 2){
         //   drive(0, 0, -(currLDistRange-currRDistRange)/10); //-
     }
 
-   //goes to angle depending on a potentiometer reading
+    //goes to angle depending on a potentiometer reading
     public double getElevAngle(double voltage) {
 
         double elevAngle;
@@ -484,7 +481,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
         //elevAngle = (voltage - 1.074)/0.0103; OLD
         //elevAngle = (voltage - 1.0879)/0.01057;
-        elevAngle = (voltage - 1.10809)/0.009864; // 5/16
+        elevAngle = (voltage - 1.10809) / 0.009864; // 5/16
         return elevAngle;
     }
 //    public void goToAngle(double inputElevAngle) {
@@ -556,7 +553,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         rangeSensorLeft.setI2cAddress(I2cAddr.create8bit(0x30));
         rangeSensorFront.setI2cAddress(I2cAddr.create8bit(0x36));
 
-       // sSpinner = hardwareMap.crservo.get("sSpinner");
+        // sSpinner = hardwareMap.crservo.get("sSpinner");
 //        mA = hardwareMap.dcMotor.get("mA");
 //        mI = hardwareMap.dcMotor.get("mI");
 //        mE = hardwareMap.dcMotor.get("mE");
@@ -653,8 +650,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
         lAB = hardwareMap.get(TouchSensor.class, "lAB");
 
         // mI = hardwareMap.dcMotor.get("mI"); //intake motor for David
-       // sC = hardwareMap.servo.get("sC"); //rotates cup for David
-       // crsGW = hardwareMap.crservo.get("crsGW"); //guiding wheel for David
+        // sC = hardwareMap.servo.get("sC"); //rotates cup for David
+        // crsGW = hardwareMap.crservo.get("crsGW"); //guiding wheel for David
         //rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
         //rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
         // sSpinner = hardwareMap.crservo.get("sSpinner");
@@ -846,7 +843,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         return (((((oldVal - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) * multiplier + newMin));
     }
 
-//////////////////////////////////////////////////////odometry functions///////////////////////////////////////////////
+    //////////////////////////////////////////////////////odometry functions///////////////////////////////////////////////
     public Pose getPose() {
         return this.pose;
     }
@@ -896,7 +893,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //Get change in encoder values
         // Note: be careful, must get sign correct in next equation or robot center of rotation will be offset
         // from true center of robot.
-        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8/(16.25/2));
+        double xRotateGuess = (changeEnYLeft - changeEnYRight) * (8 / (16.25 / 2));
         //(-7/8.25); // multiply ratio of x/y odometer radii from center of bot
         //* 0.448; //Constant = |avg enY| / enX (prev = 1.033)
         //0.1025
@@ -907,7 +904,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
         double changeEnXPhysical = (currEnX - prevEnX);
         double changeEnX = (changeEnXPhysical + changeEnXVirtual) / 2;
-        double changeEnY = (changeEnYLeft + changeEnYRight) / 2  ;
+        double changeEnY = (changeEnYLeft + changeEnYRight) / 2;
 
         //Update odometer values (+, -)
         posY += (Math.cos(Math.toRadians(gyroZ)) * changeEnY) + (Math.sin(Math.toRadians(gyroZ)) * changeEnX);
@@ -930,7 +927,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     public void moveToPose(double targetX, double targetY, double targetTheta, double rotatePercent) {
 
         //code below assumes rotatePercent between 0 and 1; user input will be percent-DCP 11/28/20
-        rotatePercent/=100;
+        rotatePercent /= 100;
 
         //Distance
         double distanceX = targetX - pose.x;
@@ -950,15 +947,14 @@ public abstract class BaseClass_FF extends LinearOpMode {
             if (distanceToTarget > distanceToTargetStart * (1 - rotatePercent)) {
                 thetaRobot = (1 - (distanceToTarget - distanceToTargetStart * (1 - rotatePercent)) / (distanceToTargetStart * rotatePercent)) * (targetTheta - thetaStart) + thetaStart;
             }
-        }
-        else {
+        } else {
             thetaRobot = targetTheta;
         }
 
         double aggressivenessRotate = 0.04;//0.08; //0.04
         double PmaxRotate = 0.5;
         //Positive rotation = clockwise = decrease in theta
-        double rotate = PmaxRotate*((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate* (gyroZ - targetTheta))))) - 1);
+        double rotate = PmaxRotate * ((2 / (1 + Math.pow(Math.E, -(aggressivenessRotate * (gyroZ - targetTheta))))) - 1);
 
         telemetry.addData("thetaRobot", thetaRobot);
 
@@ -1016,7 +1012,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //        forward = 0;
 //        strafe = 0;
 
-          drive(-forward, -strafe, -rotate);
+        drive(-forward, -strafe, -rotate);
 
 
         forwardPower = -forward;
@@ -1090,7 +1086,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-    public boolean isInToleranceDistance (double targetDistanceX, double targetDistanceY, double targetTheta, double toleranceDistance, double toleranceTheta) {
+    public boolean isInToleranceDistance(double targetDistanceX, double targetDistanceY, double targetTheta, double toleranceDistance, double toleranceTheta) {
         if (Math.abs(distanceX - targetDistanceX) < toleranceDistance && Math.abs(distanceY - targetDistanceY) < toleranceDistance && Math.abs(gyroZ - targetTheta) < toleranceTheta) {
             return true;
         } else {
@@ -1179,7 +1175,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
         return value;
     }
-
 
 
     public void odometerUpdate() {
@@ -1347,10 +1342,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
         int totalElements = previousArray.length;
         double[] newArray = new double[totalElements];
 
-        for (int i = 0; i < totalElements-1; i++) {
-            newArray[i] = previousArray[i+1];
+        for (int i = 0; i < totalElements - 1; i++) {
+            newArray[i] = previousArray[i + 1];
         }
-        newArray[totalElements-1]=latestValue; // append latest value to the end of the array
+        newArray[totalElements - 1] = latestValue; // append latest value to the end of the array
 
         // now placed updates in returned array
         for (int i = 0; i < totalElements; i++) {
@@ -1362,7 +1357,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     static void printArray(double[] values) {
         for (double i : values) {
-            System.out.print(" " +i);
+            System.out.print(" " + i);
         }
         System.out.println("");
         int totalElements = values.length;

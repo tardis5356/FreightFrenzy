@@ -148,7 +148,7 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
 //                if(!backLimit.isPressed()){
 //                    mA.setPower(rightY2);
 //                }else if(backLimit.isPressed() && leftY2 <= 0){
-                    //mA.setPower(rightY2);
+            //mA.setPower(rightY2);
 
             //changes drive speed
             if (bButton != previousBState && bButton) {
@@ -221,7 +221,7 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
 //            }
 
             //controls wrist
-            if(!xButton2) {
+            if (!xButton2) {
                 if (rightBumper && wristPosition < 1) {
                     wristPosition += .008;
                 } else if (leftBumper && wristPosition > 0) {
@@ -232,10 +232,10 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //controls gripper (pressed = closed, released = open)
-            if (rightTrigger2 != 0 && !aButton2){
+            if (rightTrigger2 != 0 && !aButton2) {
                 sG.setPosition(0.25); //sets gripper to open         // 0.8, 0.35
             } else {
-                if(!aButton2) {
+                if (!aButton2) {
                     sG.setPosition(0.08); //sets gripper to closed   // 0.5, 0.18
                 }
             }

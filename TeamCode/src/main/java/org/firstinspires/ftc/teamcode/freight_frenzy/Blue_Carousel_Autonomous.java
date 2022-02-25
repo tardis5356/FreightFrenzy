@@ -25,8 +25,8 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
     public void CreateSteps() {
 
-                steps.add("DRIVE_TO_LIMIT");
-                steps.add("FIND_ELEMENT_POSITION");
+        steps.add("DRIVE_TO_LIMIT");
+        steps.add("FIND_ELEMENT_POSITION");
 //                steps.add("DRIVE_FROM_WALL");
 //                steps.add("MOVE_FROM_WALL");
 //               steps.add("ROTATE_TO_90");
@@ -35,19 +35,19 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 //                steps.add("MOVE_TO_CAROUSEL_3");
 //                steps.add("SPIN_SPINNER");
 //                steps.add("DRIVE_TO_HUB_TIME");
-                //steps.add("WAIT");
+        //steps.add("WAIT");
 //                steps.add("DRIVE_TO_HUB");
-                 steps.add("MOVE_ARM");
+        steps.add("MOVE_ARM");
 //                steps.add("ROTATE_TO_0");
 //                steps.add("DRIVE_FORWARD_TO_HUB");
 //                steps.add("DROP_BLOCK");
 //                steps.add("MOVE_BACKWARD");
 //                steps.add("RESET_ARM");
-                steps.add("ROTATE_TO_90");
+        steps.add("ROTATE_TO_90");
 //                steps.add("DRIVE_BACK");
 //                steps.add("PARK_IN_STORAGE_UNIT");
 //                steps.add("PARK_IN_STORAGE_UNIT");
-                steps.add("STOP");
+        steps.add("STOP");
 
 
     }
@@ -109,7 +109,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
             @Override
             public void onOpened() {
                 //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -134,7 +134,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                 hubLevel = "BOTTOM";
             } else if (elementPosition == "CENTER") {
                 hubLevel = "MIDDLE";
-            } else if (elementPosition == "RIGHT"){
+            } else if (elementPosition == "RIGHT") {
                 hubLevel = "TOP";
             }
             changeHubLevel(elementPosition);
@@ -161,11 +161,11 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                 updatePoseStrafe();
                 gyroUpdate();
 
-               readDistanceSensors();
+                readDistanceSensors();
 
                 switch (currentStep) {
 
-                    case("DRIVE_BACK"):
+                    case ("DRIVE_BACK"):
                         if (!ninthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -173,40 +173,38 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         double ninthTime = 1.9;
 
-                        if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.4,-0.2,0);
+                        if ((runtime.seconds() - myTime) <= ninthTime) {
+                            drive(0.4, -0.2, 0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("MOVE_BACKWARD"):
+                    case ("MOVE_BACKWARD"):
                         targetDistanceX = 0;
                         targetDistanceY = 10;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
                         break;
 
-                    case("RESET_ARM"):
+                    case ("RESET_ARM"):
                         boolean angleDone = false;
                         boolean extendDone = false;
                         double potTolerance = 0.05;
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         double armAngleBack = armHorizontal;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());
 //        telemetry.addData("telescope pose (offset)", telescopePose);
                         sV.setPosition(0.1);
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
                             extendDone = true;
-                        }
-
-                        else if (!lAB.isPressed()) {
+                        } else if (!lAB.isPressed()) {
                             mE.setPower(-1);
                         }
 
@@ -224,7 +222,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
@@ -233,7 +231,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         break;
 
 
-                    case("MOVE_TO_CAROUSEL_3"):
+                    case ("MOVE_TO_CAROUSEL_3"):
                         if (!seventhCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -241,17 +239,17 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         double seventhTime = 1;
 
-                        if ((runtime.seconds() - myTime) <= seventhTime ){
-                            drive(0.2,0.5,0);
+                        if ((runtime.seconds() - myTime) <= seventhTime) {
+                            drive(0.2, 0.5, 0);
                         }
                         if ((runtime.seconds() - myTime) > seventhTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("DRIVE_TO_HUB_TIME"):
+                    case ("DRIVE_TO_HUB_TIME"):
                         if (!eighthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -259,17 +257,17 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         double eighthTime = 1.3;
 
-                        if ((runtime.seconds() - myTime) <= eighthTime ){
-                            drive(-0.5,0,0);
+                        if ((runtime.seconds() - myTime) <= eighthTime) {
+                            drive(-0.5, 0, 0);
                         }
                         if ((runtime.seconds() - myTime) > eighthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("DRIVE_FORWARD_TO_HUB"):
+                    case ("DRIVE_FORWARD_TO_HUB"):
                         targetDistanceX = 0;
                         targetDistanceY = 17;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
@@ -284,7 +282,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         double sixthTime = 1.0;
 
-                        if ((runtime.seconds() - myTime) <= sixthTime ){
+                        if ((runtime.seconds() - myTime) <= sixthTime) {
                             sI.setPower(0.5);
                         }
                         if ((runtime.seconds() - myTime) > sixthTime) {
@@ -302,7 +300,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                     case "MOVE_ARM":
                         //43 extension ticks per cm
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         potTolerance = 0.05;
                         angleDone = false;
                         extendDone = false;
@@ -344,24 +342,22 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                         }
                         telemetry.addData("extend done", extendDone);
 
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
                         }
 
-                    break;
+                        break;
 
                     case "DRIVE_TO_LIMIT":
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             done = true;
                             changeStep();
-                        }
-
-                        else if (!limitTriggered) {
+                        } else if (!limitTriggered) {
                             mE.setPower(-0.65);
                         }
                         break;
@@ -395,7 +391,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 //                        }
                         double fifthTime = 4.5;
 
-                        if ((runtime.seconds()) <= fifthTime ){
+                        if ((runtime.seconds()) <= fifthTime) {
                             sSL.setPower(1);
 //                            sSR.setPower(-1);
                         }
@@ -435,7 +431,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 //                        //done = true;
 //                        break;
 
-                    case "Test" :
+                    case "Test":
                         //used for testing odometry
                         targetX = 0;
                         targetY = 12;
@@ -445,10 +441,9 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -624,7 +619,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
                             drive(0.1, 0.5, 0);
                         }
                         if ((runtime.seconds() - myTime) > fourthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
@@ -639,7 +634,6 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
 //                        targetTheta = 90;
 //                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backRightDistance", targetTheta, 5));
 //                        break;
-
 
 
                 }
@@ -663,7 +657,7 @@ public class Blue_Carousel_Autonomous extends AutoBase_FF {
         }
 
     }
-    }
+}
 
 
 

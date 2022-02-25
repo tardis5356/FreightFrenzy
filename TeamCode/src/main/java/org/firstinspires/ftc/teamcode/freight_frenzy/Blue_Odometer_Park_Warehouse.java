@@ -40,7 +40,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 //
         steps.add("DROP_BLOCK");
 //
-//        steps.add("BACK_AWAY_FROM_HUB");//odometry
+        steps.add("BACK_AWAY_FROM_HUB");//odometry
 //
 //        //steps.add("RESET_ARM");//make arm straight up instead of horizontal
 //
@@ -51,7 +51,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
         steps.add("STRAFE_TSE");//odometry
         steps.add("RAISE_ODOMETERS");
         steps.add("GO_IN_WAREHOUSE");//time
-        steps.add("PARK_IN_WAREHOUSE");//distance
+//        steps.add("PARK_IN_WAREHOUSE");//distance
 
         steps.add("STOP");
 
@@ -117,7 +117,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
             @Override
             public void onOpened() {
                 //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -142,7 +142,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                 hubLevel = "BOTTOM";
             } else if (elementPosition == "CENTER") {
                 hubLevel = "MIDDLE";
-            } else if (elementPosition == "RIGHT"){
+            } else if (elementPosition == "RIGHT") {
                 hubLevel = "TOP";
             }
             changeHubLevel(elementPosition);
@@ -183,69 +183,69 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                     frontDistance = -2;
                 }
 
-                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+                leftDistanceArray = popValueIntoArray(leftDistanceArray, leftDistance);
                 frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
 
                 leftDistanceFiltered = median(leftDistanceArray);
                 frontDistanceFiltered = median(frontDistanceArray);
 
                 switch (currentStep) {
-                    case("STRAFE_TO_CAROUSEL"):
+                    case ("STRAFE_TO_CAROUSEL"):
                         targetX = 26;
                         targetY = 11;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
 
-                    case("BACK_INTO_CAROUSEL"):
+                    case ("BACK_INTO_CAROUSEL"):
                         if (runtime.seconds() > 0 && runtime.seconds() < 1) {
-                            drive(0.8,-0.6,0);
+                            drive(0.9, -0.6, 0);
                             done = false;
                         } else {
                             done = true;
                             changeStep();
                         }
                         break;
-                    case("DRIVE_TO_HUB_SU"):
+                    case ("DRIVE_TO_HUB_SU"):
                         targetX = 22;
-                        targetY = 40;
+                        targetY = 42;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
-                    case("DRIVE_TO_HUB_SU_2"):
-                        targetX = 0;
+                    case ("DRIVE_TO_HUB_SU_2"):
+                        targetX = -4;
+                        targetY = 42;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        break;
+
+                    case ("BACK_AWAY_FROM_HUB"):
+                        targetX = 24;
                         targetY = 40;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
-                    case("BACK_AWAY_FROM_HUB"):
-                        targetX = 10;
-                        targetY = 36;
-                        targetTheta = 90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
-                        break;
-
-                    case("STRAFE_FROM_HUB"):
-                        targetX = -2;
+                    case ("STRAFE_FROM_HUB"):
+                        targetX = 24;
                         targetY = 12;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
-                    case("GO_NEAR_WAREHOUSE"):
+                    case ("GO_NEAR_WAREHOUSE"):
                         targetX = -44;
                         targetY = 12;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
-                    case("STRAFE_TSE"):
+                    case ("STRAFE_TSE"):
                         targetX = -44;
-                        targetY = 20;
+                        targetY = 16;
                         targetTheta = 90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
-                    case("RAISE_ODOMETERS"):
+                    case ("RAISE_ODOMETERS"):
                         if (runtime.seconds() > 0 && runtime.seconds() < 1) {
                             raiseOdometerServos();
                         } else {
@@ -254,43 +254,38 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         }
                         break;
 
-                    case("GO_IN_WAREHOUSE"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
-                            drive(-1,0,0);
+                    case ("GO_IN_WAREHOUSE"):
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1.25) {
+                            drive(-1, 0, 0);
                             done = false;
                         } else {
                             done = true;
                             changeStep();
                         }
                         break;
-                    case("PARK_IN_WAREHOUSE"):
+                    case ("PARK_IN_WAREHOUSE"):
                         targetDistanceX = 0;
                         targetDistanceY = 5;
                         done = (moveToLocationDistance(targetDistanceX, targetDistanceY, 1, "", "frontDistance", 90, 5));
                         break;
 
 
-
-
-
-                    case("RESET_ARM"):
-                       angleDone = false;
-                       extendDone = false;
-                        double potTolerance = 0.05;
-                        drive(0,0,0);
+                    case ("RESET_ARM"):
+                        angleDone = false;
+                        extendDone = false;
+                        double potTolerance = 0.1;
+                        drive(0, 0, 0);
                         double armAngleBack = armHorizontal - 1.15;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());
 //        telemetry.addData("telescope pose (offset)", telescopePose);
                         sV.setPosition(0.1);
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
                             extendDone = true;
-                        }
-
-                        else if (!lAB.isPressed()) {
+                        } else if (!lAB.isPressed()) {
                             mE.setPower(-1);
                         }
 
@@ -308,12 +303,13 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
 
-                        } changeStep();
+                        }
+                        changeStep();
 
                         break;
 
@@ -325,7 +321,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         }
                         double sixthTime = 1;
 
-                        if ((runtime.seconds() - myTime) <= sixthTime ){
+                        if ((runtime.seconds() - myTime) <= sixthTime) {
                             sI.setPower(0.5);
                         }
                         if ((runtime.seconds() - myTime) > sixthTime) {
@@ -334,15 +330,15 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                             changeStep();
                         }
                         break;
-                    case"MOVE_ARM_UP":
-                        potTolerance = 0.05;
+                    case "MOVE_ARM_UP":
+                        potTolerance = 0.1;
                         if (Math.abs(potentiometer.getVoltage() - armUp) > potTolerance) {
                             if (potentiometer.getVoltage() > armUp) {
 
-                                mU.setPower(-0.4);
+                                mU.setPower(-0.6);
                             } else if (potentiometer.getVoltage() < armUp) {
 
-                                mU.setPower(0.4);
+                                mU.setPower(0.6);
                             }
                         } else {
                             mU.setPower(0);
@@ -355,7 +351,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                     case "MOVE_ARM":
                         //127 extension ticks per cm
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         potTolerance = 0.05;
                         angleDone = false;
                         extendDone = false;
@@ -370,42 +366,41 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                         double reachTolerance = 50;
                         //Extension moves only if arm is pointed up
-                            if (Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) {
-                                if (mE.getCurrentPosition() > armReach) {
+                        if (Math.abs(mE.getCurrentPosition() - armReach) > reachTolerance) {
+                            if (mE.getCurrentPosition() > armReach) {
 
-                                    mE.setPower(-1);
-                                } else if (mE.getCurrentPosition() < armReach) {
+                                mE.setPower(-1);
+                            } else if (mE.getCurrentPosition() < armReach) {
 
-                                    mE.setPower(1);
-                                }
-                            } else {
-
-                                mE.setPower(0);
-                                extendDone = true;
+                                mE.setPower(1);
                             }
+                        } else {
+
+                            mE.setPower(0);
+                            extendDone = true;
+                        }
 
                         telemetry.addData("extend done", extendDone);
                         //Angle of arm only moves when extension is done
-                            if ((Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) && extendDone) {
-                                if (potentiometer.getVoltage() > armAngle) {
+                        if ((Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) && extendDone) {
+                            if (potentiometer.getVoltage() > armAngle) {
 
-                                    mU.setPower(-0.5);
-                                } else if (potentiometer.getVoltage() < armAngle) {
+                                mU.setPower(-0.5);
+                            } else if (potentiometer.getVoltage() < armAngle) {
 
-                                    mU.setPower(0.5);
-                                }
-                            } else {
-
-                                mU.setPower(0);
-                                angleDone = true;
-
+                                mU.setPower(0.5);
                             }
+                        } else {
+
+                            mU.setPower(0);
+                            angleDone = true;
+
+                        }
 
                         telemetry.addData("arm done", angleDone);
 
 
-
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
@@ -414,22 +409,20 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case "DRIVE_TO_LIMIT":
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             telemetry.addData("telescopePose", telescopePose);
                             done = true;
                             changeStep();
-                        }
-
-                        else if (!limitTriggered) {
+                        } else if (!limitTriggered) {
                             mE.setPower(-0.65);
                         }
                         break;
 
                     case "SPIN_SPINNER":
-                        if (runtime.seconds() > 0 && runtime.seconds() < 3) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 2) {
                             mSR.setPower(0.5);
                             done = false;
                         } else {
@@ -447,7 +440,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                         changeStep();
                         break;
 
-                    case "Test" :
+                    case "Test":
                         //used for testing odometry
                         targetX = 0;
                         targetY = 12;
@@ -457,10 +450,9 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -523,6 +515,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
         }
         shutdown();
     }
+
     public boolean moveToLocationDistance
         //function for setting a point with odometry, changes step when robot position is in a certain tolerance
     (double targetDistanceX, double targetDistanceY, double distanceTolerance, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
@@ -538,6 +531,7 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
         }
 
     }
+
     public boolean moveToLocationOdometry
         //function for setting a point with odometry, changes step when robot position is in a certain tolerance
     (double targetX, double targetY, double targetTheta, double distanceTolerance, double rotationTolerance) {
