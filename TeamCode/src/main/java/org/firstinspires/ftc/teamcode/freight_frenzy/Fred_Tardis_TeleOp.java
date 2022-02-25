@@ -60,7 +60,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
         int spinnerLevel = 0; //current level of power
         double[] spinnerPowers = {0.5, 0.6, 1}; //levels of each power shift
-        double[] spinnerLevelTimes = {0.25, 1.25}; //times spinner power shifts
+        double[] spinnerLevelTimes = {0.25, 1}; //times spinner power shifts
         double spinnerPower = spinnerPowers[spinnerLevel]; //current power
 
 //        //arm automation presets
@@ -69,7 +69,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double initUpright = neutralUpright + 1.8;
         double capIntakeUpright = neutralUpright + 2.1;
         double capDeliveryUpright = neutralUpright + 0.6;
-        double backDeliveryUpright = neutralUpright - 0.21;
+        double backDeliveryUpright = neutralUpright - 0.45;
         double backIntakeUpright = neutralUpright - 0.9;
 
         double neutralWrist = 0.67;
@@ -82,8 +82,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double neutralExtension = 100;
         double initExtension = 100;
         double capIntakeExtension = 300;
-        double capDeliveryExtension = 900;
-        double backDeliveryExtension = 500;
+        double capDeliveryExtension = 950;
+        double backDeliveryExtension = 1000;
         double backIntakeExtension = 800;
 
         int extensionTolerance = 50;
@@ -146,6 +146,9 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             telemetry.addData("mE current position", mE.getCurrentPosition());
             telemetry.addData("intakeState", intakeState);
             telemetry.addData("intakeTimer", intakeTimer);
+            telemetry.addData("spinnerTimer", spinnerTimer.seconds());
+            telemetry.addData("spinnerLevel", spinnerLevel);
+            telemetry.addData("spinnerPower", spinnerPower);
             telemetry.update();
 
             //drives robot
@@ -323,9 +326,14 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
             //carousel
             if (rightTrigger > 0.5 || leftTrigger > 0.5) {
-                if(spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]){
-                    spinnerLevel++;
-                    spinnerPower = spinnerPowers[spinnerLevel+1];
+                if(spinnerLevel < spinnerLevelTimes.length) {
+                    if (spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]) {
+                        spinnerLevel++;
+                        spinnerPower = spinnerPowers[spinnerLevel];
+                        gamepad1.rumble(100);
+                    }
+                }else{
+                    spinnerPower = 1;
                 }
                 if (rightTrigger > 0.5) {
                     mSL.setPower(spinnerPower);
@@ -335,9 +343,12 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     mSR.setPower(-1);
                 }
             } else {
+                spinnerTimer.reset();
+                spinnerLevel = 0;
+                spinnerPower = spinnerPowers[spinnerLevel];
+                telemetry.addData("spinner off", spinnerTimer.seconds());
                 mSL.setPower(0);
                 mSR.setPower(0);
-                spinnerTimer.reset();
             }
 
             previousBState = bButton;
