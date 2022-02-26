@@ -333,6 +333,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
                     intakeState = IntakeState.FREE;
                 }
+
             }
 
             //carousel

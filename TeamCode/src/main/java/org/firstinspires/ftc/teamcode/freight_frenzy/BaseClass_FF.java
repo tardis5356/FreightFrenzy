@@ -167,8 +167,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void lowerOdometerServos() {
 
-        sEB.setPosition(0.43);
-        sEL.setPosition(0);
+        sEB.setPosition(0.6);
+        sEL.setPosition(0.05);
         sER.setPosition(0.23);
 
         telemetry.addData("sEB positon", sEB.getPosition());
@@ -179,7 +179,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void raiseOdometerServos() {
 
-        sEB.setPosition(1);
+        sEB.setPosition(0.8);
         sEL.setPosition(1);
         sER.setPosition(1);
 
@@ -327,6 +327,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
             telemetry.addLine("extension and angle are done");
         }
     }
+
 
     public void moveToDistFromWall(double targetDistanceX, double targetDistanceY, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
         //uses distance sensor readings to drive to a set position in x and y, uses gyro to protect against drift

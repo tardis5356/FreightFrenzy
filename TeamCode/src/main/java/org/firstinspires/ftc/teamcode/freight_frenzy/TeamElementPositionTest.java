@@ -46,15 +46,14 @@ import org.openftc.easyopencv.OpenCvPipeline;
  */
 @TeleOp
 @Disabled
-public class TeamElementPositionTest extends LinearOpMode
-{
+public class TeamElementPositionTest extends LinearOpMode {
     OpenCvCamera webcam;
     SkystoneDeterminationPipeline pipeline;
 
     private static String tardisPosition = "NONE";
+
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         /**
          * NOTE: Many comments have been omitted from this sample for the
          * sake of conciseness. If you're just starting out with EasyOpenCv,
@@ -75,17 +74,15 @@ public class TeamElementPositionTest extends LinearOpMode
         // landscape orientation, though.
         //webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
+            public void onOpened() {
                 //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
+
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
                 /*
                  * This will be called if the camera could not be opened
                  */
@@ -94,18 +91,17 @@ public class TeamElementPositionTest extends LinearOpMode
 
         waitForStart();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             telemetry.addData("Frame Count", webcam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-         //   telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+            //   telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
             telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("avg1",pipeline.avg1);
-            telemetry.addData("avg2",pipeline.avg2);
-            telemetry.addData("avg3",pipeline.avg3);
-         //   telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-         //   telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
-         //   telemetry.update();
+            telemetry.addData("avg1", pipeline.avg1);
+            telemetry.addData("avg2", pipeline.avg2);
+            telemetry.addData("avg3", pipeline.avg3);
+            //   telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+            //   telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+            //   telemetry.update();
 //            telemetry.addData("Anti-Oranginess", pipeline.getAnalysis());
 //            telemetry.addData("Number of Rings", pipeline.getTEPosition());
             telemetry.update();
@@ -117,16 +113,14 @@ public class TeamElementPositionTest extends LinearOpMode
     /////////////////////////////////////////////////////// End of Op Mode //////////////////
 
 
-    public static class SkystoneDeterminationPipeline extends OpenCvPipeline
-    {
+    public static class SkystoneDeterminationPipeline extends OpenCvPipeline {
 
-       boolean viewportPaused;
+        boolean viewportPaused;
 
         /*
          * An enum to define the team element position
          */
-        public enum TeamElementPosition
-        {
+        public enum TeamElementPosition {
             LEFT,
             CENTER,
             RIGHT,
@@ -142,13 +136,13 @@ public class TeamElementPositionTest extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(10,70);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130,70);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253,70);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(10, 70);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130, 70);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(253, 70);
         static final int REGION_WIDTH = 50; //HEIGHT on screen
         static final int REGION_HEIGHT = 100; //WIDTH on screen
-       // static final int FOUR_RING_THRESHOLD = 110;
-       // static final int ONE_RING_THRESHOLD = 122;
+        // static final int FOUR_RING_THRESHOLD = 110;
+        // static final int ONE_RING_THRESHOLD = 122;
 
         /*
          * Points which actually define the sample reg4ion rectangles, derived from above values
@@ -187,11 +181,10 @@ public class TeamElementPositionTest extends LinearOpMode
                 REGION3_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
 
-
         /*
          * Working variables
          */
-        Mat region1_Cb,region2_Cb, region3_Cb;
+        Mat region1_Cb, region2_Cb, region3_Cb;
         Mat region1_Cr, region2_Cr, region3_Cr;
         Mat YCrCb = new Mat();
         Mat Y = new Mat();
@@ -206,26 +199,23 @@ public class TeamElementPositionTest extends LinearOpMode
          * This function takes the RGB frame, converts to YCrCb,
          * and extracts the Cb channel to the 'Cb' variable
          */
-        void inputToCb(Mat input)
-        {
+        void inputToCb(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cb, 2);
         }
-        void inputToY(Mat input)
-        {
+
+        void inputToY(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb,Y, 0);
+            Core.extractChannel(YCrCb, Y, 0);
         }
 
-        void inputToCr(Mat input)
-        {
+        void inputToCr(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cr, 1);
         }
 
         @Override
-        public void init(Mat firstFrame)
-        {
+        public void init(Mat firstFrame) {
             /*
              * We need to call this in order to make sure the 'Cb'
              * object is initialized, so that the submats we make
@@ -235,7 +225,7 @@ public class TeamElementPositionTest extends LinearOpMode
              * buffer would be re-allocated the first time a real frame
              * was crunched)
              */
-           inputToCb(firstFrame);
+            inputToCb(firstFrame);
 
             /*
              * Submats are a persistent reference to a region of the parent
@@ -254,8 +244,7 @@ public class TeamElementPositionTest extends LinearOpMode
         }
 
         @Override
-        public Mat processFrame(Mat input)
-        {
+        public Mat processFrame(Mat input) {
             /*
              * Overview of what we're doing:
              *
@@ -349,7 +338,6 @@ public class TeamElementPositionTest extends LinearOpMode
                     2); // Thickness of the rectangle lines
 
 
-
             position = TeamElementPosition.NONE;
             //ringCount = 4;
 //            int maxOneTwo = Math.max(avg1, avg2);
@@ -361,7 +349,7 @@ public class TeamElementPositionTest extends LinearOpMode
              * Now that we found the max, we actually need to go and
              * figure out which sample region that value was from
              */
-            if(min == avg1) // Was it from region 1?
+            if (min == avg1) // Was it from region 1?
             {
                 tardisPosition = "LEFT";
                 position = TeamElementPosition.LEFT; // Record our analysis
@@ -376,8 +364,7 @@ public class TeamElementPositionTest extends LinearOpMode
                         region1_pointB, // Second point which defines the rectangle
                         GREEN, // The color the rectangle is drawn in
                         -1); // Negative thickness means solid fill
-            }
-            else if(min == avg2) // Was it from region 2?
+            } else if (min == avg2) // Was it from region 2?
             {
                 tardisPosition = "CENTER";
                 position = TeamElementPosition.CENTER; // Record our analysis
@@ -392,8 +379,7 @@ public class TeamElementPositionTest extends LinearOpMode
                         region2_pointB, // Second point which defines the rectangle
                         GREEN, // The color the rectangle is drawn in
                         -1); // Negative thickness means solid fill
-            }
-            else if(min == avg3) // Was it from region 3?
+            } else if (min == avg3) // Was it from region 3?
             {
                 tardisPosition = "RIGHT";
                 position = TeamElementPosition.RIGHT; // Record our analysis
@@ -424,19 +410,18 @@ public class TeamElementPositionTest extends LinearOpMode
         /*
          * Call this from the OpMode thread to obtain the latest analysis
          */
-        public int getAnalysis()
-        {
+        public int getAnalysis() {
             return avg1;
         }
 
-        public TeamElementPosition getTEPosition()
-        {
+        public TeamElementPosition getTEPosition() {
             return position;
         }
 
     }
-    static public String getPosition(){
-    return tardisPosition;
-}
+
+    static public String getPosition() {
+        return tardisPosition;
+    }
 }
 
