@@ -55,27 +55,32 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double powerMultiplier = 0.6;
         boolean previousBState = false;
         boolean motorPowerFast = false;
+
         boolean extensionReset = false;
         double sVPosition = sV.getPosition();
         boolean intakeStateSet = false;
 
+        //runtime
+        int runtimeRounded = 0;
+        boolean teleopStarted = false;
+
+        //spinner
         int spinnerLevel = 0; //current level of power
         double[] spinnerPowers = {0.5, 0.6, 1}; //levels of each power shift
         double[] spinnerLevelTimes = {0.25, 1}; //times spinner power shifts
         double spinnerPower = spinnerPowers[spinnerLevel]; //current power
 
         //arm automation presets
-        //01-02-21
+        //upright
         double neutralUpright = 1.08;
         double initUpright = neutralUpright + 1.8;
-
         double capIntakeUpright = neutralUpright + 2.25;
         double bottomCapDeliveryUpright = neutralUpright + 0.53;
         double topCapDeliveryUpright = neutralUpright + 0.39;
         double backDeliveryUpright = neutralUpright - 0.21;
-
         double backIntakeUpright = neutralUpright - 0.9;
 
+        //wrist
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
         double capIntakeWrist = neutralWrist - 0.09;
@@ -84,19 +89,18 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double backDeliveryWrist = neutralWrist + 0.25;
         double backIntakeWrist = neutralWrist + 0.2;
 
+        //extension
         double neutralExtension = 100;
         double initExtension = 100;
-
         double capIntakeExtension = 550;
         double capDeliveryExtension = 950;
         double backDeliveryExtension = 500;
-
         double backIntakeExtension = 800;
-
         int extensionTolerance = 50;
 
         intakeTimer.reset();
         spinnerTimer.reset();
+        runtime.reset();
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -108,7 +112,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         while (opModeIsActive()) {
             updatePoseStrafe();
             gyroUpdate();
-            runtime.reset();
+
+            if(!teleopStarted){
+                runtime.reset();
+                teleopStarted = true;
+            }
 
             //Gamepad 1 Variables
             double leftY1 = gamepad1.left_stick_y * powerMultiplier;//drive forward
@@ -139,24 +147,38 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             boolean dpadLeft2 = (gamepad2.dpad_left);
             boolean dpadRight2 = (gamepad2.dpad_right);
 
+            //general
             telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
             telemetry.addData("Motor power fast", motorPowerFast);
+
+            //wrist
             telemetry.addData("Wrist angle", sVPosition);
+
+            //arm
             telemetry.addData("potentiometer voltage", potentiometer.getVoltage());
-            telemetry.addData("extension position", mE.getCurrentPosition());
-            telemetry.addData("arm limit", lAB.isPressed());
-            telemetry.addData("arm limit offset", armLimitOffset);
-            telemetry.addData("intake state", intakeState);
             telemetry.addData("arm state", armState);
+
+            //extension
             telemetry.addData("extensionReset", extensionReset);
             telemetry.addData("mE mode", mE.getMode());
             telemetry.addData("mE current position", mE.getCurrentPosition());
+            telemetry.addData("arm limit", lAB.isPressed());
+
+            //intake
             telemetry.addData("intakeState", intakeState);
             telemetry.addData("intakeTimer", intakeTimer);
+            telemetry.addData("intakeDistance", dI.getDistance(DistanceUnit.CM));
+
+            //spinner
             telemetry.addData("spinnerTimer", spinnerTimer.seconds());
             telemetry.addData("spinnerLevel", spinnerLevel);
             telemetry.addData("spinnerPower", spinnerPower);
-            telemetry.addData("intakeDistance", dI.getDistance(DistanceUnit.CM));
+
+            //runtime
+            telemetry.addData("runtime", runtime.seconds());
+            telemetry.addData("runtime", Math.round(runtime.seconds()));
+            telemetry.addData("runtimeRounded", runtimeRounded);
+
             telemetry.update();
 
             //drives robot
@@ -165,11 +187,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //changes drive speed
             if (bButton != previousBState && bButton) {
                 if (motorPowerFast) {
-                    motorPowerFast = false;
-                    powerMultiplier = 1;
-                } else {
-                    motorPowerFast = true;
                     powerMultiplier = 0.5;
+                    motorPowerFast = false;
+                } else {
+                    powerMultiplier = 1;
+                    motorPowerFast = true;
                 }
             }
 
@@ -180,8 +202,38 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 raiseOdometerServos();
             }
 
+
+            //rumble
             if(dI.getDistance(DistanceUnit.CM) < 10 && !gamepad2.isRumbling()){
-                gamepad2.rumbleBlips(2);
+//                gamepad1.rumbleBlips(2);
+//                gamepad2.rumbleBlips(2);
+            }
+            runtimeRounded = Math.toIntExact(Math.round(runtime.seconds()));
+            switch(runtimeRounded){
+                case 30://30s
+                case 60://60s
+                case 100://10s into endgame
+                case 106://26s into endgame (duck benchmark)
+                case 110://20s into endgame
+                    gamepad1.rumble(20);
+                    gamepad2.rumble(20);
+                    break;
+                case 80://10s until endgame
+                    gamepad1.rumbleBlips(1);
+                    gamepad2.rumbleBlips(1);
+                    break;
+                case 90://endgame
+                    gamepad1.rumbleBlips(3);
+                    gamepad2.rumbleBlips(3);
+                    break;
+                case 115://5s until match over
+                    gamepad1.rumble(500);
+                    gamepad2.rumble(500);
+                    break;
+                case 120://end
+                    gamepad1.rumble(2000);
+                    gamepad2.rumble(2000);
+                    break;
             }
 
             //controls wrist up-down motion
@@ -193,6 +245,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             sV.setPosition(Range.clip(sVPosition, 0.01, 1));
             sVPosition = sV.getPosition();
 
+            //resets extension encoder values
             if (!extensionReset) {
                 mE.setPower(-1);
                 if (lAB.isPressed()) {
@@ -383,4 +436,3 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
 
 }
-

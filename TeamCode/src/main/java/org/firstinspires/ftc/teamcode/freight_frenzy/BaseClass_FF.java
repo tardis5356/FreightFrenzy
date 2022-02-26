@@ -180,9 +180,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void raiseOdometerServos() {
 
-        sEB.setPosition(0.8);
-        sEL.setPosition(1);
-        sER.setPosition(1);
+        sEB.setPosition(0.75);
+        sEL.setPosition(0.17);
+        sER.setPosition(0.35);
 
         telemetry.addData("sEB positon", sEB.getPosition());
         telemetry.addData("sEL positon", sEL.getPosition());
