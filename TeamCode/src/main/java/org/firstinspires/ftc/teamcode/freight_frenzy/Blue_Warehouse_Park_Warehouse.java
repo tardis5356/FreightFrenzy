@@ -9,9 +9,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Blue_Odometer_Park_SU", group = "Autonomous")
+@Autonomous(name = "Blue_Warehouse_Park_Warehouse", group = "Autonomous")
 
-public class Blue_Odometer_Park_SU extends AutoBase_FF {
+public class Blue_Warehouse_Park_Warehouse extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -27,15 +27,15 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
 //
         steps.add("DRIVE_TO_LIMIT");
         steps.add("FIND_ELEMENT_POSITION");
-        steps.add("STRAFE_TO_CAROUSEL");//odometry
-        steps.add("BACK_INTO_CAROUSEL");//time
+//        steps.add("STRAFE_TO_CAROUSEL");//odometry
+//        steps.add("BACK_INTO_CAROUSEL");//time
+////
+//        steps.add("SPIN_SPINNER");
 //
-        steps.add("SPIN_SPINNER");
-//
-        steps.add("DRIVE_TO_HUB_SU");//odometry
+        steps.add("DRIVE_TO_HUB_W");//odometry
         steps.add("MOVE_ARM_UP");
         steps.add("MOVE_ARM");
-        steps.add("DRIVE_TO_HUB_SU_2");//odometry
+        steps.add("DRIVE_TO_HUB_W_2");//odometry
 //
 //
         steps.add("DROP_BLOCK");
@@ -44,13 +44,16 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
 //
 //        //steps.add("RESET_ARM");//make arm straight up instead of horizontal
 //
-        steps.add("PARK_IN_SU");//odometry
+//        steps.add("STRAFE_FROM_HUB");//odometry
         steps.add("RESET_ARM");//make arm straight up instead of horizontal
 
-//        steps.add("GO_NEAR_WAREHOUSE");//odometry
-//        steps.add("STRAFE_TSE");//odometry
-//        steps.add("RAISE_ODOMETERS");
-//        steps.add("GO_IN_WAREHOUSE");//time
+        steps.add("GO_NEAR_WAREHOUSE");//odometry
+        steps.add("STRAFE_TSE");//odometry
+        steps.add("RAISE_ODOMETERS");
+        steps.add("GO_IN_WAREHOUSE");//time
+        steps.add("PARK_IN_WAREHOUSE");//time
+        steps.add("ROTATE_TO_180");//gyro
+        steps.add("LOWER_ARM");
 //        steps.add("PARK_IN_WAREHOUSE");//distance
 
         steps.add("STOP");
@@ -190,14 +193,6 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                 frontDistanceFiltered = median(frontDistanceArray);
 
                 switch (currentStep) {
-
-                    case("PARK_IN_SU"):
-                        targetX = 24;
-                        targetY = 29;
-                        targetTheta = 90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 2, rotationTolerance));
-                        break;
-
                     case ("STRAFE_TO_CAROUSEL"):
                         targetX = 26;
                         targetY = 11;
@@ -214,24 +209,24 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                             changeStep();
                         }
                         break;
-                    case ("DRIVE_TO_HUB_SU"):
-                        targetX = 22;
-                        targetY = 42;
+                    case ("DRIVE_TO_HUB_W"):
+                        targetX = 23;
+                        targetY = 11;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
-                    case ("DRIVE_TO_HUB_SU_2"):
-                        targetX = -4;
-                        targetY = 42;
-                        targetTheta = 90;
+                    case ("DRIVE_TO_HUB_W_2"):
+                        targetX = 23;
+                        targetY = 18;
+                        targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
                     case ("BACK_AWAY_FROM_HUB"):
-                        targetX = 24;
-                        targetY = 40;
-                        targetTheta = 90;
+                        targetX = 23;
+                        targetY = 11;
+                        targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
 
@@ -242,14 +237,14 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case ("GO_NEAR_WAREHOUSE"):
-                        targetX = -44;
-                        targetY = 12;
+                        targetX = 0;
+                        targetY = 11;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
                     case ("STRAFE_TSE"):
-                        targetX = -44;
-                        targetY = 16;
+                        targetX = 0;
+                        targetY = 17;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
@@ -263,7 +258,7 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                         break;
 
                     case ("GO_IN_WAREHOUSE"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 1.25) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
                             drive(-1, 0, 0);
                             done = false;
                         } else {
@@ -271,10 +266,15 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                             changeStep();
                         }
                         break;
+
                     case ("PARK_IN_WAREHOUSE"):
-                        targetDistanceX = 0;
-                        targetDistanceY = 5;
-                        done = (moveToLocationDistance(targetDistanceX, targetDistanceY, 1, "", "frontDistance", 90, 5));
+                        if (runtime.seconds() > 0 && runtime.seconds() < 0.5) {
+                            drive(-0.5, 0.7, 0);
+                            done = false;
+                        } else {
+                            done = true;
+                            changeStep();
+                        }
                         break;
 
 
@@ -320,6 +320,50 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                         changeStep();
 
                         break;
+
+                    case ("LOWER_ARM"):
+                        angleDone = false;
+                        extendDone = false;
+                        potTolerance = 0.1;
+                        drive(0, 0, 0);
+                        armAngleBack = armHorizontal + 0.85;
+//        telemetry.addData("target arm angle", armAngle);
+//        telemetry.addData("target arm extension", armReach);
+//        telemetry.addData("arm extension", mE.getCurrentPosition());
+//        telemetry.addData("telescope pose (offset)", telescopePose);
+                        sV.setPosition(0.51 + wristStraight);
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                            telescopePose = mE.getCurrentPosition();
+                            mE.setPower(0);
+                            extendDone = true;
+                        } else if (!lAB.isPressed()) {
+                            mE.setPower(-1);
+                        }
+
+                        if ((Math.abs(potentiometer.getVoltage() - armAngleBack) > potTolerance) && extendDone) {
+                            if (potentiometer.getVoltage() > armAngleBack) {
+
+                                mU.setPower(-0.5);
+                            } else if (potentiometer.getVoltage() < armAngleBack) {
+
+                                mU.setPower(0.5);
+                            }
+                        } else {
+
+                            mU.setPower(0);
+                            angleDone = true;
+
+                        }
+                        if (angleDone && extendDone) {
+
+                            done = true;
+                            changeStep();
+
+                        }
+                        changeStep();
+
+                        break;
+
 
                     case "DROP_BLOCK":
                         if (!sixthCheck) {
@@ -473,8 +517,8 @@ public class Blue_Odometer_Park_SU extends AutoBase_FF {
                         changeStep();
                         break;
 
-                    case "ROTATE_TO_90":
-                        rotationAngle1 = 90;
+                    case "ROTATE_TO_180":
+                        rotationAngle1 = 180;
                         tolerance = 5;
                         //totalAngleChange (second variable) cannot be 0
                         //preciseRotationChange(rotationAngle1, rotationAngle1);

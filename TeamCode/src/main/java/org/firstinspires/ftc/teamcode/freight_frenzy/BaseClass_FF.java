@@ -967,7 +967,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         // old value = 0.04
         // strafe is forward, forward is strafe for 2021 robot
         //forward strafe and rotate are actually correct on ginger :)
-        double aggressivenessStrafe = 0.08;
+        double aggressivenessStrafe = 0.1;
         double aggressivenessForward = 0.04;//0.08; //0.04
         double PmaxStrafe = 1;
         double PmaxForward = 1;

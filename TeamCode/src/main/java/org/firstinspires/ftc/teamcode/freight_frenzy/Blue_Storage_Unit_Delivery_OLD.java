@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.freight_frenzy;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -10,8 +11,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous(name = "Blue_Storage_Unit_Delivery", group = "Autonomous")
-
-public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
+@Disabled
+public class Blue_Storage_Unit_Delivery_OLD extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed

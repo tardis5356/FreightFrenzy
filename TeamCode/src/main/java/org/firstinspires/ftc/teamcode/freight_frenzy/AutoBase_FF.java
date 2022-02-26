@@ -107,7 +107,7 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
 //                armAngle = 2.5;
                 //test values for extension testing
-                armAngle = armHorizontal + 0.68; //+ 0.5;
+                armAngle = armHorizontal + 0.63; //+ 0.5;
                 armReach = telescopePose + 210; //+ 237;
                 //364
                 wristPosition = 0.41 + wristStraight;

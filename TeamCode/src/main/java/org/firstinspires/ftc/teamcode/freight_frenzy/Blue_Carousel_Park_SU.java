@@ -9,9 +9,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Blue_Odometer_Park_Warehouse", group = "Autonomous")
+@Autonomous(name = "Blue_Carousel_Park_SU", group = "Autonomous")
 
-public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
+public class Blue_Carousel_Park_SU extends AutoBase_FF {
 
     ArrayList<String> steps = new ArrayList<>();
     //creates list of steps to be completed
@@ -44,13 +44,13 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
 //
 //        //steps.add("RESET_ARM");//make arm straight up instead of horizontal
 //
-        steps.add("STRAFE_FROM_HUB");//odometry
+        steps.add("PARK_IN_SU");//odometry
         steps.add("RESET_ARM");//make arm straight up instead of horizontal
 
-        steps.add("GO_NEAR_WAREHOUSE");//odometry
-        steps.add("STRAFE_TSE");//odometry
-        steps.add("RAISE_ODOMETERS");
-        steps.add("GO_IN_WAREHOUSE");//time
+//        steps.add("GO_NEAR_WAREHOUSE");//odometry
+//        steps.add("STRAFE_TSE");//odometry
+//        steps.add("RAISE_ODOMETERS");
+//        steps.add("GO_IN_WAREHOUSE");//time
 //        steps.add("PARK_IN_WAREHOUSE");//distance
 
         steps.add("STOP");
@@ -190,6 +190,14 @@ public class Blue_Odometer_Park_Warehouse extends AutoBase_FF {
                 frontDistanceFiltered = median(frontDistanceArray);
 
                 switch (currentStep) {
+
+                    case("PARK_IN_SU"):
+                        targetX = 24;
+                        targetY = 25;
+                        targetTheta = 90;
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 1, rotationTolerance));
+                        break;
+
                     case ("STRAFE_TO_CAROUSEL"):
                         targetX = 26;
                         targetY = 11;
