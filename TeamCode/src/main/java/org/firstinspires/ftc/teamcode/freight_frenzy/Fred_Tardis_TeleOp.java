@@ -60,6 +60,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double sVPosition = sV.getPosition();
         boolean intakeStateSet = false;
 
+        String teleopMode = "warehouse"; //warehouse, capstone
+
         //runtime
         int runtimeRounded = 0;
         boolean teleopStarted = false;
@@ -113,7 +115,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             updatePoseStrafe();
             gyroUpdate();
 
-            if(!teleopStarted){
+            if (!teleopStarted) {
                 runtime.reset();
                 teleopStarted = true;
             }
@@ -202,14 +204,26 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 raiseOdometerServos();
             }
 
-
             //rumble
-            if(dI.getDistance(DistanceUnit.CM) < 10 && !gamepad2.isRumbling()){
-//                gamepad1.rumbleBlips(2);
-//                gamepad2.rumbleBlips(2);
-            }
             runtimeRounded = Math.toIntExact(Math.round(runtime.seconds()));
-            switch(runtimeRounded){
+
+            if (gamepad2.dpad_up) {
+                teleopMode = "capstone";
+            } else if (gamepad2.dpad_down) {
+                teleopMode = "warehouse";
+            }
+
+            if (dI.getDistance(DistanceUnit.CM) < 10 && !gamepad2.isRumbling()) {
+                gamepad1.rumbleBlips(2);
+                gamepad2.rumbleBlips(2);
+
+                if (teleopMode == "warehouse") {
+                    intakeState = IntakeState.FREE;
+                    armState = ArmState.BACK_DELIVERY; //auto delivery position
+                }
+            }
+
+            switch (runtimeRounded) {
                 case 30://30s
                 case 60://60s
                 case 100://10s into endgame
@@ -257,7 +271,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //arm
-            if(!gamepad2.start) {
+            if (!gamepad2.start) {
                 if (yButton2) {// neutral position
                     armState = ArmState.NEUTRAL;
                 } else if (bButton2) {// backDelivery position
@@ -383,13 +397,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         break;
                 }
 
-                //finite state overrides
-                if (dpadUp2) { // no control
-                    armState = ArmState.FREE;
-                } else if (dpadDown2) {
-                    intakeState = IntakeState.FREE;
-                }
-
                 //auto arm overrides
                 if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
                     armState = ArmState.FREE;
@@ -403,19 +410,19 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
             //carousel
             if (rightTrigger > 0.5 || leftTrigger > 0.5) {
-                if(spinnerLevel < spinnerLevelTimes.length) {
+                if (spinnerLevel < spinnerLevelTimes.length) {
                     if (spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]) {
                         spinnerLevel++;
                         spinnerPower = spinnerPowers[spinnerLevel];
                         gamepad1.rumble(100);
                     }
-                }else{
+                } else {
                     spinnerPower = 1;
                 }
                 if (rightTrigger > 0.5) {
                     mSL.setPower(spinnerPower);
                     mSR.setPower(1);
-                } else if(leftTrigger > 0.5) {
+                } else if (leftTrigger > 0.5) {
                     mSL.setPower(-spinnerPower);
                     mSR.setPower(-1);
                 }

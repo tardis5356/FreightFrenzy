@@ -1340,32 +1340,32 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double armPowerCap = 1;
 
     public void armToPosPID(double desiredPosition) {
-        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right || gamepad2.dpad_left) {
-            double changeInTime = (runtime.milliseconds() - armLastLoopTime) / 1000;
-            double error = 0;
-            double integral = 0;
-            double derivative = 0;
-            double output = 0;
-            double kp = 5;
-            double ki = 0.5;
-            double kd = 0.1;
-            error = (desiredPosition - potentiometer.getVoltage());
-            if (Math.abs(error) > 0.1) {
-                armIntegralPrior = 0;
-            }
-            integral = armIntegralPrior + error * changeInTime;
-            derivative = (error - armErrorPrior) / changeInTime;
-            output = kp * error + ki * integral + kd * derivative;
-            if (Math.abs(output) > armPowerCap) {
-                output = Math.signum(output) * armPowerCap;
-            }
-            armErrorPrior = error;
-            armIntegralPrior = integral;
-            armLastLoopTime = runtime.milliseconds();
-            mU.setPower(output);
-        } else {
-            armLastLoopTime = runtime.milliseconds();
+//        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right || gamepad2.dpad_left) {
+        double changeInTime = (runtime.milliseconds() - armLastLoopTime) / 1000;
+        double error = 0;
+        double integral = 0;
+        double derivative = 0;
+        double output = 0;
+        double kp = 5;
+        double ki = 0.5;
+        double kd = 0.1;
+        error = (desiredPosition - potentiometer.getVoltage());
+        if (Math.abs(error) > 0.1) {
+            armIntegralPrior = 0;
         }
+        integral = armIntegralPrior + error * changeInTime;
+        derivative = (error - armErrorPrior) / changeInTime;
+        output = kp * error + ki * integral + kd * derivative;
+        if (Math.abs(output) > armPowerCap) {
+            output = Math.signum(output) * armPowerCap;
+        }
+        armErrorPrior = error;
+        armIntegralPrior = integral;
+        armLastLoopTime = runtime.milliseconds();
+        mU.setPower(output);
+//        } else {
+//        armLastLoopTime = runtime.milliseconds();
+//        }
     }
 
     double extensionErrorPrior = 0;
@@ -1374,32 +1374,32 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double extensionPowerCap = 1;
 
     public void extensionToPosPID(double desiredPosition) {
-        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
-            double changeInTime = (runtime.milliseconds() - extensionLastLoopTime) / 1000;
-            double error = 0;
-            double integral = 0;
-            double derivative = 0;
-            double output = 0;
-            double kp = 1;
-            double ki = 0;
-            double kd = 0;
-            error = (desiredPosition - potentiometer.getVoltage());
-            if (Math.abs(error) > 0.1) {
-                extensionIntegralPrior = 0;
-            }
-            integral = extensionIntegralPrior + error * changeInTime;
-            derivative = (error - extensionErrorPrior) / changeInTime;
-            output = kp * error + ki * integral + kd * derivative;
-            if (Math.abs(output) > extensionPowerCap) {
-                output = Math.signum(output) * extensionPowerCap;
-            }
-            extensionErrorPrior = error;
-            extensionIntegralPrior = integral;
-            extensionLastLoopTime = runtime.milliseconds();
-            mE.setPower(output);
-        } else {
-            extensionLastLoopTime = runtime.milliseconds();
+//        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
+        double changeInTime = (runtime.milliseconds() - extensionLastLoopTime) / 1000;
+        double error = 0;
+        double integral = 0;
+        double derivative = 0;
+        double output = 0;
+        double kp = 1;
+        double ki = 0;
+        double kd = 0;
+        error = (desiredPosition - potentiometer.getVoltage());
+        if (Math.abs(error) > 0.1) {
+            extensionIntegralPrior = 0;
         }
+        integral = extensionIntegralPrior + error * changeInTime;
+        derivative = (error - extensionErrorPrior) / changeInTime;
+        output = kp * error + ki * integral + kd * derivative;
+        if (Math.abs(output) > extensionPowerCap) {
+            output = Math.signum(output) * extensionPowerCap;
+        }
+        extensionErrorPrior = error;
+        extensionIntegralPrior = integral;
+        extensionLastLoopTime = runtime.milliseconds();
+        mE.setPower(output);
+//        } else {
+        extensionLastLoopTime = runtime.milliseconds();
+//        }
     }
 
     public void extensionToPos(double desiredPosition, int tolerance) {
@@ -1416,7 +1416,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-    public void armPreset(String position, double desPosition, int extensionTol){
+    public void armPreset(String position, double desPosition, int extensionTol) {
         extensionToPos(desPosition, extensionTol);
         armToPosPID(desPosition);
     }
