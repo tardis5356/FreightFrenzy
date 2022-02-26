@@ -109,7 +109,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
             @Override
             public void onOpened() {
                 //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -134,7 +134,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                 hubLevel = "BOTTOM";
             } else if (elementPosition == "CENTER") {
                 hubLevel = "MIDDLE";
-            } else if (elementPosition == "RIGHT"){
+            } else if (elementPosition == "RIGHT") {
                 hubLevel = "TOP";
             }
             changeHubLevel(elementPosition);
@@ -165,7 +165,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                 switch (currentStep) {
 
-                    case("DRIVE_WITH_ENCODERS"):
+                    case ("DRIVE_WITH_ENCODERS"):
                         double encoderDist = 700;
                         if (!eleventhCheck) {
                             //if this step has not been run before, sets myTime to the runtime
@@ -177,27 +177,27 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         if (Math.abs((mFR.getCurrentPosition() - frontRightPosition) - encoderDist) > enTolerance) {
                             if ((mFR.getCurrentPosition() - frontRightPosition) < encoderDist) {
 
-                                drive(0,-0.5,0);
+                                drive(0, -0.5, 0);
                             } else if ((mFR.getCurrentPosition() - frontRightPosition) > encoderDist) {
 
-                                drive(0,0.5,0);
+                                drive(0, 0.5, 0);
                             }
                         } else {
 
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
 
                         }
-                            break;
+                        break;
 
-                    case("DRIVE_TO_WALL"):
+                    case ("DRIVE_TO_WALL"):
                         targetDistanceX = 0;
                         targetDistanceY = 7;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 7, "", "frontDistance", 90, 5));
                         break;
 
-                    case("DRIVE_INTO_WAREHOUSE"):
+                    case ("DRIVE_INTO_WAREHOUSE"):
                         if (!tenthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -205,17 +205,17 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         double tenthTime = 0.6;
 
-                        if ((runtime.seconds() - myTime) <= tenthTime ){
-                            drive(-1,0,0);
+                        if ((runtime.seconds() - myTime) <= tenthTime) {
+                            drive(-1, 0, 0);
                         }
                         if ((runtime.seconds() - myTime) > tenthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("DRIVE_BACK"):
+                    case ("DRIVE_BACK"):
                         if (!ninthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -223,40 +223,38 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         double ninthTime = 1.7;
 
-                        if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.5,0,0);
+                        if ((runtime.seconds() - myTime) <= ninthTime) {
+                            drive(0.5, 0, 0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("MOVE_BACKWARD"):
+                    case ("MOVE_BACKWARD"):
                         targetDistanceX = 0;
                         targetDistanceY = 10;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
                         break;
 
-                    case("RESET_ARM"):
+                    case ("RESET_ARM"):
                         boolean angleDone = false;
                         boolean extendDone = false;
                         double potTolerance = 0.05;
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         double armAngleBack = armHorizontal;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());
 //        telemetry.addData("telescope pose (offset)", telescopePose);
                         sV.setPosition(0.1);
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
                             extendDone = true;
-                        }
-
-                        else if (!lAB.isPressed()) {
+                        } else if (!lAB.isPressed()) {
                             mE.setPower(-1);
                         }
 
@@ -274,7 +272,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
@@ -282,24 +280,24 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         break;
 
-                    case("DRIVE_TO_HUB_TIME_W"):
+                    case ("DRIVE_TO_HUB_TIME_W"):
 //                        if (!eighthCheck) {
-                            //if this step has not been run before, sets myTime to the runtime
+                        //if this step has not been run before, sets myTime to the runtime
 //                            eighthCheck = true;
 //                        }
                         double eighthTime = 2.2;
 
-                        if ((runtime.seconds() <= eighthTime )){
-                            drive(0,-0.5,0);
+                        if ((runtime.seconds() <= eighthTime)) {
+                            drive(0, -0.5, 0);
                         }
                         if ((runtime.seconds() > eighthTime)) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("DRIVE_FORWARD_TO_HUB"):
+                    case ("DRIVE_FORWARD_TO_HUB"):
                         targetDistanceX = 0;
                         targetDistanceY = 17;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", 0, 5));
@@ -314,7 +312,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         double sixthTime = 1;
 
-                        if ((runtime.seconds() - myTime) <= sixthTime ){
+                        if ((runtime.seconds() - myTime) <= sixthTime) {
                             sI.setPower(0.5);
                         }
                         if ((runtime.seconds() - myTime) > sixthTime) {
@@ -326,7 +324,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                     case "MOVE_ARM":
                         //43 extension ticks per cm
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         potTolerance = 0.05;
                         angleDone = false;
                         extendDone = false;
@@ -368,7 +366,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         }
                         telemetry.addData("extend done", extendDone);
 
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
@@ -377,14 +375,12 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         break;
 
                     case "DRIVE_TO_LIMIT":
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             done = true;
-                        }
-
-                        else if (!limitTriggered) {
+                        } else if (!limitTriggered) {
                             mE.setPower(-0.65);
                         }
                         break;
@@ -395,7 +391,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
                         done = true;
                         break;
 
-                    case "Test" :
+                    case "Test":
                         //used for testing odometry
                         targetX = 0;
                         targetY = 12;
@@ -405,10 +401,9 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -498,7 +493,7 @@ public class Blue_Warehouse_Autonomous extends AutoBase_FF {
 
                         break;
 
-                    case("STRAFE_TO_ELEMENT"):
+                    case ("STRAFE_TO_ELEMENT"):
                         targetDistanceX = 19;
                         targetDistanceY = 0;
                         targetTheta = 90;

@@ -24,7 +24,7 @@ public class Ginger_Sensor_Test extends BaseClass_FF {
             gyroUpdate();
             updatePoseStrafe();
 
-            telemetry.addData("gyro",gyroZ);
+            telemetry.addData("gyro", gyroZ);
 //            updatePoseStrafe();
 //            double backRightDistanceDistance = rangeSensorBackRight.getDistance(DistanceUnit.CM);
 //            double leftDistance = rangeSensorBackRight.getDistance(DistanceUnit.CM);
@@ -32,14 +32,14 @@ public class Ginger_Sensor_Test extends BaseClass_FF {
 
 //            double rightDistance = rangeSensorRight.getDistance(DistanceUnit.CM);
 
-            telemetry.addData("left odometer wheel",mFL.getCurrentPosition());
-            telemetry.addData("back odometer wheel",mFR.getCurrentPosition());
+            telemetry.addData("left odometer wheel", mFL.getCurrentPosition());
+            telemetry.addData("back odometer wheel", mFR.getCurrentPosition());
             telemetry.addData("right odometer wheel", mBL.getCurrentPosition());
-            telemetry.addData("x pos",pose.x);
-            telemetry.addData("y pos",pose.y);
+            telemetry.addData("x pos", pose.x);
+            telemetry.addData("y pos", pose.y);
             telemetry.addData("currEnX", (mFR.getCurrentPosition() - encoderXStart));
-            telemetry.addData("currEnYLeft",(mFL.getCurrentPosition() - encoderYLeftStart));
-            telemetry.addData("currEnYRight",(mBL.getCurrentPosition() - encoderYRightStart));
+            telemetry.addData("currEnYLeft", (mFL.getCurrentPosition() - encoderYLeftStart));
+            telemetry.addData("currEnYRight", (mBL.getCurrentPosition() - encoderYRightStart));
 
             telemetry.addData(" left distance", "" + String.format("%.2f cm", Range.clip(rangeSensorLeft.getDistance(DistanceUnit.CM), 0, 200)));
             telemetry.addData(" front distance", "" + String.format("%.2f cm", Range.clip(rangeSensorFront.getDistance(DistanceUnit.CM), 0, 200)));

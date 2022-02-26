@@ -37,21 +37,20 @@ public class Primus_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //Arm Motor Controls
             mArm.setPower(leftY2);
 
-            if(rightTrigger2 != 0){
+            if (rightTrigger2 != 0) {
                 //sL.setPosition(0.3);
                 sR.setPosition(0.8);
-            }else{
+            } else {
                 sR.setPosition(0.3);
             }
-
             if (leftTrigger2 != 0) {
                 sL.setPosition(0.3);
                 //sR.setPosition(0.3);
-            }else {
+            } else {
                 sL.setPosition(0.8);
             }
 
-          
+
         }
 
 

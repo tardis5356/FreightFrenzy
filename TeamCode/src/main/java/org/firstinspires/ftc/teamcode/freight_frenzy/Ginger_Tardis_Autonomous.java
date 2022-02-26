@@ -31,7 +31,7 @@ public class Ginger_Tardis_Autonomous extends AutoBase_FF {
 //        steps.add("MOVE_FROM_WALL");
 //        steps.add("ROTATE_TO_90");
 //        steps.add("MOVE_TO_CAROUSEL");
-       steps.add("WAIT");
+        steps.add("WAIT");
 //        steps.add("MOVE_TO_BLUE_HUB");
 //        steps.add("ROTATE_TO_0");
 //        steps.add("WAIT");
@@ -191,7 +191,7 @@ public class Ginger_Tardis_Autonomous extends AutoBase_FF {
 //                        } else {
 //                            elementPosition = "RIGHT";
 //                        }
-                       changeHubLevel(elementPosition);
+                        changeHubLevel(elementPosition);
                         done = true;
                         break;
 

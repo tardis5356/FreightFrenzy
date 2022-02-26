@@ -168,8 +168,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void lowerOdometerServos() {
 
-        sEB.setPosition(0.43);
-        sEL.setPosition(0);
+        sEB.setPosition(0.6);
+        sEL.setPosition(0.05);
         sER.setPosition(0.23);
 
         telemetry.addData("sEB positon", sEB.getPosition());
@@ -180,7 +180,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void raiseOdometerServos() {
 
-        sEB.setPosition(1);
+        sEB.setPosition(0.8);
         sEL.setPosition(1);
         sER.setPosition(1);
 
@@ -328,6 +328,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
             telemetry.addLine("extension and angle are done");
         }
     }
+
 
     public void moveToDistFromWall(double targetDistanceX, double targetDistanceY, String sensorForX, String sensorForY, double targetTheta, double tolTheta) {
         //uses distance sensor readings to drive to a set position in x and y, uses gyro to protect against drift
@@ -1339,15 +1340,15 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double armPowerCap = 1;
 
     public void armToPosPID(double desiredPosition) {
-        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
+        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right || gamepad2.dpad_left) {
             double changeInTime = (runtime.milliseconds() - armLastLoopTime) / 1000;
             double error = 0;
             double integral = 0;
             double derivative = 0;
             double output = 0;
-            double kp = 1.5;
-            double ki = 0;
-            double kd = 0;
+            double kp = 5;
+            double ki = 0.5;
+            double kd = 0.1;
             error = (desiredPosition - potentiometer.getVoltage());
             if (Math.abs(error) > 0.1) {
                 armIntegralPrior = 0;

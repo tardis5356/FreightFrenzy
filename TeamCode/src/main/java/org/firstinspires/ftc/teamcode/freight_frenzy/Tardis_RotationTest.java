@@ -21,11 +21,11 @@ public class Tardis_RotationTest extends AutoBase_FF {
 
     public void CreateSteps() {
 
-           steps.add("ROTATE_LEFT");
-           steps.add("SHORT_WAIT");
-           steps.add("ROTATE_RIGHT");
-           steps.add("WAIT");
-           steps.add("STOP");
+        steps.add("ROTATE_LEFT");
+        steps.add("SHORT_WAIT");
+        steps.add("ROTATE_RIGHT");
+        steps.add("WAIT");
+        steps.add("STOP");
 
     }
 
@@ -110,7 +110,7 @@ public class Tardis_RotationTest extends AutoBase_FF {
 
                 switch (currentStep) {
 
-                    case "Test" :
+                    case "Test":
                         //used for testing odometry
                         targetX = 0;
                         targetY = 12;
@@ -128,7 +128,7 @@ public class Tardis_RotationTest extends AutoBase_FF {
                             finalGyro = gyroZ;
                             changeStep();
                         }
-                       break;
+                        break;
 
                     case "ROTATE_RIGHT":
                         rotationAngle2 = 0;
@@ -144,10 +144,9 @@ public class Tardis_RotationTest extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 60) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 60) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -155,10 +154,9 @@ public class Tardis_RotationTest extends AutoBase_FF {
 
                     case "SHORT_WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 2) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 2) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -178,8 +176,8 @@ public class Tardis_RotationTest extends AutoBase_FF {
     }
 
     public boolean moveToLocation
-            //function for setting a point with odometry, changes step when robot position is in a certain tolerance
-            (double targetX, double targetY, double targetTheta, double distanceTolerance, double rotationTolerance) {
+        //function for setting a point with odometry, changes step when robot position is in a certain tolerance
+    (double targetX, double targetY, double targetTheta, double distanceTolerance, double rotationTolerance) {
         if (isInTolerance(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance)) {
             lastTheta = gyroZ;
             changeStep(); // you are within tolerance, so stop the drive train and move to next step

@@ -52,7 +52,6 @@ public class Odometry_Test extends AutoBase_FF {
     //why are we here
 
 
-
     @Override
     public void runOpMode() {//Start of the initialization for autonomous
 
@@ -160,8 +159,8 @@ public class Odometry_Test extends AutoBase_FF {
 //                telemetry.addData("sYL position", sYL.getPosition());
 //                telemetry.addData("sYR position", sYR.getPosition());
                 telemetry.addData("gyro", gyroZ);
-                telemetry.addData("x pos",pose.x);
-                telemetry.addData("y pos",pose.y);
+                telemetry.addData("x pos", pose.x);
+                telemetry.addData("y pos", pose.y);
                 telemetry.addData("forward", forwardPower);
                 telemetry.addData("strafe", strafePower);
                 telemetry.addData("rotate", rotatePower);
@@ -189,7 +188,7 @@ public class Odometry_Test extends AutoBase_FF {
                     frontDistance = -2;
                 }
 
-                leftDistanceArray =  popValueIntoArray(leftDistanceArray, leftDistance);
+                leftDistanceArray = popValueIntoArray(leftDistanceArray, leftDistance);
                 frontDistanceArray = popValueIntoArray(frontDistanceArray, frontDistance);
 
                 leftDistanceFiltered = median(leftDistanceArray);
@@ -253,7 +252,7 @@ public class Odometry_Test extends AutoBase_FF {
                         break;
 
                     case "DRIVE_INTO_CAROUSEL":
-                        drive(0.5,0,0);
+                        drive(0.5, 0, 0);
                         if (runtime.seconds() > 0 && runtime.seconds() < 1) {
                             done = false;
                         } else {
@@ -307,7 +306,7 @@ public class Odometry_Test extends AutoBase_FF {
                             sYR.setPosition(1);
                         } else if (runtime.seconds() >= 4 && runtime.seconds() < 6) {
                             sX.setPosition(1);
-                        } else if (runtime.seconds() >= 6){
+                        } else if (runtime.seconds() >= 6) {
                             done = true;
                             changeStep();
                         }
