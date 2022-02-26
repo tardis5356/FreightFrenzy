@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -52,7 +53,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mL;
     CRServo mArm;
 
-
     Servo sV;//up-down wrist movement servo
     //    CRServo sSR;
     CRServo sSL;
@@ -74,6 +74,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     CRServo sS;
     DistanceSensor distance1;
     DistanceSensor distance2;
+    Rev2mDistanceSensor dI; // intake distrance sensor
     CRServo crsIR;
     CRServo crsIL;
     TouchSensor lAB; //Bottom arm limit
@@ -179,9 +180,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     public void raiseOdometerServos() {
 
-        sEB.setPosition(0.8);
-        sEL.setPosition(1);
-        sER.setPosition(1);
+        sEB.setPosition(0.75);
+        sEL.setPosition(0.17);
+        sER.setPosition(0.35);
 
         telemetry.addData("sEB positon", sEB.getPosition());
         telemetry.addData("sEL positon", sEL.getPosition());
@@ -448,7 +449,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         }
     }
 
-
     //uses range sensors to square on wall
     public void squareOnWallRange(double squareThreshold) {
         currLDistRange = rangeSensorLeft.getDistance(DistanceUnit.CM);
@@ -471,37 +471,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         //   drive(0, 0, -(currLDistRange-currRDistRange)/10); //-
     }
 
-    //goes to angle depending on a potentiometer reading
-    public double getElevAngle(double voltage) {
-
-        double elevAngle;
-
-        //double targetPotVolt = 0.0103 * targetElevAngle + 1.074;
-        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
-        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
-        //elevAngle = (voltage - 1.074)/0.0103; OLD
-        //elevAngle = (voltage - 1.0879)/0.01057;
-        elevAngle = (voltage - 1.10809) / 0.009864; // 5/16
-        return elevAngle;
-    }
-//    public void goToAngle(double inputElevAngle) {
-//        //angle units are in degrees
-//        targetElevAngle = Range.clip(inputElevAngle, -5, 35);
-//        //double targetPotVolt = 0.01057 * targetElevAngle + 1.0879;
-//        double targetPotVolt = 0.009864 * targetElevAngle + 1.10809; // 5/16
-//        double voltage = potentiometer.getVoltage();
-//        double voltageThreshold = 0.01;
-//        if (voltage - targetPotVolt > voltageThreshold) {
-//
-//            mE.setPower(0.8);
-//        } else if (voltage - targetPotVolt < -voltageThreshold) {
-//
-//            mE.setPower(-0.8);
-//        } else {
-//
-//            mE.setPower(0);
-//        }
-//    }
 
     public static double ticksToInches(int ticks) {
         //converts ticks to inches
@@ -648,6 +617,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
         potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
         lAB = hardwareMap.get(TouchSensor.class, "lAB");
+        dI = hardwareMap.get(Rev2mDistanceSensor.class, "dI"); // intake distance sensor
 
         // mI = hardwareMap.dcMotor.get("mI"); //intake motor for David
         // sC = hardwareMap.servo.get("sC"); //rotates cup for David
@@ -1362,6 +1332,93 @@ public abstract class BaseClass_FF extends LinearOpMode {
         System.out.println("");
         int totalElements = values.length;
         System.out.println("# elements is : " + totalElements);
+    }
+
+    double armErrorPrior = 0;
+    double armIntegralPrior = 0;
+    double armLastLoopTime = 0;
+    double armPowerCap = 1;
+
+    public void armToPosPID(double desiredPosition) {
+//        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right || gamepad2.dpad_left) {
+        double changeInTime = (runtime.milliseconds() - armLastLoopTime) / 1000;
+        double error = 0;
+        double integral = 0;
+        double derivative = 0;
+        double output = 0;
+        double kp = 5;
+        double ki = 0.5;
+        double kd = 0.1;
+        error = (desiredPosition - potentiometer.getVoltage());
+        if (Math.abs(error) > 0.1) {
+            armIntegralPrior = 0;
+        }
+        integral = armIntegralPrior + error * changeInTime;
+        derivative = (error - armErrorPrior) / changeInTime;
+        output = kp * error + ki * integral + kd * derivative;
+        if (Math.abs(output) > armPowerCap) {
+            output = Math.signum(output) * armPowerCap;
+        }
+        armErrorPrior = error;
+        armIntegralPrior = integral;
+        armLastLoopTime = runtime.milliseconds();
+        mU.setPower(output);
+//        } else {
+//        armLastLoopTime = runtime.milliseconds();
+//        }
+    }
+
+    double extensionErrorPrior = 0;
+    double extensionIntegralPrior = 0;
+    double extensionLastLoopTime = 0;
+    double extensionPowerCap = 1;
+
+    public void extensionToPosPID(double desiredPosition) {
+//        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
+        double changeInTime = (runtime.milliseconds() - extensionLastLoopTime) / 1000;
+        double error = 0;
+        double integral = 0;
+        double derivative = 0;
+        double output = 0;
+        double kp = 1;
+        double ki = 0;
+        double kd = 0;
+        error = (desiredPosition - potentiometer.getVoltage());
+        if (Math.abs(error) > 0.1) {
+            extensionIntegralPrior = 0;
+        }
+        integral = extensionIntegralPrior + error * changeInTime;
+        derivative = (error - extensionErrorPrior) / changeInTime;
+        output = kp * error + ki * integral + kd * derivative;
+        if (Math.abs(output) > extensionPowerCap) {
+            output = Math.signum(output) * extensionPowerCap;
+        }
+        extensionErrorPrior = error;
+        extensionIntegralPrior = integral;
+        extensionLastLoopTime = runtime.milliseconds();
+        mE.setPower(output);
+//        } else {
+        extensionLastLoopTime = runtime.milliseconds();
+//        }
+    }
+
+    public void extensionToPos(double desiredPosition, int tolerance) {
+        telemetry.addData("abs", Math.abs(mE.getCurrentPosition() - desiredPosition));
+        if (Math.abs(mE.getCurrentPosition() - desiredPosition) > tolerance) {
+            if ((mE.getCurrentPosition() - desiredPosition) > tolerance) {
+                mE.setPower(-1);
+            } else if ((mE.getCurrentPosition() - desiredPosition) < tolerance) {
+                mE.setPower(1);
+            }
+        } else {
+            mE.setPower(0);
+            return;
+        }
+    }
+
+    public void armPreset(String position, double desPosition, int extensionTol) {
+        extensionToPos(desPosition, extensionTol);
+        armToPosPID(desPosition);
     }
 
 }

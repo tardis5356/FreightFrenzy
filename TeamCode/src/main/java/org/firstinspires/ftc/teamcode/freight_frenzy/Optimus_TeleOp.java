@@ -71,12 +71,12 @@ public class Optimus_TeleOp extends BaseClass_FF {
             mL.setPower(leftY1 - rightX1);
             mR.setPower(leftY1 + rightX1);
 
+            if (rightTrigger2 != 0) {
+                sG.setPosition(0.85);
+            } else {
+                sG.setPosition(0.6);
+            }
 
-//            if (yButton2 == true) {
-//                sG.setPosition(0.5);
-//            } else {
-//                sG.setPosition(0);
-//            }
 
             //controls wrist, moves in increments
             if (rightBumper2 && wristPosition < 1) {
