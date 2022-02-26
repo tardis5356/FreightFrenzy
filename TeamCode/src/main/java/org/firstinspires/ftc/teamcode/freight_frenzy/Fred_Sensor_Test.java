@@ -24,7 +24,7 @@ public class Fred_Sensor_Test extends BaseClass_FF {
             readDistanceSensors();
 
 
-            telemetry.addData("gyro",gyroZ);
+            telemetry.addData("gyro", gyroZ);
             updatePoseStrafe();
 //            double leftDistance = rangeSensorLeft.getDistance(DistanceUnit.CM);
 //            double rightDistance = rangeSensorRight.getDistance(DistanceUnit.CM);
@@ -34,14 +34,14 @@ public class Fred_Sensor_Test extends BaseClass_FF {
 //            telemetry.addData("right odometer wheel",mBL.getCurrentPosition());
 //            telemetry.addData("x pos",pose.x);
 //            telemetry.addData("y pos",pose.y);
-            telemetry.addData("left odometer wheel",mFL.getCurrentPosition());
-            telemetry.addData("back odometer wheel",mFR.getCurrentPosition());
+            telemetry.addData("left odometer wheel", mFL.getCurrentPosition());
+            telemetry.addData("back odometer wheel", mFR.getCurrentPosition());
             telemetry.addData("right odometer wheel", mBL.getCurrentPosition());
-            telemetry.addData("x pos",pose.x);
-            telemetry.addData("y pos",pose.y);
+            telemetry.addData("x pos", pose.x);
+            telemetry.addData("y pos", pose.y);
             telemetry.addData("currEnX", (mFR.getCurrentPosition() - encoderXStart));
-            telemetry.addData("currEnYLeft",(mFL.getCurrentPosition() - encoderYLeftStart));
-            telemetry.addData("currEnYRight",-(mBL.getCurrentPosition() - encoderYRightStart));
+            telemetry.addData("currEnYLeft", (mFL.getCurrentPosition() - encoderYLeftStart));
+            telemetry.addData("currEnYRight", -(mBL.getCurrentPosition() - encoderYRightStart));
 //            telemetry.addData("front right", mFR.getCurrentPosition());
 //            telemetry.addData("front left", mFL.getCurrentPosition());
 //            telemetry.addData("back right", mBR.getCurrentPosition());
@@ -64,8 +64,6 @@ public class Fred_Sensor_Test extends BaseClass_FF {
             telemetry.addData("extension position", mE.getCurrentPosition());
             telemetry.addData("arm limit", lAB.isPressed());
             telemetry.update();
-
-
 
 
         }

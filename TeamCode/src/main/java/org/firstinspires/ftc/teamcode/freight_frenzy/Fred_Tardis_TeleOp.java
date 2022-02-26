@@ -25,12 +25,13 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         BACK_INTAKE,
         BACK_DELIVERY,
         CAP_INTAKE,
-        CAP_DELIVERY,
+        BOTTOM_CAP_DELIVERY,
+        TOP_CAP_DELIVERY,
         NEUTRAL,
         FREE
     }
 
-    ;
+
     ArmState armState = ArmState.NEUTRAL;
 
     public enum IntakeState {
@@ -38,7 +39,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         INDEFININTE_INTAKE,
         FIVE_SEC_DELIVERY,
         INDEFININTE_DELIVERY,
-        TOGGLE,
+        FREE,
         OFF
     }
 
@@ -55,7 +56,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         boolean motorPowerFast = false;
         boolean extensionReset = false;
         double sVPosition = sV.getPosition();
-        armLimitOffset = 0;
         boolean intakeStateSet = false;
 
         int spinnerLevel = 0; //current level of power
@@ -63,27 +63,33 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double[] spinnerLevelTimes = {0.25, 1}; //times spinner power shifts
         double spinnerPower = spinnerPowers[spinnerLevel]; //current power
 
-//        //arm automation presets
+        //arm automation presets
         //01-02-21
         double neutralUpright = 1.08;
         double initUpright = neutralUpright + 1.8;
-        double capIntakeUpright = neutralUpright + 2.1;
-        double capDeliveryUpright = neutralUpright + 0.6;
-        double backDeliveryUpright = neutralUpright - 0.45;
+
+        double capIntakeUpright = neutralUpright + 2.25;
+        double bottomCapDeliveryUpright = neutralUpright + 0.53;
+        double topCapDeliveryUpright = neutralUpright + 0.39;
+        double backDeliveryUpright = neutralUpright - 0.21;
+
         double backIntakeUpright = neutralUpright - 0.9;
 
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
         double capIntakeWrist = neutralWrist - 0.09;
-        double capDeliveryWrist = neutralWrist - 0.35;
+        double bottomCapDeliveryWrist = neutralWrist - 0.41;
+        double topCapDeliveryWrist = neutralWrist - 0.48;
         double backDeliveryWrist = neutralWrist + 0.25;
         double backIntakeWrist = neutralWrist + 0.2;
 
         double neutralExtension = 100;
         double initExtension = 100;
-        double capIntakeExtension = 300;
+
+        double capIntakeExtension = 550;
         double capDeliveryExtension = 950;
-        double backDeliveryExtension = 1000;
+        double backDeliveryExtension = 500;
+
         double backIntakeExtension = 800;
 
         int extensionTolerance = 50;
@@ -192,136 +198,148 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //arm
-            if (yButton2) {// neutral position
-                armState = ArmState.NEUTRAL;
-            } else if (bButton2) {// backDelivery position
-                armState = ArmState.BACK_DELIVERY;
-            } else if (xButton2) {// backIntake position
-                armState = ArmState.BACK_INTAKE;
-            } else if (aButton2) {// capIntake position
-                armState = ArmState.CAP_INTAKE;
-            } else if (dpadRight2) {// capDelivery
-                armState = ArmState.CAP_DELIVERY;
-            } else if (dpadLeft2) {// init
-                armState = ArmState.INIT;
-            }
+            if(!gamepad2.start) {
+                if (yButton2) {// neutral position
+                    armState = ArmState.NEUTRAL;
+                } else if (bButton2) {// backDelivery position
+                    armState = ArmState.BACK_DELIVERY;
+                } else if (xButton2) {// backIntake position
+                    armState = ArmState.BACK_INTAKE;
+                } else if (aButton2) {// capIntake position
+                    armState = ArmState.CAP_INTAKE;
+                } else if (dpadLeft2) {// capDelivery
+                    armState = ArmState.TOP_CAP_DELIVERY;
+                } else if (dpadRight2) {// init
+                    armState = ArmState.BOTTOM_CAP_DELIVERY;
+                }
 
-            if (gamepad2.y || gamepad1.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
-                intakeStateSet = false;
-            }
+                if (gamepad2.y || gamepad1.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
+                    intakeStateSet = false;
+                }
 
-            if(extensionReset) {
-                switch (armState) {
-                    case NEUTRAL:
-                        armToPosPID(neutralUpright);
-                        extensionToPos(neutralExtension, extensionTolerance);
-                        sVPosition = neutralWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TOGGLE;
-                            intakeStateSet = true;
+                if (extensionReset) {
+                    switch (armState) {
+                        case NEUTRAL:
+                            armToPosPID(neutralUpright);
+                            extensionToPos(neutralExtension, extensionTolerance);
+                            sVPosition = neutralWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case BACK_INTAKE:
+                            armToPosPID(backIntakeUpright);
+                            extensionToPos(backIntakeExtension, extensionTolerance);
+                            sVPosition = backIntakeWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case BACK_DELIVERY:
+                            armToPosPID(backDeliveryUpright);
+                            extensionToPos(backDeliveryExtension, extensionTolerance);
+                            sVPosition = backDeliveryWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case CAP_INTAKE:
+                            armToPosPID(capIntakeUpright);
+                            extensionToPos(capIntakeExtension, extensionTolerance);
+                            sVPosition = capIntakeWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case BOTTOM_CAP_DELIVERY:
+                            armToPosPID(bottomCapDeliveryUpright);
+                            extensionToPos(capDeliveryExtension, extensionTolerance);
+                            sVPosition = bottomCapDeliveryWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case TOP_CAP_DELIVERY:
+                            armToPosPID(topCapDeliveryUpright);
+                            extensionToPos(capDeliveryExtension, extensionTolerance);
+                            sVPosition = topCapDeliveryWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case INIT:
+                            armToPosPID(initUpright);
+                            extensionToPos(initExtension, extensionTolerance);
+                            sVPosition = initWrist;
+                            if (!intakeStateSet) {
+                                intakeState = IntakeState.FREE;
+                                intakeStateSet = true;
+                            }
+                            break;
+                        case FREE:
+                            //sets arm extension and arm upright motion
+                            mE.setPower(-leftY2); //also works for mF on Toby bot
+                            mU.setPower(rightY2 * 0.8);//0.8 power multiplier
+                            break;
+                    }
+                }
+
+                // intake (in postitive, out negative)
+                switch (intakeState) {
+                    case TEN_SEC_INTAKE:
+                        sI.setPower(-1);
+                        if (intakeTimer.seconds() > 10) {
+                            intakeState = IntakeState.FREE;
                         }
                         break;
-                    case BACK_INTAKE:
-                        armToPosPID(backIntakeUpright);
-                        extensionToPos(backIntakeExtension, extensionTolerance);
-                        sVPosition = backIntakeWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TEN_SEC_INTAKE;
-                            intakeStateSet = true;
+                    case INDEFININTE_INTAKE:
+                        sI.setPower(-1);
+                        break;
+                    case FIVE_SEC_DELIVERY:
+                        sI.setPower(1);
+                        if (intakeTimer.seconds() > 5) {
+                            intakeState = IntakeState.FREE;
                         }
                         break;
-                    case BACK_DELIVERY:
-                        armToPosPID(backDeliveryUpright);
-                        extensionToPos(backDeliveryExtension, extensionTolerance);
-                        sVPosition = backDeliveryWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TOGGLE;
-                            intakeStateSet = true;
-                        }
-                        break;
-                    case CAP_INTAKE:
-                        armToPosPID(capIntakeUpright);
-                        extensionToPos(capIntakeExtension, extensionTolerance);
-                        sVPosition = capIntakeWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TEN_SEC_INTAKE;
-                            intakeStateSet = true;
-                        }
-                        break;
-                    case CAP_DELIVERY:
-                        armToPosPID(capDeliveryUpright);
-                        extensionToPos(capDeliveryExtension, extensionTolerance);
-                        sVPosition = capDeliveryWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TOGGLE;
-                            intakeStateSet = true;
-                        }
-                        break;
-                    case INIT:
-                        armToPosPID(initUpright);
-                        extensionToPos(initExtension, extensionTolerance);
-                        sVPosition = initWrist;
-                        if (!intakeStateSet) {
-                            intakeState = IntakeState.TOGGLE;
-                            intakeStateSet = true;
-                        }
+                    case INDEFININTE_DELIVERY:
+                        sI.setPower(1);
                         break;
                     case FREE:
-                        //sets arm extension and arm upright motion
-                        mE.setPower(-leftY2); //also works for mF on Toby bot
-                        mU.setPower(rightY2 * 0.8);//0.8 power multiplier
+                        intakeTimer.reset();
+                        if (leftTrigger2 == 1 && rightTrigger2 == 0) {
+                            //sucks elements in
+                            sI.setPower(1);
+                        } else if (rightTrigger2 == 1 && leftTrigger2 == 0) {
+                            //spits elements out
+                            sI.setPower(-1);
+                        } else {
+                            sI.setPower(0);
+                        }
                         break;
                 }
-            }
 
-            // intake (in postitive, out negative)
-            switch (intakeState) {
-                case TEN_SEC_INTAKE:
-                    sI.setPower(-1);
-                    if (intakeTimer.seconds() > 10) {
-                        intakeState = IntakeState.TOGGLE;
-                    }
-                    break;
-                case INDEFININTE_INTAKE:
-                    sI.setPower(-1);
-                    break;
-                case FIVE_SEC_DELIVERY:
-                    sI.setPower(1);
-                    if (intakeTimer.seconds() > 5) {
-                        intakeState = IntakeState.TOGGLE;
-                    }
-                    break;
-                case INDEFININTE_DELIVERY:
-                    sI.setPower(1);
-                    break;
-                case TOGGLE:
-                    intakeTimer.reset();
-                    if (leftTrigger2 == 1 && rightTrigger2 == 0) {
-                        //sucks elements in
-                        sI.setPower(1);
-                    } else if (rightTrigger2 == 1 && leftTrigger2 == 0) {
-                        //spits elements out
-                        sI.setPower(-1);
-                    } else {
-                        sI.setPower(0);
-                    }
-                    break;
-            }
+                //finite state overrides
+                if (dpadUp2) { // no control
+                    armState = ArmState.FREE;
+                } else if (dpadDown2) {
+                    intakeState = IntakeState.FREE;
+                }
 
-            //finite state overrides
-            if (dpadUp2) { // no control
-                armState = ArmState.FREE;
-            } else if (dpadDown2) {
-                intakeState = IntakeState.TOGGLE;
-            }
+                //auto arm overrides
+                if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
+                    armState = ArmState.FREE;
+                }
+                //auto intake overrides
+                if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
+                    intakeState = IntakeState.FREE;
+                }
 
-            //auto arm overrides
-            if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
-                armState = ArmState.FREE;
-            }
-            //auto intake overrides
-            if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
-                intakeState = IntakeState.TOGGLE;
             }
 
             //carousel
@@ -359,3 +377,4 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
 
 }
+

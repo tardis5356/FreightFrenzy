@@ -17,8 +17,6 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     //wristStraight = 0;
 
 
-
-
     public void fredTelemetry() {
 
         telemetry.addData("Hub level", hubLevel);
@@ -48,8 +46,8 @@ public abstract class AutoBase_FF extends BaseClass_FF {
         telemetry.addData("sX position", sX.getPosition());
         telemetry.addData("sYL position", sYL.getPosition());
         telemetry.addData("sYR position", sYR.getPosition());
-        telemetry.addData("x pos",pose.x);
-        telemetry.addData("y pos",pose.y);
+        telemetry.addData("x pos", pose.x);
+        telemetry.addData("y pos", pose.y);
         telemetry.update();
     }
 
@@ -98,10 +96,10 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
             case "BOTTOM":
 
-                armAngle = armHorizontal + 1.11;
+                armAngle = armHorizontal + 0.85;
                 //3.0
-                armReach = telescopePose + 409;
-                wristPosition = 0.41 + wristStraight;
+                armReach = telescopePose + 233;
+                wristPosition = 0.51 + wristStraight;
                 //0.8
                 break;
 
@@ -182,29 +180,28 @@ public abstract class AutoBase_FF extends BaseClass_FF {
     }
 
 
-
     public void exactPosition(double degree, double degTol, double posX, double posY) {
         if (gyroZ + degTol < degree || gyroZ - degTol > degree) {
             gyroAdjust(degree, degTol);
         } else {
             if (Math.abs(posX - rightDistance) >= Math.abs(posY - backDistance)) {
                 if (backDistance <= posY) {
-                    drive(0.2,0,0);
+                    drive(0.2, 0, 0);
                 } else {
-                    drive(0.2,0,0);
+                    drive(0.2, 0, 0);
                 }
             } else {
                 if (rightDistance <= posX) {
-                    drive(0,0,0.3);
+                    drive(0, 0, 0.3);
                 } else {
-                    drive(0,0,0.3);
+                    drive(0, 0, 0.3);
                 }
             }
         }
     }
 
     public void preciseRotationChange(double targetAngle, double totalAngleChange) {
-        double rotationAggressiveness = 1/ Math.abs(totalAngleChange);
+        double rotationAggressiveness = 1 / Math.abs(totalAngleChange);
         double powerThreshold = 0.5;
         //smaller maximum powers make turn slower, but slightly more accurate
         double pMax = 1;
@@ -332,9 +329,9 @@ public abstract class AutoBase_FF extends BaseClass_FF {
 
         MOVE_TO_EAST,
         MOVE_TO_NE_CORNER,
-       // MOVE_TO_EAST,
-       // MOVE_TO_NE_CORNER,
-       // PREP_TO_SHOOT,
+        // MOVE_TO_EAST,
+        // MOVE_TO_NE_CORNER,
+        // PREP_TO_SHOOT,
         DELIVER_WOBBLE,
         GO_BACK_HOME,
         GO_BACK_HOME_SPIN,
@@ -342,7 +339,6 @@ public abstract class AutoBase_FF extends BaseClass_FF {
         MOVE_TO_SW_CORNER,
         MOVE_TO_SE_CORNER,
         STOP
-
 
 
     }

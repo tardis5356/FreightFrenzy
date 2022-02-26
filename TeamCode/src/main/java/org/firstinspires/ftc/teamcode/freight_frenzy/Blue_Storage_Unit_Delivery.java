@@ -105,7 +105,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
             @Override
             public void onOpened() {
                 //Upright rotation works, do not set to sideways left
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -130,7 +130,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                 hubLevel = "BOTTOM";
             } else if (elementPosition == "CENTER") {
                 hubLevel = "MIDDLE";
-            } else if (elementPosition == "RIGHT"){
+            } else if (elementPosition == "RIGHT") {
                 hubLevel = "TOP";
             }
             changeHubLevel(elementPosition);
@@ -157,11 +157,11 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                 updatePoseStrafe();
                 gyroUpdate();
 
-               readDistanceSensors();
+                readDistanceSensors();
 
                 switch (currentStep) {
 
-                    case("DRIVE_BACK"):
+                    case ("DRIVE_BACK"):
                         if (!ninthCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -169,41 +169,39 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         }
                         double ninthTime = 1.9;
 
-                        if ((runtime.seconds() - myTime) <= ninthTime ){
-                            drive(0.4,-0.2,0);
+                        if ((runtime.seconds() - myTime) <= ninthTime) {
+                            drive(0.4, -0.2, 0);
                         }
                         if ((runtime.seconds() - myTime) > ninthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("MOVE_BACKWARD"):
+                    case ("MOVE_BACKWARD"):
                         targetDistanceX = 0;
                         targetDistanceY = 10;
                         targetTheta = 90;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "", "backDistance", targetTheta, 5));
                         break;
 
-                    case("RESET_ARM"):
+                    case ("RESET_ARM"):
                         boolean angleDone = false;
                         boolean extendDone = false;
                         double potTolerance = 0.05;
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         double armAngleBack = armHorizontal;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());
 //        telemetry.addData("telescope pose (offset)", telescopePose);
                         sV.setPosition(0.1);
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             telescopePose = mE.getCurrentPosition();
                             mE.setPower(0);
                             extendDone = true;
-                        }
-
-                        else if (!lAB.isPressed()) {
+                        } else if (!lAB.isPressed()) {
                             mE.setPower(-1);
                         }
 
@@ -221,17 +219,18 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                             angleDone = true;
 
                         }
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
 
-                        } changeStep();
+                        }
+                        changeStep();
 
                         break;
 
 
-                    case("MOVE_TO_CAROUSEL_3"):
+                    case ("MOVE_TO_CAROUSEL_3"):
                         if (!seventhCheck) {
                             //if this step has not been run before, sets myTime to the runtime
                             myTime = runtime.seconds();
@@ -239,30 +238,30 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         }
                         double seventhTime = 1;
 
-                        if ((runtime.seconds() - myTime) <= seventhTime ){
-                            drive(0.2,0.5,0);
+                        if ((runtime.seconds() - myTime) <= seventhTime) {
+                            drive(0.2, 0.5, 0);
                         }
                         if ((runtime.seconds() - myTime) > seventhTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("STRAFE_AGAINST_WALL"):
+                    case ("STRAFE_AGAINST_WALL"):
                         double eighthTime = 1.5;
 
-                        if ((runtime.seconds()) <= eighthTime ){
-                            drive(-0.1,-0.6, 0);
+                        if ((runtime.seconds()) <= eighthTime) {
+                            drive(-0.1, -0.6, 0);
                         }
                         if ((runtime.seconds()) > eighthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
                         break;
 
-                    case("CORRECT_HUB_POSITION"):
+                    case ("CORRECT_HUB_POSITION"):
                         targetDistanceX = 37;
                         targetDistanceY = 27;
                         done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backDistance", 90, 5));
@@ -277,7 +276,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         }
                         double sixthTime = 1;
 
-                        if ((runtime.seconds() - myTime) <= sixthTime ){
+                        if ((runtime.seconds() - myTime) <= sixthTime) {
                             sI.setPower(0.5);
                         }
                         if ((runtime.seconds() - myTime) > sixthTime) {
@@ -295,7 +294,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 
                     case "MOVE_ARM":
                         //43 extension ticks per cm
-                        drive(0,0,0);
+                        drive(0, 0, 0);
                         potTolerance = 0.05;
                         angleDone = false;
                         extendDone = false;
@@ -337,7 +336,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         }
                         telemetry.addData("extend done", extendDone);
 
-                        if(angleDone && extendDone){
+                        if (angleDone && extendDone) {
 
                             done = true;
                             changeStep();
@@ -346,15 +345,13 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                         break;
 
                     case "DRIVE_TO_LIMIT":
-                        if(lAB.isPressed()) {  //uses limit switch to move arm to a known position
+                        if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
                             limitTriggered = true;
                             mE.setPower(0);
                             telescopePose = mE.getCurrentPosition();
                             done = true;
                             changeStep();
-                        }
-
-                        else if (!limitTriggered) {
+                        } else if (!limitTriggered) {
                             mE.setPower(-0.65);
                         }
                         break;
@@ -388,7 +385,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 //                        }
                         double fifthTime = 4.5;
 
-                        if ((runtime.seconds()) <= fifthTime ){
+                        if ((runtime.seconds()) <= fifthTime) {
                             sSL.setPower(1);
 //                            sSR.setPower(-1);
                         }
@@ -428,7 +425,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 //                        //done = true;
 //                        break;
 
-                    case "Test" :
+                    case "Test":
                         //used for testing odometry
                         targetX = 0;
                         targetY = 12;
@@ -438,10 +435,9 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 
                     case "WAIT":
                         //wait step that can be added in if necessary for a debug of the code
-                        if(runtime.seconds() > 0 && runtime.seconds() < 5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 5) {
                             done = false;
-                        }
-                        else {
+                        } else {
                             done = true;
                             changeStep();
                         }
@@ -617,7 +613,7 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
                             drive(0.1, 0.5, 0);
                         }
                         if ((runtime.seconds() - myTime) > fourthTime) {
-                            drive(0,0,0);
+                            drive(0, 0, 0);
                             done = true;
                             changeStep();
                         }
@@ -632,7 +628,6 @@ public class Blue_Storage_Unit_Delivery extends AutoBase_FF {
 //                        targetTheta = 90;
 //                        done = (moveToLocation(targetDistanceX, targetDistanceY, 2, "leftDistance", "backRightDistance", targetTheta, 5));
 //                        break;
-
 
 
                 }
