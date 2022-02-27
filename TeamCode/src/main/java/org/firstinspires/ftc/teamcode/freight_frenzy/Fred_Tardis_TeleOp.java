@@ -213,15 +213,35 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 teleopMode = "warehouse";
             }
 
-            if (dI.getDistance(DistanceUnit.CM) < 10 && !gamepad2.isRumbling()) {
-                gamepad1.rumbleBlips(2);
-                gamepad2.rumbleBlips(2);
+            if (teleopMode == "capstone") {
+                if(runtimeRounded % 2 == 0){
+                    led1green.setState(false);
+                    led1red.setState(false);
+                }else{
+                    led1green.setState(true);
+                    led1red.setState(true);
+                }
+            } else if (teleopMode == "warehouse") {
+                if (dI.getDistance(DistanceUnit.CM) < 10) {
+                    led1green.setState(true);
+                    led1red.setState(false);
+                } else {
+                    led1green.setState(false);
+                    led1red.setState(true);
+                }
+            }
 
+            if (dI.getDistance(DistanceUnit.CM) < 10) {
+                if (!gamepad2.isRumbling()) {
+                    gamepad1.rumbleBlips(2);
+                    gamepad2.rumbleBlips(2);
+                }
                 if (teleopMode == "warehouse") {
                     intakeState = IntakeState.FREE;
                     armState = ArmState.BACK_DELIVERY; //auto delivery position
                 }
             }
+
 
             switch (runtimeRounded) {
                 case 30://30s

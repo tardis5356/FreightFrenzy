@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -84,6 +86,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     //ModernRoboticsI2cRangeSensor rangeSensorBackLeft;
     ModernRoboticsI2cRangeSensor rangeSensorLeft;
     AnalogInput potentiometer;
+    DigitalChannel led1red;
+    DigitalChannel led1green;
     TouchSensor frontLimit; //front limit
     TouchSensor backLimit; //back limit
     BNO055IMU imuControl; //REV gyro - Control hub
@@ -636,6 +640,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
 //        backLimit = hardwareMap.get(TouchSensor.class, "backLimit");
         potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
+
+        led1red = hardwareMap.get(DigitalChannel.class, "red");
+        led1green = hardwareMap.get(DigitalChannel.class, "green");
+
+        led1red.setMode(DigitalChannel.Mode.OUTPUT);
+        led1green.setMode(DigitalChannel.Mode.OUTPUT);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
