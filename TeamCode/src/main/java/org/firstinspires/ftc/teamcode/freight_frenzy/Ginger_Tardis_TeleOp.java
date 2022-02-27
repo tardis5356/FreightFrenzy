@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Ginger_Tardis_TeleOp", group = "Linear Opmode")
-
+@Disabled
 
 public class Ginger_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
