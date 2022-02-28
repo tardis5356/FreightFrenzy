@@ -1356,9 +1356,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double integral = 0;
         double derivative = 0;
         double output = 0;
-        double kp = 5.5;
+        double kp = 3;
         double ki = 0;
-        double kd = 3;
+        double kd = 0;
         error = (desiredPosition - potentiometer.getVoltage());
         if (Math.abs(error) > 0.1) {
             armIntegralPrior = 0;
