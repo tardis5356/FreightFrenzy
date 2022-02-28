@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Ginger_Sensor_Test", group = "Linear Opmode")
-
+@Disabled
 public class Ginger_Sensor_Test extends BaseClass_FF {
 
     @Override

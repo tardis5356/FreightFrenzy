@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -84,6 +86,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     //ModernRoboticsI2cRangeSensor rangeSensorBackLeft;
     ModernRoboticsI2cRangeSensor rangeSensorLeft;
     AnalogInput potentiometer;
+    DigitalChannel led1red;
+    DigitalChannel led1green;
     TouchSensor frontLimit; //front limit
     TouchSensor backLimit; //back limit
     BNO055IMU imuControl; //REV gyro - Control hub
@@ -636,6 +640,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
 //        frontLimit = hardwareMap.get(TouchSensor.class, "frontLimit");
 //        backLimit = hardwareMap.get(TouchSensor.class, "backLimit");
         potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
+
+        led1red = hardwareMap.get(DigitalChannel.class, "red");
+        led1green = hardwareMap.get(DigitalChannel.class, "green");
+
+        led1red.setMode(DigitalChannel.Mode.OUTPUT);
+        led1green.setMode(DigitalChannel.Mode.OUTPUT);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -1346,9 +1356,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double integral = 0;
         double derivative = 0;
         double output = 0;
-        double kp = 5;
-        double ki = 0.5;
-        double kd = 0.1;
+        double kp = 3;
+        double ki = 0;
+        double kd = 0;
         error = (desiredPosition - potentiometer.getVoltage());
         if (Math.abs(error) > 0.1) {
             armIntegralPrior = 0;
@@ -1365,40 +1375,6 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mU.setPower(output);
 //        } else {
 //        armLastLoopTime = runtime.milliseconds();
-//        }
-    }
-
-    double extensionErrorPrior = 0;
-    double extensionIntegralPrior = 0;
-    double extensionLastLoopTime = 0;
-    double extensionPowerCap = 1;
-
-    public void extensionToPosPID(double desiredPosition) {
-//        if (gamepad2.y || gamepad2.x || gamepad2.a || gamepad2.b || gamepad2.dpad_right) {
-        double changeInTime = (runtime.milliseconds() - extensionLastLoopTime) / 1000;
-        double error = 0;
-        double integral = 0;
-        double derivative = 0;
-        double output = 0;
-        double kp = 1;
-        double ki = 0;
-        double kd = 0;
-        error = (desiredPosition - potentiometer.getVoltage());
-        if (Math.abs(error) > 0.1) {
-            extensionIntegralPrior = 0;
-        }
-        integral = extensionIntegralPrior + error * changeInTime;
-        derivative = (error - extensionErrorPrior) / changeInTime;
-        output = kp * error + ki * integral + kd * derivative;
-        if (Math.abs(output) > extensionPowerCap) {
-            output = Math.signum(output) * extensionPowerCap;
-        }
-        extensionErrorPrior = error;
-        extensionIntegralPrior = integral;
-        extensionLastLoopTime = runtime.milliseconds();
-        mE.setPower(output);
-//        } else {
-        extensionLastLoopTime = runtime.milliseconds();
 //        }
     }
 

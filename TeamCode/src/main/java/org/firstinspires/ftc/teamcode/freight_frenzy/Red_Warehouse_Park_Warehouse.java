@@ -225,7 +225,7 @@ public class Red_Warehouse_Park_Warehouse extends AutoBase_FF {
 
                     case ("BACK_AWAY_FROM_HUB"):
                         targetX = -23;
-                        targetY = 11;
+                        targetY = 9;
                         targetTheta = 0;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
@@ -238,9 +238,9 @@ public class Red_Warehouse_Park_Warehouse extends AutoBase_FF {
                         break;
                     case ("GO_NEAR_WAREHOUSE"):
                         targetX = 0;
-                        targetY = 11;
+                        targetY = 9;
                         targetTheta = -90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
                     case ("STRAFE_TSE"):
                         targetX = 0;
@@ -268,8 +268,8 @@ public class Red_Warehouse_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("PARK_IN_WAREHOUSE"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 0.5) {
-                            drive(0.5, 0.7, 0);
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
+                            drive(-0.5, 0.7, 0);
                             done = false;
                         } else {
                             done = true;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.freight_frenzy;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -9,14 +10,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Fred_Sensor_Test extends BaseClass_FF {
 
+    ElapsedTime ledTimer = new ElapsedTime();
+
     @Override
     public void runOpMode() {
 
         defineComponentsFred();
 
         telemetry.addData("Status", "Initialized");
-        lowerOdometerServos();
         telemetry.update();
+
+        ledTimer.reset();
+
+        lowerOdometerServos();
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -65,7 +72,23 @@ public class Fred_Sensor_Test extends BaseClass_FF {
             telemetry.addData("arm limit", lAB.isPressed());
             telemetry.update();
 
-
+            if(Math.round(ledTimer.seconds()) == 1){
+                led1green.setState(false);
+                led1red.setState(false);
+            }else if(Math.round(ledTimer.seconds()) == 2){
+                led1green.setState(true);
+                led1red.setState(true);
+            }else if(Math.round(ledTimer.seconds()) == 3){
+                led1green.setState(false);
+                led1red.setState(true);
+            }else if(Math.round(ledTimer.seconds()) == 4){
+                led1green.setState(true);
+                led1red.setState(false);
+                ledTimer.reset();
+            }else if(Math.round(ledTimer.seconds()) == 0){
+                led1green.setState(true);
+                led1red.setState(false);
+            }
         }
     }
 }

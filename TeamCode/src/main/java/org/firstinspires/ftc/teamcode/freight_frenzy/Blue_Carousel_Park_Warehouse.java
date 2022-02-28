@@ -213,8 +213,8 @@ public class Blue_Carousel_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("BACK_INTO_CAROUSEL"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
-                            drive(0.9, -0.6, 0);
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1.5) {
+                            drive(0.5, -0.4, 0);
                             done = false;
                         } else {
                             done = true;
@@ -225,7 +225,7 @@ public class Blue_Carousel_Park_Warehouse extends AutoBase_FF {
                         targetX = 22;
                         targetY = 42;
                         targetTheta = 0;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
 
                     case ("DRIVE_TO_HUB_SU_2"):
@@ -252,7 +252,7 @@ public class Blue_Carousel_Park_Warehouse extends AutoBase_FF {
                         targetX = -44;
                         targetY = 12;
                         targetTheta = 90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
                     case ("STRAFE_TSE"):
                         targetX = -44;

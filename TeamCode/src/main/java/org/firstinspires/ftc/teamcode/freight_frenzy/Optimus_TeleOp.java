@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name = "Optimus_TeleOp", group = "Linear Opmode")
-
+@Disabled
 public class Optimus_TeleOp extends BaseClass_FF {
 
     // Declare OpMode members.

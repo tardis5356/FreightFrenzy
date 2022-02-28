@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.freight_frenzy;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Fred_Tardis_TeleOp_Test", group = "Linear Opmode")
-
+@Disabled
 public class Fred_Tardis_TeleOp_Test extends BaseClass_FF {    // LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
