@@ -241,7 +241,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     gamepad2.rumbleBlips(2);
                 }
                 if (rightY2 == 0 && distanceTimer.seconds() > 1.2) {
-//                    if (potentiometer.getVoltage() < 0.35 || potentiometer.getVoltage() > 2.9) {
                     if (teleopMode == "allianceHub") {
                         armState = ArmState.BACK_DELIVERY; //auto delivery position alliance
                         intakeState = IntakeState.FREE;
@@ -249,7 +248,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         armState = ArmState.BACK_INTAKE; //auto delivery position shared
                         intakeState = IntakeState.FREE;
                     }
-//                    }
                 }
             } else {
                 distanceTimer.reset();
@@ -293,7 +291,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             sVPosition = sV.getPosition();
 
             //resets extension encoder values
-            if (!extensionReset) {
+            if (!extensionReset && runtime.seconds() > 1) {
                 mE.setPower(-1);
                 if (lAB.isPressed()) {
                     mE.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -301,6 +299,10 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
             } else if (extensionReset) {
                 mE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            if(mE.getCurrentPosition() < -50){
+                extensionReset = false;
             }
 
             //arm
