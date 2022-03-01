@@ -193,7 +193,7 @@ public class Red_Carousel_Park_SU extends AutoBase_FF {
 
                     case ("PARK_IN_SU"):
                         targetX = -24;
-                        targetY = 31;
+                        targetY = 30;
                         targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, 1, rotationTolerance));
                         break;

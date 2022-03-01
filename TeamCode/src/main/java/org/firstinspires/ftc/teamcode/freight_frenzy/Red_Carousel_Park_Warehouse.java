@@ -201,7 +201,7 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("PARK_IN_WAREHOUSE"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 0.5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
                             drive(0.5, 0.7, 0);
                             done = false;
                         } else {
@@ -243,8 +243,8 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("STRAFE_FROM_HUB"):
-                        targetX = -24;
-                        targetY = 12;
+                        targetX = -20;
+                        targetY = 16;
                         targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
@@ -410,7 +410,7 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
                     case "MOVE_ARM":
                         //127 extension ticks per cm
                         drive(0, 0, 0);
-                        potTolerance = 0.05;
+                        potTolerance = 0.08;
                         angleDone = false;
                         extendDone = false;
                         //armReach = 3200;

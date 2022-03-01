@@ -268,7 +268,7 @@ public class Blue_Warehouse_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("PARK_IN_WAREHOUSE"):
-                        if (runtime.seconds() > 0 && runtime.seconds() < 0.5) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 1) {
                             drive(-0.5, 0.7, 0);
                             done = false;
                         } else {
