@@ -83,7 +83,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double topCapDeliveryUpright = neutralUpright + 0.39;
         double backDeliveryUpright = neutralUpright - 0.3;
         double backIntakeUpright = neutralUpright - 0.88;
-        double midBackDeliveryUpright = neutralUpright - 0.5;
+        double midBackDeliveryUpright = neutralUpright - 0.76;
 
         //wrist
         double neutralWrist = 0.67;
@@ -93,7 +93,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double topCapDeliveryWrist = neutralWrist - 0.48;
         double backDeliveryWrist = neutralWrist + 0.2;
         double backIntakeWrist = neutralWrist + 0.2;
-        double midBackDeliveryWrist = neutralWrist + 0.2;
+        double midBackDeliveryWrist = neutralWrist + 0.33;
 
         //extension
         double neutralExtension = 100;
@@ -102,7 +102,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double capDeliveryExtension = 950;
         double backDeliveryExtension = 800;
         double backIntakeExtension = 800;
-        double midBackDeliveryExtension = 700;
+        double midBackDeliveryExtension = 400;
         int extensionTolerance = 50;
 
         intakeTimer.reset();
@@ -213,11 +213,11 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //rumble
             runtimeRounded = Math.toIntExact(Math.round(runtime.seconds()));
 
-            if (gamepad2.dpad_up) {
+            if (gamepad1.dpad_up) {
                 teleopMode = "endgame";
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad1.dpad_right) {
                 teleopMode = "allianceHub";
-            } else if (gamepad1.dpad_down) {
+            } else if (gamepad1.dpad_left) {
                 teleopMode = "sharedHub";
             }
 
@@ -229,14 +229,26 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     led1green.setState(true);
                     led1red.setState(true);
                 }
-            } else if (teleopMode == "allianceHub" || teleopMode == "sharedHub") {
+            } else if (teleopMode == "allianceHub") {
                 if (dI.getDistance(DistanceUnit.CM) < 7) {
-                    led1green.setState(false);
-                    led1red.setState(true);
+                    if (runtimeRounded * 2 % 2 == 0) {
+                        led1green.setState(false);
+                        led1red.setState(false);
+                    } else {
+                        led1green.setState(false);
+                        led1red.setState(true);
+                    }
                 } else {
-                    led1green.setState(true);
-                    led1red.setState(false);
+                    if (runtimeRounded * 2 % 2 == 0) {
+                        led1green.setState(false);
+                        led1red.setState(false);
+                    } else {
+                        led1green.setState(true);
+                        led1red.setState(false);
+                    }
                 }
+            } else if (teleopMode == "sharedHub") {
+
             }
 
             if (dI.getDistance(DistanceUnit.CM) < 7) {
@@ -305,7 +317,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 mE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
-            if(mE.getCurrentPosition() < -50){
+            if (mE.getCurrentPosition() < -50) {
                 extensionReset = false;
             }
 
