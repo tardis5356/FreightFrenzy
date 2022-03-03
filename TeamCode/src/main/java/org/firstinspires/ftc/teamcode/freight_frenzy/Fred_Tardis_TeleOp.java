@@ -68,6 +68,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         int runtimeRounded = 0;
         boolean teleopStarted = false;
 
+        boolean armFreed = false;
+
         //spinner
         int spinnerLevel = 0; //current level of power
         double[] spinnerPowers = {0.5, 0.6, 1}; //levels of each power shift
@@ -80,17 +82,17 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double initUpright = neutralUpright + 1.8;
         double capIntakeUpright = neutralUpright + 2.13;
         double bottomCapDeliveryUpright = neutralUpright + 0.53;
-        double topCapDeliveryUpright = neutralUpright + 0.39;
+        double topCapDeliveryUpright = neutralUpright + 0.41;
         double backDeliveryUpright = neutralUpright - 0.3;
-        double backIntakeUpright = neutralUpright - 0.88;
+        double backIntakeUpright = neutralUpright - 0.85;
         double midBackDeliveryUpright = neutralUpright - 0.76;
 
         //wrist
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
-        double capIntakeWrist = neutralWrist - 0.09;
+        double capIntakeWrist = neutralWrist - 0.12;
         double bottomCapDeliveryWrist = neutralWrist - 0.41;
-        double topCapDeliveryWrist = neutralWrist - 0.48;
+        double topCapDeliveryWrist = neutralWrist - 0.38;
         double backDeliveryWrist = neutralWrist + 0.2;
         double backIntakeWrist = neutralWrist + 0.2;
         double midBackDeliveryWrist = neutralWrist + 0.33;
@@ -99,9 +101,9 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double neutralExtension = 100;
         double initExtension = 100;
         double capIntakeExtension = 500;
-        double capDeliveryExtension = 950;
+        double capDeliveryExtension = 1000;
         double backDeliveryExtension = 800;
-        double backIntakeExtension = 800;
+        double backIntakeExtension = 600;
         double midBackDeliveryExtension = 400;
         int extensionTolerance = 50;
 
@@ -222,7 +224,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             if (teleopMode == "endgame") {
-                if (runtimeRounded * 2 % 2 == 0) {
+                if (runtimeRounded % 2 == 0 || runtimeRounded % 2 == 0.5) {
                     led1green.setState(false);
                     led1red.setState(false);
                 } else {
@@ -231,7 +233,15 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 }
             } else if (teleopMode == "allianceHub") {
                 if (dI.getDistance(DistanceUnit.CM) < 7) {
-                    if (runtimeRounded * 2 % 2 == 0) {
+                    led1green.setState(false);
+                    led1red.setState(true);
+                } else {
+                    led1green.setState(true);
+                    led1red.setState(false);
+                }
+            } else if (teleopMode == "sharedHub") {
+                if (dI.getDistance(DistanceUnit.CM) < 7) {
+                    if (runtimeRounded % 2 == 0 || runtimeRounded % 2 == 0.5) {
                         led1green.setState(false);
                         led1red.setState(false);
                     } else {
@@ -239,7 +249,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         led1red.setState(true);
                     }
                 } else {
-                    if (runtimeRounded * 2 % 2 == 0) {
+                    if (runtimeRounded % 2 == 0 || runtimeRounded % 2 == 0.5) {
                         led1green.setState(false);
                         led1red.setState(false);
                     } else {
@@ -247,8 +257,6 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                         led1red.setState(false);
                     }
                 }
-            } else if (teleopMode == "sharedHub") {
-
             }
 
             if (dI.getDistance(DistanceUnit.CM) < 7) {
@@ -326,22 +334,32 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 if (yButton2) {// neutral position
                     armState = ArmState.NEUTRAL;
                 } else if (bButton2) {// backDelivery position
-                    armState = ArmState.BACK_DELIVERY;
+                    if (teleopMode == "allianceHub") {
+                        armState = ArmState.BACK_DELIVERY;
+                    } else if (teleopMode == "sharedHub") {
+                        armState = ArmState.BACK_MID_DELIVERY;
+                    }
                 } else if (xButton2) {// backIntake position
                     armState = ArmState.BACK_INTAKE;
                 } else if (aButton2) {// capIntake position
                     armState = ArmState.CAP_INTAKE;
-                } else if (dpadLeft2) {// capDelivery
+                } else if (dpadLeft2) {// top cap
                     armState = ArmState.TOP_CAP_DELIVERY;
-                } else if (dpadRight2) {// init
+                    teleopMode = "endgame";
+                } else if (dpadRight2) {// bottom cap
                     armState = ArmState.BOTTOM_CAP_DELIVERY;
+                    teleopMode = "endgame";
                 }
 
-                if (gamepad2.y || gamepad1.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
+                if (gamepad2.y || gamepad2.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
+                    armFreed = false;
                     intakeStateSet = false;
                 }
+                if (gamepad2.right_stick_y != 0 || gamepad2.left_stick_y != 0) {
+                    armFreed = true;
+                }
 
-                if (extensionReset) {
+                if (extensionReset && !armFreed) {
                     switch (armState) {
                         case NEUTRAL:
                             armToPosPID(neutralUpright);
@@ -357,7 +375,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(backIntakeExtension, extensionTolerance);
                             sVPosition = backIntakeWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TEN_SEC_INTAKE;
+                                intakeState = IntakeState.INDEFININTE_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -366,7 +384,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(backDeliveryExtension, extensionTolerance);
                             sVPosition = backDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.FREE;
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -384,7 +402,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(capDeliveryExtension, extensionTolerance);
                             sVPosition = bottomCapDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.FREE;
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -393,7 +411,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(capDeliveryExtension, extensionTolerance);
                             sVPosition = topCapDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.FREE;
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -402,7 +420,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(midBackDeliveryExtension, extensionTolerance);
                             sVPosition = midBackDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.FREE;
+                                intakeState = IntakeState.TEN_SEC_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -415,12 +433,15 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                                 intakeStateSet = true;
                             }
                             break;
-                        case FREE:
-                            //sets arm extension and arm upright motion
-                            mE.setPower(-leftY2); //also works for mF on Toby bot
-                            mU.setPower(rightY2 * 0.8);//0.8 power multiplier
-                            break;
                     }
+                }
+
+                switch (armState) {
+                    case FREE:
+                        //sets arm extension and arm upright motion
+                        mE.setPower(-leftY2); //also works for mF on Toby bot
+                        mU.setPower(rightY2 * 0.5);//0.8 power multiplier
+                        break;
                 }
 
                 // intake (in postitive, out negative)
@@ -460,6 +481,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 //auto arm overrides
                 if ((rightY2 != 0) || (leftY2 != 0) || (rightBumper2) || (leftBumper2)) {
                     armState = ArmState.FREE;
+                    armFreed = true;
                 }
                 //auto intake overrides
                 if ((rightTrigger2 != 0) || (leftTrigger2 != 0)) {
