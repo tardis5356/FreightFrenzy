@@ -294,10 +294,10 @@ public abstract class BaseClass_FF extends LinearOpMode {
     public void scrunchUpBot() {
 
         drive(0, 0, 0);
-        double potTolerance = 0.02;
+        double potTolerance = 0.05;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal + 0.51;
+        double armAngleBack = armHorizontal + 0.79;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         telemetry.addData("arm angle", potentiometer.getVoltage());
         telemetry.addData("wrist angle", sV.getPosition());
