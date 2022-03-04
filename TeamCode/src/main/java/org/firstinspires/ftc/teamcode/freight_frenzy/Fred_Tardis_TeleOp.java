@@ -78,19 +78,19 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
         //arm automation presets
         //upright
-        double neutralUpright = 1.1;
+        double neutralUpright = 0.6; //old 1.1
         double initUpright = neutralUpright + 1.8;
-        double capIntakeUpright = neutralUpright + 2.13;
-        double bottomCapDeliveryUpright = neutralUpright + 0.53;
-        double topCapDeliveryUpright = neutralUpright + 0.41;
+        double capIntakeUpright = neutralUpright + 1.6;
+        double bottomCapDeliveryUpright = neutralUpright + 0.35;
+        double topCapDeliveryUpright = neutralUpright + 0.25;
         double backDeliveryUpright = neutralUpright - 0.3;
         double backIntakeUpright = neutralUpright - 0.85;
-        double midBackDeliveryUpright = neutralUpright - 0.76;
+        double midBackDeliveryUpright = neutralUpright - 0.55;
 
         //wrist
         double neutralWrist = 0.67;
         double initWrist = neutralWrist - 0.6;
-        double capIntakeWrist = neutralWrist - 0.12;
+        double capIntakeWrist = neutralWrist - 0.1;
         double bottomCapDeliveryWrist = neutralWrist - 0.41;
         double topCapDeliveryWrist = neutralWrist - 0.38;
         double backDeliveryWrist = neutralWrist + 0.2;
@@ -100,7 +100,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         //extension
         double neutralExtension = 100;
         double initExtension = 100;
-        double capIntakeExtension = 500;
+        double capIntakeExtension = 250;
         double capDeliveryExtension = 1000;
         double backDeliveryExtension = 800;
         double backIntakeExtension = 600;

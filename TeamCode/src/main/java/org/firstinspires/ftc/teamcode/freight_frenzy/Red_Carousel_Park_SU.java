@@ -202,7 +202,7 @@ public class Red_Carousel_Park_SU extends AutoBase_FF {
                         targetX = -26;
                         targetY = 11;
                         targetTheta = 0;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 4, rotationTolerance));
                         break;
 
                     case ("BACK_INTO_CAROUSEL"):
@@ -283,7 +283,7 @@ public class Red_Carousel_Park_SU extends AutoBase_FF {
                         extendDone = false;
                         double potTolerance = 0.1;
                         drive(0, 0, 0);
-                        double armAngleBack = armHorizontal - 1.15;
+                        double armAngleBack = armHorizontal - 0.7;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());

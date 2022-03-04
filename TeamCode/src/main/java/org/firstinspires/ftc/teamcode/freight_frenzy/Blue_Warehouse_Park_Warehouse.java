@@ -283,7 +283,7 @@ public class Blue_Warehouse_Park_Warehouse extends AutoBase_FF {
                         extendDone = false;
                         double potTolerance = 0.1;
                         drive(0, 0, 0);
-                        double armAngleBack = armHorizontal - 1.15;
+                        double armAngleBack = armHorizontal - 0.7;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());
@@ -326,7 +326,7 @@ public class Blue_Warehouse_Park_Warehouse extends AutoBase_FF {
                         extendDone = false;
                         potTolerance = 0.1;
                         drive(0, 0, 0);
-                        armAngleBack = armHorizontal + 0.85;
+                        armAngleBack = armHorizontal + 0.53;
 //        telemetry.addData("target arm angle", armAngle);
 //        telemetry.addData("target arm extension", armReach);
 //        telemetry.addData("arm extension", mE.getCurrentPosition());

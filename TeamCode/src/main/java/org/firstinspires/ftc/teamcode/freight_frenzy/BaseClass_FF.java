@@ -164,8 +164,8 @@ public abstract class BaseClass_FF extends LinearOpMode {
     double potVertical = 1.1;
     double potOutput = 0.6;
     //this is the potentiometer reading when the arm is horizontal
-    double armHorizontal = 2.54;
-    double armUp = 1.53;
+    double armHorizontal = 1.47;
+    double armUp = 0.86;
     double wristStraight = 0.34;
     //43 extension ticks per cm
     //old value: 2.24
@@ -297,12 +297,12 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double potTolerance = 0.05;
         boolean angleDone = false;
         boolean extendDone = false;
-        double armAngleBack = armHorizontal + 0.79;
+        double armAngleBack = armHorizontal + 0.46;
         telemetry.addData("arm extension", mE.getCurrentPosition());
         telemetry.addData("arm angle", potentiometer.getVoltage());
         telemetry.addData("wrist angle", sV.getPosition());
         telemetry.addData("telescopePose", telescopePose);
-        sV.setPosition(0.1);
+        sV.setPosition(0.16);
         if (lAB.isPressed()) {  //uses limit switch to move arm to a known position
             mE.setPower(0);
             telescopePose = mE.getCurrentPosition();
@@ -1358,7 +1358,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         double output = 0;
         double kp = 3;
         double ki = 0;
-        double kd = 0;
+        double kd = 0.1;
         error = (desiredPosition - potentiometer.getVoltage());
         if (Math.abs(error) > 0.1) {
             armIntegralPrior = 0;
