@@ -264,13 +264,17 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     gamepad1.rumbleBlips(2);
                     gamepad2.rumbleBlips(2);
                 }
-                if (rightY2 == 0 && distanceTimer.seconds() > 1.2) {
+                if (/*rightY2 == 0 &&*/ distanceTimer.seconds() > 1.2) {
                     if (teleopMode == "allianceHub") {
                         armState = ArmState.BACK_DELIVERY; //auto delivery position alliance
-                        intakeState = IntakeState.FREE;
+                        if(gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+                            intakeState = IntakeState.INDEFININTE_INTAKE;
+                        }
                     } else if (teleopMode == "sharedHub") {
                         armState = ArmState.BACK_MID_DELIVERY; //auto delivery position shared
-                        intakeState = IntakeState.FREE;
+                        if(gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+                            intakeState = IntakeState.INDEFININTE_INTAKE;
+                        }
                     }
                 }
             } else {
@@ -334,7 +338,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                 if (yButton2) {// neutral position
                     armState = ArmState.NEUTRAL;
                 } else if (bButton2) {// backDelivery position
-                    if (teleopMode == "allianceHub") {
+                    if (teleopMode == "allianceHub" || teleopMode == "endgame") {
                         armState = ArmState.BACK_DELIVERY;
                     } else if (teleopMode == "sharedHub") {
                         armState = ArmState.BACK_MID_DELIVERY;
@@ -402,7 +406,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(capDeliveryExtension, extensionTolerance);
                             sVPosition = bottomCapDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TEN_SEC_INTAKE;
+                                intakeState = IntakeState.INDEFININTE_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
@@ -411,7 +415,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                             extensionToPos(capDeliveryExtension, extensionTolerance);
                             sVPosition = topCapDeliveryWrist;
                             if (!intakeStateSet) {
-                                intakeState = IntakeState.TEN_SEC_INTAKE;
+                                intakeState = IntakeState.INDEFININTE_INTAKE;
                                 intakeStateSet = true;
                             }
                             break;
