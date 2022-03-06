@@ -431,7 +431,7 @@ public class Blue_Carousel_Park_SU extends AutoBase_FF {
                         break;
 
                     case "SPIN_SPINNER":
-                        if (runtime.seconds() > 0 && runtime.seconds() < 2) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 2.5) {
                             mSR.setPower(0.5);
                             done = false;
                         } else {

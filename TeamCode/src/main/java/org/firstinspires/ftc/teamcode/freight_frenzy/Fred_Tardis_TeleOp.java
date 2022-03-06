@@ -57,6 +57,8 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double powerMultiplier = 0.6;
         boolean previousBState = false;
         boolean motorPowerFast = false;
+        boolean previousTriggerState = false;
+        boolean previousSpeed = false;
 
         boolean extensionReset = false;
         double sVPosition = sV.getPosition();
@@ -195,13 +197,29 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             drive(leftY1, leftX1, rightX1);
 
             //changes drive speed
-            if (bButton != previousBState && bButton) {
-                if (motorPowerFast) {
-                    powerMultiplier = 0.5;
-                    motorPowerFast = false;
-                } else {
+            if (gamepad1.left_trigger > 0.1 || gamepad1.right_trigger > 0.1) {
+                if (!previousTriggerState) {
+                    previousSpeed = motorPowerFast;
+                }
+                powerMultiplier = 0.5;
+                motorPowerFast = false;
+                previousTriggerState = true;
+            } else {
+                if (previousTriggerState) {
+                    motorPowerFast = previousSpeed;
                     powerMultiplier = 1;
-                    motorPowerFast = true;
+                    previousTriggerState = false;
+                }
+                if (bButton != previousBState && bButton) {
+                    if (motorPowerFast) {
+                        powerMultiplier = 0.5;
+                        motorPowerFast = false;
+                        previousSpeed = false;
+                    } else {
+                        powerMultiplier = 1;
+                        motorPowerFast = true;
+                        previousSpeed = true;
+                    }
                 }
             }
 
@@ -260,19 +278,19 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             if (dI.getDistance(DistanceUnit.CM) < 7) {
-                if (!gamepad2.isRumbling()) {
+                if (!gamepad2.isRumbling() && teleopMode != "endgame") {
                     gamepad1.rumbleBlips(2);
                     gamepad2.rumbleBlips(2);
                 }
                 if (/*rightY2 == 0 &&*/ distanceTimer.seconds() > 1.2) {
                     if (teleopMode == "allianceHub") {
                         armState = ArmState.BACK_DELIVERY; //auto delivery position alliance
-                        if(gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+                        if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
                             intakeState = IntakeState.INDEFININTE_INTAKE;
                         }
                     } else if (teleopMode == "sharedHub") {
                         armState = ArmState.BACK_MID_DELIVERY; //auto delivery position shared
-                        if(gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+                        if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
                             intakeState = IntakeState.INDEFININTE_INTAKE;
                         }
                     }
@@ -495,37 +513,34 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             //carousel
-            if (rightTrigger > 0.5 || leftTrigger > 0.5) {
-                if (spinnerLevel < spinnerLevelTimes.length) {
-                    if (spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]) {
-                        spinnerLevel++;
-                        spinnerPower = spinnerPowers[spinnerLevel];
-                        gamepad1.rumble(100);
+            if (teleopMode == "endgame"){
+                if (rightTrigger > 0.5 || leftTrigger > 0.5) {
+                    if (spinnerLevel < spinnerLevelTimes.length) {
+                        if (spinnerTimer.seconds() > spinnerLevelTimes[spinnerLevel]) {
+                            spinnerLevel++;
+                            spinnerPower = spinnerPowers[spinnerLevel];
+                            gamepad1.rumble(100);
+                        }
+                    } else {
+                        spinnerPower = 1;
+                    }
+                    if (rightTrigger > 0.5) {
+                        mSL.setPower(spinnerPower);
+                        mSR.setPower(1);
+                    } else if (leftTrigger > 0.5) {
+                        mSL.setPower(-spinnerPower);
+                        mSR.setPower(-1);
                     }
                 } else {
-                    spinnerPower = 1;
+                    spinnerTimer.reset();
+                    spinnerLevel = 0;
+                    spinnerPower = spinnerPowers[spinnerLevel];
+                    telemetry.addData("spinner off", spinnerTimer.seconds());
+                    mSL.setPower(0);
+                    mSR.setPower(0);
                 }
-                if (rightTrigger > 0.5) {
-                    mSL.setPower(spinnerPower);
-                    mSR.setPower(1);
-                } else if (leftTrigger > 0.5) {
-                    mSL.setPower(-spinnerPower);
-                    mSR.setPower(-1);
-                }
-            } else {
-                spinnerTimer.reset();
-                spinnerLevel = 0;
-                spinnerPower = spinnerPowers[spinnerLevel];
-                telemetry.addData("spinner off", spinnerTimer.seconds());
-                mSL.setPower(0);
-                mSR.setPower(0);
             }
-
             previousBState = bButton;
         }
-
-
     }
-
-
 }

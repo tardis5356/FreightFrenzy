@@ -44,8 +44,8 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
 //
 //        //steps.add("RESET_ARM");//make arm straight up instead of horizontal
 //
-        steps.add("STRAFE_FROM_HUB");//odometry
         steps.add("RESET_ARM");//make arm straight up instead of horizontal
+        steps.add("STRAFE_FROM_HUB");//odometry
 
         steps.add("GO_NEAR_WAREHOUSE");//odometry
         steps.add("STRAFE_TSE");//odometry
@@ -243,7 +243,7 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case ("STRAFE_FROM_HUB"):
-                        targetX = -20;
+                        targetX = -22;
                         targetY = 15;
                         targetTheta = -90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
@@ -480,7 +480,7 @@ public class Red_Carousel_Park_Warehouse extends AutoBase_FF {
                         break;
 
                     case "SPIN_SPINNER":
-                        if (runtime.seconds() > 0 && runtime.seconds() < 2) {
+                        if (runtime.seconds() > 0 && runtime.seconds() < 2.5) {
                             mSL.setPower(-0.5);
                             done = false;
                         } else {

@@ -1387,6 +1387,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
                 mE.setPower(1);
             }
         } else {
+            telemetry.addData("power 0", true);
             mE.setPower(0);
             return;
         }
