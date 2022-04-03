@@ -106,7 +106,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double capDeliveryExtension = 1000;
         double backDeliveryExtension = 800;
         double backIntakeExtension = 600;
-        double midBackDeliveryExtension = 400;
+        double midBackDeliveryExtension = 550;
         int extensionTolerance = 50;
 
         intakeTimer.reset();
@@ -169,6 +169,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
             //arm
             telemetry.addData("potentiometer voltage", potentiometer.getVoltage());
             telemetry.addData("arm state", armState);
+            telemetry.addData("armFreed", armFreed);
 
             //extension
             telemetry.addData("extensionReset", extensionReset);
@@ -282,7 +283,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     gamepad1.rumbleBlips(2);
                     gamepad2.rumbleBlips(2);
                 }
-                if (/*rightY2 == 0 &&*/ distanceTimer.seconds() > 1.2) {
+                if (/*rightY2 == 0 &&*/ distanceTimer.seconds() > 1.2 && !armFreed) {
                     if (teleopMode == "allianceHub") {
                         armState = ArmState.BACK_DELIVERY; //auto delivery position alliance
                         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
@@ -373,7 +374,7 @@ public class Fred_Tardis_TeleOp extends BaseClass_FF {    // LinearOpMode {
                     teleopMode = "endgame";
                 }
 
-                if (gamepad2.y || gamepad2.b || gamepad2.a || gamepad2.x || gamepad2.dpad_right || gamepad2.dpad_left) {
+                if (gamepad2.x || gamepad2.y || gamepad2.b || gamepad2.a || gamepad2.dpad_right || gamepad2.dpad_left) {
                     armFreed = false;
                     intakeStateSet = false;
                 }

@@ -780,6 +780,70 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     }
 
+    public void defineComponentsOmni() {
+        mBL = hardwareMap.dcMotor.get("mBL");//Back left
+        mBR = hardwareMap.dcMotor.get("mBR");
+        mFL = hardwareMap.dcMotor.get("mFL");
+        mFR = hardwareMap.dcMotor.get("mFR");//Front right
+
+        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mBL.setDirection(DcMotor.Direction.FORWARD);
+        mBR.setDirection(DcMotor.Direction.REVERSE);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+        mFL.setDirection(DcMotor.Direction.FORWARD);
+
+    }
+
+//    public void driveOmni(double forwardDrive, double strafeDrive, double rotateDrive){
+//
+//    }
+//            mFL.setPower(forward + strafe + rotate);
+//            mFR.setPower(forward - strafe - rotate);
+//            mBL.setPower(forward - strafe + rotate);
+//            mBR.setPower(forward + strafe - rotate);
+//
+//            if(gamepad1.dpad_up){ //Forward
+//                front_left_wheel.setPower(-power);
+//                back_left_wheel.setPower(-power);
+//                back_right_wheel.setPower(-power);
+//                front_right_wheel.setPower(-power);
+//            }
+//            else if(gamepad1.dpad_left){ //Left
+//                front_left_wheel.setPower(power);
+//                back_left_wheel.setPower(-power);
+//                back_right_wheel.setPower(power);
+//                front_right_wheel.setPower(-power);
+//            }
+//            else if(gamepad1.dpad_down){ //Back
+//                front_left_wheel.setPower(power);
+//                back_left_wheel.setPower(power);
+//                back_right_wheel.setPower(power);
+//                front_right_wheel.setPower(power);
+//            }
+//            else if(gamepad1.dpad_right){ //Right
+//                front_left_wheel.setPower(-power);
+//                back_left_wheel.setPower(power);
+//                back_right_wheel.setPower(-power);
+//                front_right_wheel.setPower(power);
+//            }
+//            else if(Math.abs(gamepad1.right_stick_x) > 0){ //Rotation
+//                front_left_wheel.setPower(-gamepad1.right_stick_x);
+//                back_left_wheel.setPower(-gamepad1.right_stick_x);
+//                back_right_wheel.setPower(gamepad1.right_stick_x);
+//                front_right_wheel.setPower(gamepad1.right_stick_x);
+//            }
+//            else{
+//                front_left_wheel.setPower(0);
+//                back_left_wheel.setPower(0);
+//                back_right_wheel.setPower(0);
+//                front_right_wheel.setPower(0);
+//    }
+
+
     public void defineComponentsPrimus() {
         mBL = hardwareMap.dcMotor.get("mBL");//Back left
         mBR = hardwareMap.dcMotor.get("mBR");

@@ -223,14 +223,14 @@ public class Blue_Carousel_Park_SU extends AutoBase_FF {
 
                     case ("DRIVE_TO_HUB_SU_2"):
                         targetX = -4;
-                        targetY = 42;
+                        targetY = 40;
                         targetTheta = 90;
-                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
+                        done = (moveToLocationOdometry(targetX, targetY, targetTheta, 3, rotationTolerance));
                         break;
 
                     case ("BACK_AWAY_FROM_HUB"):
                         targetX = 24;
-                        targetY = 40;
+                        targetY = 43;
                         targetTheta = 90;
                         done = (moveToLocationOdometry(targetX, targetY, targetTheta, distanceTolerance, rotationTolerance));
                         break;
@@ -394,10 +394,10 @@ public class Blue_Carousel_Park_SU extends AutoBase_FF {
                         if ((Math.abs(potentiometer.getVoltage() - armAngle) > potTolerance) && extendDone) {
                             if (potentiometer.getVoltage() > armAngle) {
 
-                                mU.setPower(-0.5);
+                                mU.setPower(-0.4);
                             } else if (potentiometer.getVoltage() < armAngle) {
 
-                                mU.setPower(0.5);
+                                mU.setPower(0.4);
                             }
                         } else {
 
