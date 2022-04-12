@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.freight_frenzy;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-@TeleOp(name = "Tardis_Omni_TeleOp", group = "Linear Opmode")
+@TeleOp(name = "Tardis_Smallz_TeleOp", group = "Linear Opmode")
 //@Disabled
 
-public class Tardis_Omni_TeleOp extends BaseClass_FF {    // LinearOpMode {
+public class Tardis_Smallz_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 //    private DcMotor mFL = null;
@@ -24,7 +20,7 @@ public class Tardis_Omni_TeleOp extends BaseClass_FF {    // LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        defineComponentsOmni();
+        defineComponentsSmallz();
         boolean motorPowerFast = false;
         double powerMultiplier = 0.5;
         boolean previousBState = false;
@@ -37,9 +33,6 @@ public class Tardis_Omni_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
         while (opModeIsActive()) {
             //george = potentiometer.getVoltage();
-            telemetry.addData("right odometer wheel", mBL.getCurrentPosition());
-            telemetry.addData("left odometer wheel", mFR.getCurrentPosition());
-            telemetry.addData("back odometer wheel", mFL.getCurrentPosition());
             telemetry.addData("drivetrain power multiplier", powerMultiplier);
             telemetry.update();
             //Update global sensor values

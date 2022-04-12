@@ -798,6 +798,26 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
     }
 
+    public void defineComponentsSmallz() {
+        mBL = hardwareMap.dcMotor.get("mBL");
+        mBR = hardwareMap.dcMotor.get("mBR");
+        mFL = hardwareMap.dcMotor.get("mFL");
+        mFR = hardwareMap.dcMotor.get("mFR");
+
+        //hello world
+        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mBL.setDirection(DcMotor.Direction.FORWARD);
+        mBR.setDirection(DcMotor.Direction.REVERSE);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+        mFL.setDirection(DcMotor.Direction.FORWARD);
+
+
+    }
+
 //    public void driveOmni(double forwardDrive, double strafeDrive, double rotateDrive){
 //
 //    }
@@ -882,6 +902,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mL.setDirection(DcMotor.Direction.FORWARD);
         mR.setDirection(DcMotor.Direction.REVERSE);
     }
+
 
     public double scaleShift(double oldVal, double oldMin, double oldMax, double newMax, double newMin, double multiplier) {
         return (((((oldVal - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) * multiplier + newMin));
