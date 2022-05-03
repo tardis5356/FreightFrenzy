@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.freight_frenzy;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Tardis_Smallz_TeleOp", group = "Linear Opmode")
+@TeleOp(name = "TARDIS_MSE_TeleOp", group = "Linear Opmode")
 //@Disabled
 
-public class Tardis_Smallz_TeleOp extends BaseClass_FF {    // LinearOpMode {
+public class TARDIS_MSE_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 //    private DcMotor mFL = null;
@@ -45,23 +45,10 @@ public class Tardis_Smallz_TeleOp extends BaseClass_FF {    // LinearOpMode {
             double leftY1 = gamepad1.left_stick_y * powerMultiplier;
             double rightX1 = -(gamepad1.right_stick_x) / 2.5;
             double leftX1 = -(gamepad1.left_stick_x) * powerMultiplier;
-            double rightY1 = -(gamepad1.right_stick_y);
-            double rightTrigger = (gamepad1.right_trigger);
-            double leftTrigger = -(gamepad1.left_trigger);
-            boolean xButton = (gamepad1.x);
-            //Gamepad 2 Variables
-            double rightTrigger2 = (gamepad2.right_trigger);
-            double rightY2 = (gamepad2.right_stick_y);
-            double leftY2 = (gamepad2.left_stick_y);
-            double leftTrigger2 = (gamepad2.left_trigger);
-            boolean leftBumper = (gamepad2.left_bumper);
-            boolean rightBumper = (gamepad2.right_bumper);
-            boolean bButton2 = (gamepad2.b);
-            boolean aButton2 = (gamepad2.a);
-            boolean bButton = (gamepad1.b);
-            boolean yButton = (gamepad1.y);
-            boolean xButton2 = (gamepad2.x);
 
+            //Gamepad 2 Variables
+            double leftY2 = (gamepad2.left_stick_y);
+            boolean bButton = (gamepad1.b);
 
             telemetry.addData("leftY2", leftY2);
 
@@ -79,12 +66,7 @@ public class Tardis_Smallz_TeleOp extends BaseClass_FF {    // LinearOpMode {
             }
 
             previousBState = bButton;
-//            previousB2State = bButton2;
-
-
         }
     }
-
-
 }
 
