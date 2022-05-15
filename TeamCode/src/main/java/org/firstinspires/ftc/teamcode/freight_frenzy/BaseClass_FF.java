@@ -53,6 +53,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mA;
     DcMotor mR;
     DcMotor mL;
+    //connected to sparkMini controller don't have enough ports
     CRServo mArm;
 
     Servo sV;//up-down wrist movement servo
@@ -80,6 +81,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     CRServo crsIR;
     CRServo crsIL;
     TouchSensor lAB; //Bottom arm limit
+    AnalogInput armLimit; //limit switch for Primus
     ModernRoboticsI2cRangeSensor rangeSensorFront;
     ModernRoboticsI2cRangeSensor rangeSensorRight;
     ModernRoboticsI2cRangeSensor rangeSensorBack;
@@ -870,6 +872,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mFL = hardwareMap.dcMotor.get("mFL");
         mFR = hardwareMap.dcMotor.get("mFR");//Front right
 
+
         mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -883,6 +886,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         sL = hardwareMap.servo.get("sL");
         sR = hardwareMap.servo.get("sR");
         mArm = hardwareMap.crservo.get("mArm");
+
+        armLimit = hardwareMap.get(AnalogInput.class, "armLimit");
+
     }
 
     public void defineComponentsOptimus() {
