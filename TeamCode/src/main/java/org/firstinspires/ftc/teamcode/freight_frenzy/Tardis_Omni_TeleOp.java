@@ -29,6 +29,7 @@ public class Tardis_Omni_TeleOp extends BaseClass_FF {    // LinearOpMode {
         double powerMultiplier = 0.5;
         boolean previousBState = false;
 
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -61,18 +62,26 @@ public class Tardis_Omni_TeleOp extends BaseClass_FF {    // LinearOpMode {
             double rightY2 = (gamepad2.right_stick_y);
             double leftY2 = (gamepad2.left_stick_y);
             double leftTrigger2 = (gamepad2.left_trigger);
-            boolean leftBumper = (gamepad2.left_bumper);
-            boolean rightBumper = (gamepad2.right_bumper);
+            boolean leftBumper2 = (gamepad2.left_bumper);
+            boolean rightBumper2 = (gamepad2.right_bumper);
             boolean bButton2 = (gamepad2.b);
             boolean aButton2 = (gamepad2.a);
             boolean bButton = (gamepad1.b);
-            boolean yButton = (gamepad1.y);
+            boolean yButton2 = (gamepad1.y);
             boolean xButton2 = (gamepad2.x);
 
 
             telemetry.addData("leftY2", leftY2);
 
             drive(leftY1, leftX1, rightX1);
+
+            mTGIArm.setPower(leftY2);
+
+            if (rightTrigger2 != 0) {
+                sG.setPosition(0);
+            } else {
+                sG.setPosition(1);
+            }
 
             //changes drive speed
             if (bButton != previousBState && bButton) {

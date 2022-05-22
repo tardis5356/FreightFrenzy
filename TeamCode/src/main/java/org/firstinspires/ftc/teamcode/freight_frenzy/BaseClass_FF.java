@@ -55,6 +55,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
     DcMotor mL;
     //connected to sparkMini controller don't have enough ports
     CRServo mArm;
+    CRServo mTGIArm;
 
     Servo sV;//up-down wrist movement servo
     //    CRServo sSR;
@@ -787,6 +788,9 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mBR = hardwareMap.dcMotor.get("mBR");
         mFL = hardwareMap.dcMotor.get("mFL");
         mFR = hardwareMap.dcMotor.get("mFR");//Front right
+        sG = hardwareMap.servo.get("sG");//Gripper
+
+        mTGIArm = hardwareMap.crservo.get("mTGIArm");
 
         mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
