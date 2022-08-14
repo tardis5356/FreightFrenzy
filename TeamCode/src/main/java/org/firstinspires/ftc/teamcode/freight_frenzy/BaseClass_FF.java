@@ -713,17 +713,17 @@ public abstract class BaseClass_FF extends LinearOpMode {
         mBR = hardwareMap.dcMotor.get("mBR");
         mFL = hardwareMap.dcMotor.get("mFL");
         mFR = hardwareMap.dcMotor.get("mFR");//Front right
-        mA = hardwareMap.dcMotor.get("mA");
-        mI = hardwareMap.dcMotor.get("mI");
+//        mA = hardwareMap.dcMotor.get("mA");
+//        mI = hardwareMap.dcMotor.get("mI");
 //        mI = hardwareMap.dcMotor.get("mI");
 //        mE = hardwareMap.dcMotor.get("mE");
 //        mS = hardwareMap.dcMotor.get("mS");
-        sW = hardwareMap.servo.get("sW");
-        sG = hardwareMap.servo.get("sG");
-        distance1 = hardwareMap.get(DistanceSensor.class, "distance1");
-        distance2 = hardwareMap.get(DistanceSensor.class, "distance2");
-        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
-        rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
+//        sW = hardwareMap.servo.get("sW");
+//        sG = hardwareMap.servo.get("sG");
+//        distance1 = hardwareMap.get(DistanceSensor.class, "distance1");
+//        distance2 = hardwareMap.get(DistanceSensor.class, "distance2");
+//        rangeSensorLeft = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_left");
+//        rangeSensorRight = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range_right");
 
 //        sP = hardwareMap.servo.get("sP");
 //        sLower = hardwareMap.servo.get("sLower");
@@ -761,7 +761,7 @@ public abstract class BaseClass_FF extends LinearOpMode {
 
 
         //mFL.setDirection(DcMotor.Direction.REVERSE);
-        mBL.setDirection(DcMotor.Direction.REVERSE);
+//        mBL.setDirection(DcMotor.Direction.REVERSE);
 
         mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

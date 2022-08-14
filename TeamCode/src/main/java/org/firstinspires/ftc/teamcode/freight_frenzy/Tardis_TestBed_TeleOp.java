@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Tardis_TestBed_TeleOp", group = "Linear Opmode")
-@Disabled
+//@Disabled
 
 public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
@@ -38,26 +38,26 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        sW.setPosition(1);
+//        sW.setPosition(1);
 
         waitForStart();
 
         while (opModeIsActive()) {
             //george = potentiometer.getVoltage();
             telemetry.addData("drivetrain power multiplier", powerMultiplier);
-            telemetry.addData("distance1", distance1.getDistance(DistanceUnit.CM));
-            telemetry.addData("distance2", distance2.getDistance(DistanceUnit.CM));
-            telemetry.addData("left cm", "%.2f cm", rangeSensorLeft.getDistance(DistanceUnit.CM));
-            telemetry.addData("right cm", "%.2f cm", rangeSensorRight.getDistance(DistanceUnit.CM));
-            telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
+//            telemetry.addData("distance1", distance1.getDistance(DistanceUnit.CM));
+//            telemetry.addData("distance2", distance2.getDistance(DistanceUnit.CM));
+//            telemetry.addData("left cm", "%.2f cm", rangeSensorLeft.getDistance(DistanceUnit.CM));
+//            telemetry.addData("right cm", "%.2f cm", rangeSensorRight.getDistance(DistanceUnit.CM));
+//            telemetry.addData("gyro", "" + String.format("%.2f deg", gyroZ));
             //telemetry.addData("arm position", mA.getCurrentPosition());
-            telemetry.addData("wrist position", "" + String.format("%.2f", wristPosition));
+//            telemetry.addData("wrist position", "" + String.format("%.2f", wristPosition));
             //telemetry.addData("potentiometer angle", getElevAngle(george));
-            telemetry.addData("potentiometer voltage", george);
-            telemetry.addData("gripper position", sG.getPosition());
+//            telemetry.addData("potentiometer voltage", george);
+//            telemetry.addData("gripper position", sG.getPosition());
             //telemetry.addData("fire ring", sP.getPosition());
-            telemetry.addData("current position x", "" + String.format("%.2f in.", pose.x));
-            telemetry.addData("current position y", "" + String.format("%.2f in.", pose.y));
+//            telemetry.addData("current position x", "" + String.format("%.2f in.", pose.x));
+//            telemetry.addData("current position y", "" + String.format("%.2f in.", pose.y));
 //            telemetry.addData("front limit", frontLimit.isPressed());
 //            telemetry.addData("back limit", backLimit.isPressed());
             telemetry.update();
@@ -71,26 +71,28 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
             double leftY1 = gamepad1.left_stick_y * powerMultiplier;
             double rightX1 = -(gamepad1.right_stick_x) / 2.5;
             double leftX1 = -(gamepad1.left_stick_x) * powerMultiplier;
-            double rightY1 = -(gamepad1.right_stick_y);
-            double rightTrigger = (gamepad1.right_trigger);
-            double leftTrigger = -(gamepad1.left_trigger);
-            boolean xButton = (gamepad1.x);
+//            double rightY1 = -(gamepad1.right_stick_y);
+//            double rightTrigger = (gamepad1.right_trigger);
+//            double leftTrigger = -(gamepad1.left_trigger);
+//            boolean xButton = (gamepad1.x);
             //Gamepad 2 Variables
-            double rightTrigger2 = (gamepad2.right_trigger);
-            double rightY2 = (gamepad2.right_stick_y);
-            double leftY2 = (gamepad2.left_stick_y);
-            double leftTrigger2 = (gamepad2.left_trigger);
-            boolean leftBumper = (gamepad2.left_bumper);
-            boolean rightBumper = (gamepad2.right_bumper);
-            boolean bButton2 = (gamepad2.b);
-            boolean aButton2 = (gamepad2.a);
+//            double rightTrigger2 = (gamepad2.right_trigger);
+//            double rightY2 = (gamepad2.right_stick_y);
+//            double leftY2 = (gamepad2.left_stick_y);
+//            double leftTrigger2 = (gamepad2.left_trigger);
+//            boolean leftBumper = (gamepad2.left_bumper);
+//            boolean rightBumper = (gamepad2.right_bumper);
+//            boolean bButton2 = (gamepad2.b);
+//            boolean aButton2 = (gamepad2.a);
             boolean bButton = (gamepad1.b);
-            boolean yButton = (gamepad1.y);
-            boolean xButton2 = (gamepad2.x);
+//            boolean yButton = (gamepad1.y);
+//            boolean xButton2 = (gamepad2.x);
 
+            drive(leftY1, leftX1, rightX1);
 
-            telemetry.addData("leftY2", leftY2);
-            mI.setPower(leftY2);
+//
+//            telemetry.addData("leftY2", leftY2);
+//            mI.setPower(leftY2);
 
             //sets shooting position
 //            if (yButton) {
@@ -221,24 +223,24 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
 //            }
 
             //controls wrist
-            if (!xButton2) {
-                if (rightBumper && wristPosition < 1) {
-                    wristPosition += .008;
-                } else if (leftBumper && wristPosition > 0) {
-                    wristPosition -= .008;
-                }
-                sW.setPosition(Range.clip(wristPosition, 0, 1));
-
-            }
-
-            //controls gripper (pressed = closed, released = open)
-            if (rightTrigger2 != 0 && !aButton2) {
-                sG.setPosition(0.25); //sets gripper to open         // 0.8, 0.35
-            } else {
-                if (!aButton2) {
-                    sG.setPosition(0.08); //sets gripper to closed   // 0.5, 0.18
-                }
-            }
+//            if (!xButton2) {
+//                if (rightBumper && wristPosition < 1) {
+//                    wristPosition += .008;
+//                } else if (leftBumper && wristPosition > 0) {
+//                    wristPosition -= .008;
+//                }
+//                sW.setPosition(Range.clip(wristPosition, 0, 1));
+//
+//            }
+//
+//            //controls gripper (pressed = closed, released = open)
+//            if (rightTrigger2 != 0 && !aButton2) {
+//                sG.setPosition(0.25); //sets gripper to open         // 0.8, 0.35
+//            } else {
+//                if (!aButton2) {
+//                    sG.setPosition(0.08); //sets gripper to closed   // 0.5, 0.18
+//                }
+//            }
 
             //controls release of intake ramp
 //            if (xButton) {
@@ -250,7 +252,7 @@ public class Tardis_TestBed_TeleOp extends BaseClass_FF {    // LinearOpMode {
 
 
             previousBState = bButton;
-            previousB2State = bButton2;
+//            previousB2State = bButton2;
 
 
         }
